@@ -1,0 +1,14 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> self_learning@1.0.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /workspace/scratch/4f15cd6249fe/Self_learning
+
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  18:47:12
+   Duration  152ms (import 42%, transform 28%, tests 19%, worker 10%)
+
