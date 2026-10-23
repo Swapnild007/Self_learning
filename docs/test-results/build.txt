@@ -6,8 +6,8 @@ npm warn Unknown env config "http-proxy". This will stop working in the next maj
 vite v8.3.5 building client environment for production...
 transforming...
 [plugin rolldown:vite-resolve] Module "node:fs/promises" has been externalized for browser compatibility, imported by "/workspace/scratch/4f15cd6249fe/Self_learning/node_modules/pyodide/pyodide.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
-[plugin rolldown:vite-resolve] Module "node:path" has been externalized for browser compatibility, imported by "/workspace/scratch/4f15cd6249fe/Self_learning/node_modules/pyodide/pyodide.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
 [plugin rolldown:vite-resolve] Module "node:url" has been externalized for browser compatibility, imported by "/workspace/scratch/4f15cd6249fe/Self_learning/node_modules/pyodide/pyodide.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin rolldown:vite-resolve] Module "node:path" has been externalized for browser compatibility, imported by "/workspace/scratch/4f15cd6249fe/Self_learning/node_modules/pyodide/pyodide.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
 [plugin rolldown:vite-resolve] Module "node:vm" has been externalized for browser compatibility, imported by "/workspace/scratch/4f15cd6249fe/Self_learning/node_modules/pyodide/pyodide.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
 [plugin rolldown:vite-resolve] Module "node:crypto" has been externalized for browser compatibility, imported by "/workspace/scratch/4f15cd6249fe/Self_learning/node_modules/pyodide/pyodide.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
 [plugin rolldown:vite-resolve] Module "node:child_process" has been externalized for browser compatibility, imported by "/workspace/scratch/4f15cd6249fe/Self_learning/node_modules/pyodide/pyodide.mjs". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
@@ -18,25 +18,25 @@ computing gzip size...
 dist/assets/__vite-browser-external-RdgpS3aO.js    0.11 kB
 dist/index.html                                    0.68 kB │ gzip:   0.39 kB
 dist/assets/python.worker-Bbdjyc4O.js             20.11 kB
-dist/assets/index-Ckp3AQfX.css                    41.12 kB │ gzip:   9.73 kB
+dist/assets/index-Xs-t9cTL.css                    41.94 kB │ gzip:   9.93 kB
 dist/assets/check-DxBTLVQX.js                      0.16 kB │ gzip:   0.16 kB
 dist/assets/arrow-right-DWW0TjnF.js                0.20 kB │ gzip:   0.18 kB
 dist/assets/clock-3-BPDn6Bzc.js                    0.20 kB │ gzip:   0.19 kB
 dist/assets/play-ZIfipG6q.js                       0.23 kB │ gzip:   0.20 kB
 dist/assets/bookmark-BPqki5JD.js                   0.27 kB │ gzip:   0.22 kB
 dist/assets/notebook-pen-BAKNHWww.js               0.51 kB │ gzip:   0.31 kB
-dist/assets/CourseCard-CVAsN3Jf.js                 0.96 kB │ gzip:   0.43 kB
-dist/assets/Catalog-BJkXCcYZ.js                    2.37 kB │ gzip:   1.06 kB
-dist/assets/Learning-BrwRo52A.js                   2.94 kB │ gzip:   1.13 kB
-dist/assets/Overview-B_RzTs6h.js                   3.77 kB │ gzip:   1.40 kB
-dist/assets/Lab-B8v3O1BW.js                        3.90 kB │ gzip:   1.70 kB
-dist/assets/Practice-DcC03kFZ.js                   4.49 kB │ gzip:   1.86 kB
-dist/assets/Settings-CWFjtxWe.js                   5.55 kB │ gzip:   2.07 kB
-dist/assets/Reader-BpX1VLar.js                     9.07 kB │ gzip:   3.04 kB
+dist/assets/CourseCard-D1F1tmc8.js                 0.96 kB │ gzip:   0.43 kB
+dist/assets/Catalog-D5lVUosw.js                    2.37 kB │ gzip:   1.06 kB
+dist/assets/Learning-8uZvpRw0.js                   2.94 kB │ gzip:   1.13 kB
+dist/assets/Overview-BZ5Gy90R.js                   3.77 kB │ gzip:   1.40 kB
+dist/assets/Lab-CCN_iWV7.js                        3.90 kB │ gzip:   1.70 kB
+dist/assets/Practice-C5CLI_L-.js                   4.49 kB │ gzip:   1.86 kB
+dist/assets/Settings-En8WP_zJ.js                   5.55 kB │ gzip:   2.07 kB
+dist/assets/Reader-Bfi8NRms.js                     9.07 kB │ gzip:   3.05 kB
 dist/assets/catalog-BqCikgCs.js                   10.48 kB │ gzip:   4.28 kB
 dist/assets/createLucideIcon-C-bNdaTa.js          11.80 kB │ gzip:   4.63 kB
-dist/assets/Dashboard-C_bjtgXN.js                139.59 kB │ gzip:  45.90 kB
-dist/assets/index-sCZeBMeo.js                    302.47 kB │ gzip:  96.86 kB
-dist/assets/usePython-Wk4dL0MR.js                473.87 kB │ gzip: 158.34 kB
+dist/assets/Dashboard-BSqZepiO.js                139.59 kB │ gzip:  45.90 kB
+dist/assets/index-CuA0RFp3.js                    302.47 kB │ gzip:  96.85 kB
+dist/assets/usePython-CqMM6rLK.js                473.87 kB │ gzip: 158.34 kB
 
-✓ built in 336ms
+✓ built in 453ms
