@@ -275,6 +275,13 @@ test("syllabus control supports keyboard dismissal on mobile and desktop collaps
     await expect(page.getByRole("dialog")).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(page.getByRole("dialog")).toHaveCount(0);
+    await page.getByRole("button", { name: "Toggle chapter syllabus" }).click();
+    await page
+      .getByRole("dialog")
+      .getByRole("link", { name: "2. Define, call, and return" })
+      .click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(page.locator("#syntax")).toBeInViewport();
   } else {
     await expect(page.locator(".reader-syllabus")).toBeHidden();
     await page.getByRole("button", { name: "Toggle chapter syllabus" }).click();

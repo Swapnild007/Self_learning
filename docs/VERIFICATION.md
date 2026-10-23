@@ -6,7 +6,7 @@ Eight web screens implemented: dashboard, catalog, course overview, textbook rea
 
 ## Local evidence
 
-- TypeScript check and production build pass.
+- TypeScript check and production build pass. Raw local results: [build](test-results/build.txt), [unit](test-results/unit.txt), [browser](test-results/browser.txt), [dependency audit](test-results/dependency-audit.json).
 - 10 unit tests cover import schema validation, exact-set grading and sample content invariants.
 - Playwright runs desktop Chromium (1440 × 1000) and Pixel 7 browser emulation, not a physical phone.
 - End-to-end checks cover all screens, course search/filtering/navigation, reader content, notes/bookmarks/read persistence, theme/font preferences, actual Pyodide stdout, real SyntaxError tracebacks, infinite-loop cancellation and recovery, behavior-tested code assessment and persisted scores, dialog keyboard dismissal, export, invalid/valid import and confirmed reset.
@@ -17,7 +17,7 @@ Eight web screens implemented: dashboard, catalog, course overview, textbook rea
 
 ## Findings repaired
 
-The final suite contains 20 end-to-end flows across two viewports.
+The final local suite passed all 20 end-to-end flows across two viewports (1.1 minutes). An early PR-triggered CI run passed 19/20 and exposed a mobile large-output case. Console layout, output capping and interruption were repaired. Refer to the PR checks for the current commit-specific CI verdict. Local runtime regression checks passed on both viewports, and the complete local suite passed 20/20.
 
 CodeMirror's inner editable field initially lacked its own accessible name; it now has an EditorView content attribute. Store writes were moved from state updater callbacks to an effect. The desktop syllabus collapses; the mobile syllabus uses a focus-managed Radix drawer with Escape dismissal. Content routes resolve stable chapter IDs through a registry; assessments are chapter-scoped. Editor changes are disabled during grading. Dark syntax highlighting uses an explicit high-contrast palette; the reset heading has a dark-mode override. Stale messages from terminated workers are ignored. Isolated contexts use a shared Python interrupt before termination. Console output scrolls internally rather than wrapping very long lines; output and tracebacks are capped at 50,000 characters. Invalid import object shapes are rejected. Playwright was updated after dependency audit identified its older browser installer advisory.
 
