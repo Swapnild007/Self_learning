@@ -2,7 +2,11 @@
 import { loadPyodide } from "pyodide";
 let runtime: Awaited<ReturnType<typeof loadPyodide>> | undefined;
 self.onmessage = async (
-  event: MessageEvent<{ source: string; tests?: string }>,
+  event: MessageEvent<{
+    source: string;
+    tests?: string;
+    interruptBuffer?: SharedArrayBuffer;
+  }>,
 ) => {
   let output = "";
   const append = (text: string) => {
@@ -21,6 +25,9 @@ self.onmessage = async (
       stdout: append,
       stderr: append,
     });
+    self.postMessage({ type: "status", message: "Running Python…" });
+    if (event.data.interruptBuffer)
+      runtime.setInterruptBuffer(new Int32Array(event.data.interruptBuffer));
     runtime.setStdout({ batched: append });
     runtime.setStderr({ batched: append });
     const globals = runtime.toPy({});

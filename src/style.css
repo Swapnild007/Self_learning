@@ -2624,3 +2624,5 @@ th {
 .syllabus-drawer p {
   font-size: 12px;
 }
+/* Console output preserves Python formatting and scrolls within its own surface. */
+.console-panel>pre{white-space:pre;overflow-wrap:normal;overflow:auto}

@@ -115,17 +115,18 @@ test("real Python output, syntax errors, cancellation and recovery", async ({
     timeout: 60000,
   });
   const editor = page.locator(".cm-content");
-  console.log("runtime initial output verified");
+
   await editor.fill("def broken(:\n    pass");
   await page.getByRole("button", { name: "Run Python" }).click();
   await expect(page.getByRole("alert")).toContainText("SyntaxError");
-  console.log("syntax error verified");
+
   await editor.fill("while True:\n    pass");
   await page.getByRole("button", { name: "Run Python" }).click();
   await page.getByRole("button", { name: "Stop", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("cancelled");
-  console.log("cancellation verified");
+
   await editor.fill("print(sum([1, 2, 3]))");
+
   await page.getByRole("button", { name: "Run Python" }).click();
   await expect(page.getByLabel("Python output")).toContainText("6", {
     timeout: 60000,

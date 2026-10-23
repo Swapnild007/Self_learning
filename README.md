@@ -4,9 +4,11 @@ A web-first, local-first learning workspace with eight screens, a structured tex
 
 ## Run
 
-Requires Node 24 and npm. From this directory:
+Requires Node 24 and npm. Clone the implementation branch, then run:
 
 ```sh
+git clone --branch codex/self-learning-foundation https://github.com/Swapnild007/Self_learning.git
+cd Self_learning
 npm ci
 npm run dev -- --host 127.0.0.1
 ```
@@ -34,7 +36,7 @@ Hash routing permits static hosting without rewrite rules. The application assum
 
 ## Important boundaries
 
-Python runs in a worker to keep the UI responsive. Stop terminates it; a 60-second wall-clock timeout includes initial runtime loading. It is **not a secure executor for hostile scripts**: Python can reach worker/browser APIs. Do not run untrusted code or paste credentials. Worker termination does not guarantee memory safety. Output is capped at 50,000 characters. Desktop GUI libraries, subprocesses and input prompts are unsupported. Only standard-library sample code is supported in this foundation. Network-dependent package installation is not exposed.
+Python runs in a worker to keep the UI responsive. Stop terminates it; a 60-second wall-clock timeout includes initial runtime loading. Development and preview include COOP/COEP headers; in a secure, isolated browser context, a shared interrupt signal lets Python unwind before the worker is terminated after 250 ms. Other hosts fall back to worker termination. Preserve these headers on a future host to retain cooperative interruption. It is **not a secure executor for hostile scripts**: Python can reach worker/browser APIs. Do not run untrusted code or paste credentials. Worker termination does not guarantee memory safety. Output is capped at 50,000 characters. Desktop GUI libraries, subprocesses and input prompts are unsupported. Only standard-library sample code is supported in this foundation. Network-dependent package installation is not exposed.
 
 Assessment tests check function behavior with several inputs. They are local pedagogical checks, not adversarial exam proctoring. Reading acknowledgements record self-reported progress; only a 100% assessment score shows mastery. Local data is browser/origin-specific. Export/import provides manual backup and transfer; imports replace existing data. Avoid private customer data in notes.
 

@@ -17,9 +17,9 @@ Eight web screens implemented: dashboard, catalog, course overview, textbook rea
 
 ## Findings repaired
 
-The final suite contains 18 end-to-end flows across two viewports.
+The final suite contains 20 end-to-end flows across two viewports.
 
-CodeMirror's inner editable field initially lacked its own accessible name; it now has an EditorView content attribute. Store writes were moved from state updater callbacks to an effect. The desktop syllabus collapses; the mobile syllabus uses a focus-managed Radix drawer with Escape dismissal. Content routes resolve stable chapter IDs through a registry; assessments are chapter-scoped. Editor changes are disabled during grading. Dark syntax highlighting uses an explicit high-contrast palette; the reset heading has a dark-mode override. Stale messages from terminated workers are ignored. Invalid import object shapes are rejected. Playwright was updated after dependency audit identified its older browser installer advisory.
+CodeMirror's inner editable field initially lacked its own accessible name; it now has an EditorView content attribute. Store writes were moved from state updater callbacks to an effect. The desktop syllabus collapses; the mobile syllabus uses a focus-managed Radix drawer with Escape dismissal. Content routes resolve stable chapter IDs through a registry; assessments are chapter-scoped. Editor changes are disabled during grading. Dark syntax highlighting uses an explicit high-contrast palette; the reset heading has a dark-mode override. Stale messages from terminated workers are ignored. Isolated contexts use a shared Python interrupt before termination. Console output scrolls internally rather than wrapping very long lines; output and tracebacks are capped at 50,000 characters. Invalid import object shapes are rejected. Playwright was updated after dependency audit identified its older browser installer advisory.
 
 ## Delivery constraints
 
