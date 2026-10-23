@@ -1,1 +1,6 @@
-bm9kZV9tb2R1bGVzLwpkaXN0Lwp0ZXN0LXJlc3VsdHMvCnBsYXl3cmlnaHQtcmVwb3J0LwpwdWJsaWMvcHl0aG9uLwoqLmxvZwo=
+node_modules/
+dist/
+test-results/
+playwright-report/
+public/python/
+*.log
