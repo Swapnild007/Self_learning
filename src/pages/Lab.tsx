@@ -97,7 +97,7 @@ export default function Lab() {
           Python executes locally through WebAssembly in a dedicated worker. No
           source code is sent to an application server. The first load downloads
           the bundled Python runtime; it is not guaranteed to work offline until
-          browser caching has occurred. Execution stops after 60 seconds; Stop
+          browser caching has occurred. Execution stops after 120 seconds; Stop
           destroys the worker, including its in-memory state. Each run has a
           fresh globals dictionary.
         </p>
