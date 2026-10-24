@@ -1,3 +1,4 @@
+import { pythonSyllabus } from "../content/pythonSyllabus";
 import { useParams, Link } from "react-router-dom";
 import { ArrowRight, Check, Clock3, BookOpen } from "lucide-react";
 import { courses } from "../content/catalog";
@@ -108,7 +109,34 @@ export default function Overview() {
           <h2>Course syllabus</h2>
           <BookOpen size={22} />
         </div>
-        {course.modules.length ? (
+        {course.id === "python" ? (
+          <>
+            <p className="muted">32-chapter roadmap across six levels. Draft chapters are readable; planned chapters are not yet published or counted as completed learning.</p>
+            {pythonSyllabus.map((level) => (
+              <div key={level.id}>
+                <h3>{level.title}</h3>
+                {level.chapters.map((item) => {
+                  const published = chapters.find((c) => c.title === item.title);
+                  return published ? (
+                    <Link className="syllabus-row" to={`/read/${published.id}`} key={item.number}>
+                      <span>{String(item.number).padStart(2, "0")}</span>
+                      <strong>{item.title}</strong>
+                      <span>{published.minutes} min</span>
+                      <ArrowRight size={18} />
+                    </Link>
+                  ) : (
+                    <div className="syllabus-row" key={item.number} aria-label={`${item.title}, planned`}>
+                      <span>{String(item.number).padStart(2, "0")}</span>
+                      <strong>{item.title}</strong>
+                      <span>Planned</span>
+                      <span aria-hidden="true">·</span>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </>
+        ) : course.modules.length ? (
           course.modules.map((m) => (
             <div key={m.id}>
               <h3>{m.title}</h3>
