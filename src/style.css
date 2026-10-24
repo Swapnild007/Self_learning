@@ -12,7 +12,7 @@
   --bg: #f6f7fa;
   --surface: #fff;
   --text: #202b40;
-  --muted: #626d80;
+  --muted: #4c586b;
   --line: #e4e8f0;
   --blue: #2558d9;
   --soft: #edf2ff;
@@ -793,7 +793,7 @@ small {
   padding: 15px 19px 16px;
 }
 .meta {
-  font-size: 8px;
+  font-size: 12px;
   color: var(--muted);
   display: flex;
   gap: 6px;
