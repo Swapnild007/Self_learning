@@ -289,52 +289,13 @@ export const courses: Course[] = [
     ],
     references: chapter.references,
   },
-  ...[
-    {
-      id: "sql",
-      title: "SQL: ask better questions",
-      category: "Data",
-      symbol: "SQL",
-      color: "lavender",
-      description:
-        "Explore relational thinking, queries and meaningful business questions.",
-    },
-    {
-      id: "excel",
-      title: "Excel for confident analysis",
-      category: "Analytics",
-      symbol: "Xl",
-      color: "green",
-      description:
-        "Build a foundation in formulas, clean data and dependable reports.",
-    },
-    {
-      id: "power-bi",
-      title: "Tell the story with Power BI",
-      category: "Analytics",
-      symbol: "BI",
-      color: "sand",
-      description:
-        "Connect data, shape models and communicate the insight that matters.",
-    },
-    {
-      id: "automation",
-      title: "Make time with automation",
-      category: "Automation",
-      symbol: "↗",
-      color: "rose",
-      description:
-        "Map repetitive work and design reliable, observable workflows.",
-    },
-  ].map((x) => ({
-    ...x,
+  ...[["sql","SQL","Data","SQL","lavender","Relational queries, joins, modeling and optimization."],["excel","Microsoft Excel","Analytics","XL","green","Formulas, tables, Power Query, dashboards and automation."],["power-bi","Power BI","Analytics","BI","sand","Data models, DAX, reporting and governance."],["automation","Workflow Automation","Automation","Auto","rose","Reliable workflows, APIs, monitoring and error recovery."],["dsa","Data Structures & Algorithms","Programming","DSA","blue","Complexity, structures, algorithms and problem solving."],["javascript","JavaScript","Web Development","JS","sand","Language fundamentals, DOM, async programming and testing."],["react","React","Web Development","React","blue","Components, hooks, state, accessibility and routing."],["nextjs","Next.js","Web Development","Next","lavender","App Router, server rendering, caching and deployment."],["genai","Generative AI","AI & Machine Learning","AI","rose","LLMs, prompting, RAG, evaluation and responsible deployment."],["devops","DevOps","Cloud & DevOps","Ops","green","CI/CD, containers, Kubernetes, observability and reliability."],["html","HTML","Web Development","HTML","sand","Semantic markup, forms, accessibility and document structure."],["css","CSS","Web Development","CSS","blue","Responsive layouts, Grid, Flexbox and modern styling."],["tailwind","Tailwind CSS","Web Development","TW","lavender","Utility-first styling, design tokens and responsive interfaces."],["nodejs","Node.js","Backend","Node","green","Runtime fundamentals, async I/O and secure services."],["express","Express","Backend","API","sand","REST APIs, middleware, validation and authentication."],["mongodb","MongoDB","Databases","DB","green","Documents, queries, indexes, aggregation and data modeling."],["n8n","n8n Automation","Automation","n8n","rose","Event-driven workflows, integrations, AI agents and operations."],["data-analytics","Data Analytics","Analytics","DA","blue","Data cleaning, analysis, visualization and communication."],["system-design","System Design","Architecture","SYS","lavender","Scalability, trade-offs, distributed systems and resilience."],["performance-marketing","Performance Marketing","Digital Business","PM","rose","Measurement, attribution, experimentation and growth systems."],["instagram-content","Content Creation & Growth","Digital Business","CG","sand","Editorial planning, content production, analytics and ethics."],["react-native","React Native","Mobile Development","RN","blue","Cross-platform UI, navigation, state and mobile delivery."],["typescript","TypeScript","Web Development","TS","blue","Types, generics, narrowing and scalable application design."],["angular","Angular","Web Development","NG","rose","Components, signals, dependency injection and routing."],["ui-ux","UI & UX Design","Design","UX","lavender","Research, interaction design, accessibility and prototyping."],["claude-code","AI Coding Agents","AI & Machine Learning","Code","sand","Agent workflows, tools, MCP, evaluation and secure coding."],["cybersecurity","Cybersecurity","Security","SEC","rose","Defensive security, risk, identity and secure engineering."],["soc","Security Operations","Security","SOC","lavender","SIEM, triage, detection engineering and incident response."],["java-spring","Java & Spring Boot","Backend","Java","sand","Java fundamentals, Spring services, persistence and security."],["machine-learning","Machine Learning Engineering","AI & Machine Learning","ML","blue","Model development, validation, deployment and monitoring."],["linux","Linux","Cloud & DevOps","Linux","green","Shell, processes, networking, administration and security."],["agentic-ai","Agentic AI Engineering","AI & Machine Learning","Agent","rose","Tool-using agents, orchestration, memory, safety and evaluation."],["cpp","C++ Programming","Programming","C++","lavender","Modern C++, STL, ownership, performance and testing."],["data-science","Data Science","Analytics","DS","green","Statistics, experiments, data pipelines and predictive models."]].map(([id, title, category, symbol, color, description]) => ({
+    id, title, category, symbol, color, description,
     version: 1,
     level: "Beginner" as const,
-    outcomes: [
-      "Curriculum is being authored; enrollment is not yet available.",
-    ],
+    outcomes: ["Curriculum in preparation; lessons are not yet available."],
     prerequisites: [],
-    skills: [x.category],
+    skills: [category],
     minutes: 0,
     status: "Catalog preview" as const,
     editor: "Self Learning editorial",
