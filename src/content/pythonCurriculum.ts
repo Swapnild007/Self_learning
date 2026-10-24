@@ -286,18 +286,26 @@ export const pythonChapters: Chapter[] = [
   },
   {
     "id": "python-values",
-    "version": 1,
+    "version": 2,
     "title": "Variables, types and operators",
-    "minutes": 15,
-    "introduction": "Variables, types and operators teaches one coherent skill and how to apply it. Store values, distinguish types and calculate safely. Work through the explanation, execute the example, then solve the independent exercise.",
+    "minutes": 25,
+    "introduction": "Learn how Python names refer to objects, how common types behave, and how operators combine values. You will distinguish assignment from comparison, avoid accidental string arithmetic, and build a small, testable order calculation.",
     "objectives": [
       {
-        "id": "understand",
-        "text": "Store values, distinguish types and calculate safely."
+        "id": "types",
+        "text": "Distinguish int, float, str, bool and None using type() and practical examples."
       },
       {
-        "id": "apply",
-        "text": "Predict output, execute Python and explain the result."
+        "id": "names",
+        "text": "Explain assignment, reassignment and the difference between = and ==."
+      },
+      {
+        "id": "operators",
+        "text": "Predict arithmetic, comparison and Boolean expressions including precedence."
+      },
+      {
+        "id": "verify",
+        "text": "Implement and test a price calculation with an explicit integer result."
       }
     ],
     "prerequisites": [
@@ -305,92 +313,196 @@ export const pythonChapters: Chapter[] = [
     ],
     "sections": [
       {
-        "id": "concept",
-        "title": "1. Core idea and mental model",
+        "id": "names",
+        "title": "1. Names, values and types",
         "blocks": [
           {
             "type": "paragraph",
-            "text": "Assignment binds a name to a value. int, float, str and bool have different operations. / yields float; // floors; % gives remainder."
+            "text": "A Python variable is a name bound to an object. Assignment with = binds the name; reassignment can bind it to a different value. Python is dynamically typed: objects have types, and a name can refer to objects of different types over time. Prefer stable, descriptive names because changing types unexpectedly makes code harder to maintain."
           },
           {
             "type": "definition",
-            "term": "Variables, types and operators",
-            "text": "Store values, distinguish types and calculate safely."
+            "term": "Type",
+            "text": "The category of a Python object, which determines its available operations. Common built-in types include int, float, str, bool and NoneType."
           },
           {
-            "type": "diagram",
-            "caption": "Learn, verify and apply",
-            "steps": [
-              "Understand the rule",
-              "Run a concrete example",
-              "Test a changed input"
-            ]
+            "type": "code",
+            "example": {
+              "source": "quantity = 3\nprice = 125\nlabel = 'Tickets'\npaid = False\nprint(type(quantity).__name__)\nprint(type(label).__name__)\nprint(type(paid).__name__)",
+              "expectedOutput": "int\nstr\nbool",
+              "explanation": "The integer, string and Boolean values are different objects with different supported operations. type() reveals each object's type."
+            }
+          },
+          {
+            "type": "callout",
+            "tone": "note",
+            "title": "Assignment is not comparison",
+            "text": "quantity = 3 stores a binding. quantity == 3 evaluates to True or False. Use == in comparisons and = when assigning."
           }
         ]
       },
       {
-        "id": "syntax",
-        "title": "2. Syntax and worked example",
+        "id": "arithmetic",
+        "title": "2. Arithmetic and precedence",
         "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Use +, -, *, /, //, %, and ** for arithmetic. / produces true division, // floors the quotient, % computes the remainder and ** raises to a power. Multiplication and division bind more tightly than addition. Parentheses make your intent clear."
+          },
           {
             "type": "syntax",
             "syntax": {
-              "signature": "price = 125\nquantity = 3\nprint(price * quantity)",
-              "explanation": "Assignment binds a name to a value. int, float, str and bool have different operations. / yields float; // floors; % gives remainder."
+              "signature": "total = price * quantity\nis_large = total >= 300",
+              "explanation": "The first statement calculates and stores a value. The second stores the result of a comparison. Comparison operators include ==, !=, <, <=, > and >=."
             }
           },
           {
             "type": "code",
             "example": {
-              "source": "price = 125\nquantity = 3\nprint(price * quantity)",
-              "expectedOutput": "375",
-              "explanation": "Expected console output: 375. Inspect the inputs and follow execution step by step."
+              "source": "units = 7\nprint(units // 2)\nprint(units % 2)\nprint(2 + 3 * 4)\nprint((2 + 3) * 4)",
+              "expectedOutput": "3\n1\n14\n20",
+              "explanation": "Seven units contain three complete pairs and one leftover. Multiplication happens before addition unless parentheses change the grouping."
             }
           },
           {
             "type": "callout",
             "tone": "mistake",
-            "title": "TypeError",
-            "text": "Mixing a string and number without conversion raises TypeError."
+            "title": "String concatenation is not numeric addition",
+            "text": "'12' + '3' produces '123', not 15. Mixing '12' + 3 raises TypeError. Convert carefully with int() or float() only when the input is valid."
           }
         ]
       },
       {
-        "id": "practice",
-        "title": "3. Guided application and verification",
+        "id": "boolean",
+        "title": "3. Comparisons and Boolean logic",
         "blocks": [
           {
             "type": "paragraph",
-            "text": "Try this independently in the Python laboratory. How can you calculate complete pairs and leftovers? Change the input, predict the result, and compare it with actual execution."
+            "text": "Comparison expressions produce bool values. Combine conditions using and, or and not. Python short-circuits and/or expressions: it evaluates the right side only when necessary. Parentheses improve readability when combining conditions."
           },
           {
             "type": "code",
             "example": {
-              "source": "units = 7\nprint(units // 2, units % 2)",
-              "expectedOutput": "3 1",
-              "explanation": "This is one valid worked solution. Explain why it produces 3 1."
+              "source": "price = 125\nquantity = 3\ntotal = price * quantity\neligible = quantity >= 3 and total >= 300\nprint(total)\nprint(eligible)\nprint(not eligible)",
+              "expectedOutput": "375\nTrue\nFalse",
+              "explanation": "Three tickets cost 375. Both comparisons are true, so eligible is True and not eligible is False."
+            }
+          },
+          {
+            "type": "table",
+            "headers": [
+              "Expression",
+              "Result",
+              "Reason"
+            ],
+            "rows": [
+              [
+                "7 / 2",
+                "3.5",
+                "True division"
+              ],
+              [
+                "7 // 2",
+                "3",
+                "Floor division"
+              ],
+              [
+                "7 % 2",
+                "1",
+                "Remainder"
+              ],
+              [
+                "'3' == 3",
+                "False",
+                "String and integer differ"
+              ],
+              [
+                "True and False",
+                "False",
+                "Both operands must be true"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "id": "application",
+        "title": "4. Apply and verify: ticket order",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Create a small order total using integer prices and quantities. For now prices are whole currency units; later you will learn why financial applications usually use integer minor units or decimal.Decimal instead of binary floating-point."
+          },
+          {
+            "type": "code",
+            "example": {
+              "source": "ticket_price = 125\nquantity = 4\ndiscount = 50\ntotal = ticket_price * quantity - discount\nprint('Amount due:', total)",
+              "expectedOutput": "Amount due: 450",
+              "explanation": "Four tickets cost 500 before a fixed discount of 50. The result is 450."
             }
           },
           {
             "type": "case",
             "study": {
-              "context": "A developer needs a small, dependable calculation or transformation.",
-              "problem": "An untested assumption can turn a simple script into an incorrect result.",
-              "solution": "State the expected behavior, run the example and test a boundary case.",
-              "limitations": "This introductory example is deliberately small; production programs also need validation, error handling and tests."
+              "context": "A ticket desk needs a predictable total for each order.",
+              "problem": "Confusing strings with numbers or ignoring the discount produces incorrect totals.",
+              "solution": "Use integer inputs, explicit arithmetic and tests for normal and zero-quantity orders.",
+              "limitations": "Real systems must validate negative values, handle currency precision and apply business-specific discount rules."
+            }
+          },
+          {
+            "type": "callout",
+            "tone": "debug",
+            "title": "Boundary check",
+            "text": "What happens when quantity is zero? Your function should return 0 if no discount is applied. If a fixed discount would make the total negative, clamp the total at zero only if that is the documented business rule."
+          }
+        ]
+      },
+      {
+        "id": "checkpoint",
+        "title": "5. Independent practice",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "In the Python laboratory, implement a function that calculates a ticket order total. Test a normal order, a zero-quantity order and a discount larger than the subtotal. Predict the output before running it."
+          },
+          {
+            "type": "code",
+            "example": {
+              "source": "def order_total(price, quantity, discount):\n    return max(0, price * quantity - discount)\n\nprint(order_total(125, 4, 50))\nprint(order_total(125, 0, 0))",
+              "expectedOutput": "450\n0",
+              "explanation": "max(0, ...) prevents a negative amount due under the example's documented business rule. The function returns numbers for reuse instead of only printing."
             }
           }
         ]
       }
     ],
     "summary": [
-      "Store values, distinguish types and calculate safely.",
-      "Assignment binds a name to a value. int, float, str and bool have different operations. / yields float; // floors; % gives remainder."
+      "Variables are names bound to typed objects; = assigns and == compares.",
+      "Arithmetic operators differ: /, // and % do different jobs.",
+      "Comparisons and Boolean operators express decisions.",
+      "Test ordinary inputs and boundary cases, and document business rules."
     ],
     "glossary": [
       {
-        "term": "values",
-        "definition": "Store values, distinguish types and calculate safely."
+        "term": "Assignment",
+        "definition": "Binding a name to an object using =."
+      },
+      {
+        "term": "Boolean",
+        "definition": "A True or False value used in logical expressions."
+      },
+      {
+        "term": "Operand",
+        "definition": "A value an operator acts on."
+      },
+      {
+        "term": "Floor division",
+        "definition": "Division rounded down toward negative infinity using //."
+      },
+      {
+        "term": "TypeError",
+        "definition": "An exception raised when an operation receives an incompatible type."
       }
     ],
     "references": [
@@ -401,42 +513,58 @@ export const pythonChapters: Chapter[] = [
       }
     ],
     "assessment": {
-      "id": "python-values-check",
-      "version": 1,
-      "title": "Verify understanding",
+      "id": "python-values-check-v2",
+      "version": 2,
+      "title": "Chapter 2: Variables, types and operators",
       "questions": [
         {
-          "id": "output",
+          "id": "division",
           "kind": "single",
-          "prompt": "What is the output of the worked example?",
+          "prompt": "What is the result of 7 // 2?",
           "options": [
-            "375",
-            "SyntaxError",
-            "None"
+            "3.5",
+            "3",
+            "1"
           ],
           "answer": [
-            0
+            1
           ],
-          "hint": "Trace the statements in order.",
-          "explanation": "The program prints 375."
+          "hint": "// performs floor division.",
+          "explanation": "Floor division of 7 by 2 produces 3."
         },
         {
-          "id": "concept",
+          "id": "types",
+          "kind": "multiple",
+          "prompt": "Which expressions evaluate to True?",
+          "options": [
+            "'3' == 3",
+            "3 == 3",
+            "7 % 2 == 1"
+          ],
+          "answer": [
+            1,
+            2
+          ],
+          "hint": "Pay attention to types and the remainder operator.",
+          "explanation": "A string is not equal to an integer; the two other comparisons are true."
+        },
+        {
+          "id": "assign",
           "kind": "short",
-          "prompt": "Which Python keyword displays a value on the console?",
+          "prompt": "Which operator binds a value to a variable name?",
           "accepted": [
-            "print"
+            "="
           ],
-          "hint": "It is a built-in function.",
-          "explanation": "print writes to standard output."
+          "hint": "It is not the comparison operator ==.",
+          "explanation": "A single equals sign assigns a value."
         },
         {
-          "id": "implement",
+          "id": "code",
           "kind": "code",
-          "prompt": "Implement solve() to compute the guided exercise result and return it as text.",
-          "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
-          "tests": "assert callable(solve)\nassert str(solve()) == \"3 1\"",
-          "hint": "Use the guided example and return the computed result."
+          "prompt": "Implement solve(price, quantity, discount) to return the order total as an integer, never below zero.",
+          "starter": "def solve(price, quantity, discount):\n    # Return the amount due\n    pass",
+          "tests": "assert solve(125, 4, 50) == 450\nassert solve(125, 0, 0) == 0\nassert solve(100, 1, 200) == 0\nassert solve(80, 2, 0) == 160",
+          "hint": "Compute price * quantity - discount, then apply max(0, total)."
         }
       ]
     }
