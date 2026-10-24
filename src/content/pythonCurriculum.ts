@@ -5,7 +5,7 @@ export const pythonChapters: Chapter[] = [
     "id": "python-intro",
     "version": 1,
     "title": "Programming and Python foundations",
-    "minutes": 12,
+    "minutes": 15,
     "introduction": "Programming and Python foundations teaches one coherent skill and how to apply it. Understand execution, expressions, errors and the REPL. Work through the explanation, execute the example, then solve the independent exercise.",
     "objectives": [
       {
@@ -146,13 +146,13 @@ export const pythonChapters: Chapter[] = [
           "explanation": "print writes to standard output."
         },
         {
-  "id": "implement",
-  "kind": "code",
-  "prompt": "Implement solve() so it returns the chapter exercise result as text.",
-  "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
-  "tests": "assert callable(solve)\nassert solve() is not None",
-  "hint": "Use the guided example and return the computed result."
-}
+          "id": "implement",
+          "kind": "code",
+          "prompt": "Implement solve() to compute the guided exercise result and return it as text.",
+          "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
+          "tests": "assert callable(solve)\nassert str(solve()) == \"14\"",
+          "hint": "Use the guided example and return the computed result."
+        }
       ]
     }
   },
@@ -160,7 +160,7 @@ export const pythonChapters: Chapter[] = [
     "id": "python-values",
     "version": 1,
     "title": "Variables, types and operators",
-    "minutes": 12,
+    "minutes": 15,
     "introduction": "Variables, types and operators teaches one coherent skill and how to apply it. Store values, distinguish types and calculate safely. Work through the explanation, execute the example, then solve the independent exercise.",
     "objectives": [
       {
@@ -303,13 +303,13 @@ export const pythonChapters: Chapter[] = [
           "explanation": "print writes to standard output."
         },
         {
-  "id": "implement",
-  "kind": "code",
-  "prompt": "Implement solve() so it returns the chapter exercise result as text.",
-  "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
-  "tests": "assert callable(solve)\nassert solve() is not None",
-  "hint": "Use the guided example and return the computed result."
-}
+          "id": "implement",
+          "kind": "code",
+          "prompt": "Implement solve() to compute the guided exercise result and return it as text.",
+          "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
+          "tests": "assert callable(solve)\nassert str(solve()) == \"3 1\"",
+          "hint": "Use the guided example and return the computed result."
+        }
       ]
     }
   },
@@ -317,7 +317,7 @@ export const pythonChapters: Chapter[] = [
     "id": "python-input",
     "version": 1,
     "title": "Input, conversion and formatted output",
-    "minutes": 12,
+    "minutes": 15,
     "introduction": "Input, conversion and formatted output teaches one coherent skill and how to apply it. Convert user input and present meaningful results. Work through the explanation, execute the example, then solve the independent exercise.",
     "objectives": [
       {
@@ -460,13 +460,13 @@ export const pythonChapters: Chapter[] = [
           "explanation": "print writes to standard output."
         },
         {
-  "id": "implement",
-  "kind": "code",
-  "prompt": "Implement solve() so it returns the chapter exercise result as text.",
-  "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
-  "tests": "assert callable(solve)\nassert solve() is not None",
-  "hint": "Use the guided example and return the computed result."
-}
+          "id": "implement",
+          "kind": "code",
+          "prompt": "Implement solve() to compute the guided exercise result and return it as text.",
+          "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
+          "tests": "assert callable(solve)\nassert str(solve()) == \"7.5 km\"",
+          "hint": "Use the guided example and return the computed result."
+        }
       ]
     }
   },
@@ -474,7 +474,7 @@ export const pythonChapters: Chapter[] = [
     "id": "python-control",
     "version": 1,
     "title": "Conditions and decisions",
-    "minutes": 12,
+    "minutes": 15,
     "introduction": "Conditions and decisions teaches one coherent skill and how to apply it. Express branching with booleans, comparisons and clear conditions. Work through the explanation, execute the example, then solve the independent exercise.",
     "objectives": [
       {
@@ -617,13 +617,13 @@ export const pythonChapters: Chapter[] = [
           "explanation": "print writes to standard output."
         },
         {
-  "id": "implement",
-  "kind": "code",
-  "prompt": "Implement solve() so it returns the chapter exercise result as text.",
-  "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
-  "tests": "assert callable(solve)\nassert solve() is not None",
-  "hint": "Use the guided example and return the computed result."
-}
+          "id": "implement",
+          "kind": "code",
+          "prompt": "Implement solve() to compute the guided exercise result and return it as text.",
+          "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
+          "tests": "assert callable(solve)\nassert str(solve()) == \"hot\"",
+          "hint": "Use the guided example and return the computed result."
+        }
       ]
     }
   },
@@ -631,7 +631,7 @@ export const pythonChapters: Chapter[] = [
     "id": "python-loops",
     "version": 1,
     "title": "Loops and iteration",
-    "minutes": 12,
+    "minutes": 15,
     "introduction": "Loops and iteration teaches one coherent skill and how to apply it. Repeat work safely using for, while and range. Work through the explanation, execute the example, then solve the independent exercise.",
     "objectives": [
       {
@@ -774,13 +774,13 @@ export const pythonChapters: Chapter[] = [
           "explanation": "print writes to standard output."
         },
         {
-  "id": "implement",
-  "kind": "code",
-  "prompt": "Implement solve() so it returns the chapter exercise result as text.",
-  "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
-  "tests": "assert callable(solve)\nassert solve() is not None",
-  "hint": "Use the guided example and return the computed result."
-}
+          "id": "implement",
+          "kind": "code",
+          "prompt": "Implement solve() to compute the guided exercise result and return it as text.",
+          "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
+          "tests": "assert callable(solve)\nassert str(solve()) == \"12\"",
+          "hint": "Use the guided example and return the computed result."
+        }
       ]
     }
   },
@@ -788,7 +788,7 @@ export const pythonChapters: Chapter[] = [
     "id": "python-collections",
     "version": 1,
     "title": "Strings and collections",
-    "minutes": 12,
+    "minutes": 15,
     "introduction": "Strings and collections teaches one coherent skill and how to apply it. Choose lists, tuples, sets and dictionaries appropriately. Work through the explanation, execute the example, then solve the independent exercise.",
     "objectives": [
       {
@@ -931,13 +931,13 @@ export const pythonChapters: Chapter[] = [
           "explanation": "print writes to standard output."
         },
         {
-  "id": "implement",
-  "kind": "code",
-  "prompt": "Implement solve() so it returns the chapter exercise result as text.",
-  "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
-  "tests": "assert callable(solve)\nassert solve() is not None",
-  "hint": "Use the guided example and return the computed result."
-}
+          "id": "implement",
+          "kind": "code",
+          "prompt": "Implement solve() to compute the guided exercise result and return it as text.",
+          "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
+          "tests": "assert callable(solve)\nassert str(solve()) == \"2\"",
+          "hint": "Use the guided example and return the computed result."
+        }
       ]
     }
   },
@@ -945,7 +945,7 @@ export const pythonChapters: Chapter[] = [
     "id": "python-modules",
     "version": 1,
     "title": "Modules, files and exceptions",
-    "minutes": 12,
+    "minutes": 15,
     "introduction": "Modules, files and exceptions teaches one coherent skill and how to apply it. Import reusable tools, read files safely and handle expected errors. Work through the explanation, execute the example, then solve the independent exercise.",
     "objectives": [
       {
@@ -1088,13 +1088,13 @@ export const pythonChapters: Chapter[] = [
           "explanation": "print writes to standard output."
         },
         {
-  "id": "implement",
-  "kind": "code",
-  "prompt": "Implement solve() so it returns the chapter exercise result as text.",
-  "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
-  "tests": "assert callable(solve)\nassert solve() is not None",
-  "hint": "Use the guided example and return the computed result."
-}
+          "id": "implement",
+          "kind": "code",
+          "prompt": "Implement solve() to compute the guided exercise result and return it as text.",
+          "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
+          "tests": "assert callable(solve)\nassert str(solve()) == \".csv\"",
+          "hint": "Use the guided example and return the computed result."
+        }
       ]
     }
   },
@@ -1102,7 +1102,7 @@ export const pythonChapters: Chapter[] = [
     "id": "python-classes",
     "version": 1,
     "title": "Classes, objects and data models",
-    "minutes": 12,
+    "minutes": 15,
     "introduction": "Classes, objects and data models teaches one coherent skill and how to apply it. Encapsulate related state and behavior when complexity justifies it. Work through the explanation, execute the example, then solve the independent exercise.",
     "objectives": [
       {
@@ -1245,13 +1245,13 @@ export const pythonChapters: Chapter[] = [
           "explanation": "print writes to standard output."
         },
         {
-  "id": "implement",
-  "kind": "code",
-  "prompt": "Implement solve() so it returns the chapter exercise result as text.",
-  "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
-  "tests": "assert callable(solve)\nassert solve() is not None",
-  "hint": "Use the guided example and return the computed result."
-}
+          "id": "implement",
+          "kind": "code",
+          "prompt": "Implement solve() to compute the guided exercise result and return it as text.",
+          "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
+          "tests": "assert callable(solve)\nassert str(solve()) == \"4\"",
+          "hint": "Use the guided example and return the computed result."
+        }
       ]
     }
   },
@@ -1259,7 +1259,7 @@ export const pythonChapters: Chapter[] = [
     "id": "python-testing",
     "version": 1,
     "title": "Testing, debugging and quality",
-    "minutes": 12,
+    "minutes": 15,
     "introduction": "Testing, debugging and quality teaches one coherent skill and how to apply it. Verify behavior, edge cases and maintainable code. Work through the explanation, execute the example, then solve the independent exercise.",
     "objectives": [
       {
@@ -1402,13 +1402,13 @@ export const pythonChapters: Chapter[] = [
           "explanation": "print writes to standard output."
         },
         {
-  "id": "implement",
-  "kind": "code",
-  "prompt": "Implement solve() so it returns the chapter exercise result as text.",
-  "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
-  "tests": "assert callable(solve)\nassert solve() is not None",
-  "hint": "Use the guided example and return the computed result."
-}
+          "id": "implement",
+          "kind": "code",
+          "prompt": "Implement solve() to compute the guided exercise result and return it as text.",
+          "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
+          "tests": "assert callable(solve)\nassert str(solve()) == \"True\"",
+          "hint": "Use the guided example and return the computed result."
+        }
       ]
     }
   },
@@ -1416,7 +1416,7 @@ export const pythonChapters: Chapter[] = [
     "id": "python-comprehensions",
     "version": 1,
     "title": "Comprehensions, generators and performance",
-    "minutes": 12,
+    "minutes": 15,
     "introduction": "Comprehensions, generators and performance teaches one coherent skill and how to apply it. Transform data concisely and avoid needless memory use. Work through the explanation, execute the example, then solve the independent exercise.",
     "objectives": [
       {
@@ -1559,13 +1559,13 @@ export const pythonChapters: Chapter[] = [
           "explanation": "print writes to standard output."
         },
         {
-  "id": "implement",
-  "kind": "code",
-  "prompt": "Implement solve() so it returns the chapter exercise result as text.",
-  "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
-  "tests": "assert callable(solve)\nassert solve() is not None",
-  "hint": "Use the guided example and return the computed result."
-}
+          "id": "implement",
+          "kind": "code",
+          "prompt": "Implement solve() to compute the guided exercise result and return it as text.",
+          "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
+          "tests": "assert callable(solve)\nassert str(solve()) == \"14\"",
+          "hint": "Use the guided example and return the computed result."
+        }
       ]
     }
   },
@@ -1573,7 +1573,7 @@ export const pythonChapters: Chapter[] = [
     "id": "python-data",
     "version": 1,
     "title": "Data processing and practical projects",
-    "minutes": 12,
+    "minutes": 15,
     "introduction": "Data processing and practical projects teaches one coherent skill and how to apply it. Validate records, aggregate correctly and produce trustworthy outputs. Work through the explanation, execute the example, then solve the independent exercise.",
     "objectives": [
       {
@@ -1716,13 +1716,13 @@ export const pythonChapters: Chapter[] = [
           "explanation": "print writes to standard output."
         },
         {
-  "id": "implement",
-  "kind": "code",
-  "prompt": "Implement solve() so it returns the chapter exercise result as text.",
-  "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
-  "tests": "assert callable(solve)\nassert solve() is not None",
-  "hint": "Use the guided example and return the computed result."
-}
+          "id": "implement",
+          "kind": "code",
+          "prompt": "Implement solve() to compute the guided exercise result and return it as text.",
+          "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
+          "tests": "assert callable(solve)\nassert str(solve()) == \"20.0\"",
+          "hint": "Use the guided example and return the computed result."
+        }
       ]
     }
   }
