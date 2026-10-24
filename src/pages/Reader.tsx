@@ -49,6 +49,7 @@ function BlockView({ block: b }: { block: Block }) {
             <pre>{b.example.expectedOutput}</pre>
           </div>
           <p>{b.example.explanation}</p>
+          <Link className="button" to="/lab">Try this in the Python laboratory <ArrowRight size={15} /></Link>
         </figure>
       );
     case "table":
