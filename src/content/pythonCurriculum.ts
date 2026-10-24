@@ -279,7 +279,6 @@ export const pythonChapters: Chapter[] = [
           "prompt": "Implement solve() to return the total price of four tickets costing 75 each. Return the integer result, not printed text.",
           "starter": "def solve():\n    # Return the ticket total\n    pass",
           "tests": "assert callable(solve)\nassert solve() == 300\nassert isinstance(solve(), int)",
-          "hint": "Multiply the number of tickets by the price.",
           "hint": "Multiply the number of tickets by the price."
         }
       ]
