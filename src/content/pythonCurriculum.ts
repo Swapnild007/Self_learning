@@ -3,10 +3,10 @@ import type { Chapter } from "./schema";
 export const pythonChapters: Chapter[] = [
   {
     "id": "python-intro",
-    "version": 2,
+    "version": 3,
     "title": "Programming and Python foundations",
-    "minutes": 25,
-    "introduction": "Start from zero. Learn what a program is, how Python evaluates instructions, how to run code in this browser, and how to distinguish expressions, output, values and errors. You will write, predict and debug your first small programs without installing anything.",
+    "minutes": 45,
+    "introduction": "Your first practical programming lesson. Start with no assumed coding knowledge: learn what Python executes, run and change real programs, predict output, investigate errors, and complete a graded challenge. Every example includes its expected result so you can check your reasoning.",
     "objectives": [
       {
         "id": "execute",
@@ -53,6 +53,12 @@ export const pythonChapters: Chapter[] = [
           {
             "type": "paragraph",
             "text": "In Self_learning, the Python laboratory executes code inside your browser. You can learn the language without a local installation. Professional development later uses a local Python interpreter, an editor, a virtual environment and automated tests."
+          },
+          {
+            "type": "callout",
+            "tone": "note",
+            "title": "Your first five-minute mission",
+            "text": "Open the coding laboratory from this chapter, replace its existing code with print('I am learning Python'), press Run Python and confirm the console shows I am learning Python. Change the sentence and run again. This is your first edit-run-observe cycle."
           }
         ]
       },
@@ -80,6 +86,24 @@ export const pythonChapters: Chapter[] = [
             "tone": "mistake",
             "title": "Quotes are not optional",
             "text": "print(Hello) tries to find a variable named Hello and raises NameError if it does not exist. print('Hello') passes the literal text Hello."
+          },
+          {
+            "type": "paragraph",
+            "text": "Read code from top to bottom. The parentheses in print(...) indicate a function call. The text inside quotes is a string literal. Python treats uppercase and lowercase letters as different: Print is not the same name as print. Whitespace inside a string is preserved."
+          },
+          {
+            "type": "code",
+            "example": {
+              "source": "print('A', 'B', sep='-')\nprint('Loading', end='...')\nprint('done')\nprint('Line one\\nLine two')",
+              "expectedOutput": "A-B\nLoading...done\nLine one\nLine two",
+              "explanation": "sep changes the separator between arguments. end changes the text appended after the call. The newline escape sequence \\n starts another output line."
+            }
+          },
+          {
+            "type": "callout",
+            "tone": "note",
+            "title": "Practice: predict, then run",
+            "text": "Before running, predict the output of print('3' + '4') and print(3 + 4). The first joins strings into 34; the second adds numbers to produce 7. Explain why quotes change the meaning."
           }
         ]
       },
@@ -133,6 +157,24 @@ export const pythonChapters: Chapter[] = [
                 "Remainder"
               ]
             ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Python distinguishes integers such as 3, floating-point numbers such as 3.5, strings such as '3', and Boolean values True and False. You do not need to memorize all types yet. The important first skill is predicting whether an expression is arithmetic or text."
+          },
+          {
+            "type": "code",
+            "example": {
+              "source": "print(type(3).__name__)\nprint(type('3').__name__)\nprint('3' + '4')\nprint(3 + 4)\nprint(2 ** 3)",
+              "expectedOutput": "int\nstr\n34\n7\n8",
+              "explanation": "type() reveals the type. Quoted numbers are strings, + concatenates two strings, and ** raises a number to a power."
+            }
+          },
+          {
+            "type": "callout",
+            "tone": "mistake",
+            "title": "Why indentation matters",
+            "text": "Python uses indentation to group instructions inside constructs such as functions and conditions. An unexpected indent can raise IndentationError. In the first lesson, write simple print statements at the left margin. Later chapters teach structured blocks."
           }
         ]
       },
@@ -158,6 +200,24 @@ export const pythonChapters: Chapter[] = [
               "solution": "Compute the expression, predict the value, run it and compare the result to the expected output.",
               "limitations": "The example uses fixed values. Later chapters introduce variables, user input, money representation and validation."
             }
+          },
+          {
+            "type": "code",
+            "example": {
+              "source": "print('Hello, learner!')\nprint(10 / 2)",
+              "expectedOutput": "Hello, learner!\n5.0",
+              "explanation": "This is the corrected, working version of a two-line program. The division result is a float."
+            }
+          },
+          {
+            "type": "callout",
+            "tone": "debug",
+            "title": "Three deliberate debugging experiments",
+            "text": "Experiment 1: run print('Hello) and inspect SyntaxError for the missing quote; fix it. Experiment 2: run print(message) and inspect NameError; replace message with 'message' or define it. Experiment 3: run print(10 / 0) and inspect ZeroDivisionError; change the denominator to 2. Read the exception type and failing line before editing."
+          },
+          {
+            "type": "paragraph",
+            "text": "A logic error is different: the program runs but gives the wrong answer. For example, print(4 + 5 * 2) outputs 14, while print((4 + 5) * 2) outputs 18. Neither raises an exception. Compare results with the requirement, not just with the absence of a traceback."
           }
         ]
       },
@@ -165,6 +225,12 @@ export const pythonChapters: Chapter[] = [
         "id": "practice",
         "title": "5. Independent practice and chapter checkpoint",
         "blocks": [
+          {
+            "type": "callout",
+            "tone": "note",
+            "title": "Independent mini-project: event ticket receipt",
+            "text": "Write a short program that prints the title 'Ticket receipt', the number of tickets, the price per ticket, and the calculated total. First use 4 tickets at 75 each, then modify the program to use 5 tickets. Predict both totals. Do not copy the solution until you have attempted it."
+          },
           {
             "type": "paragraph",
             "text": "In the coding laboratory, write a program that prints a label and the total for four tickets costing 75 each. Predict the output first. Then change the number of tickets to five. Explain what changed and why. Do not copy the worked solution until you have tried."
@@ -182,6 +248,18 @@ export const pythonChapters: Chapter[] = [
             "tone": "note",
             "title": "Mastery checklist",
             "text": "Before continuing, you should be able to distinguish strings from numbers, predict expression results, run code, explain console output and interpret the final line of a traceback. Complete the assessment to check your understanding."
+          },
+          {
+            "type": "code",
+            "example": {
+              "source": "print('Ticket receipt')\nprint('Tickets:', 4)\nprint('Price each:', 75)\nprint('Total:', 4 * 75)",
+              "expectedOutput": "Ticket receipt\nTickets: 4\nPrice each: 75\nTotal: 300",
+              "explanation": "This reference solution uses print calls and arithmetic. A learner should first write an independent version, then compare output line by line."
+            }
+          },
+          {
+            "type": "paragraph",
+            "text": "Checkpoint before the assessment: explain the difference between print('4') and print(4), predict 2 + 3 * 4, fix a missing quote, and explain why dividing by zero fails. The assessment checks understanding, not whether you clicked 'Mark section as read'."
           }
         ]
       }
@@ -190,7 +268,8 @@ export const pythonChapters: Chapter[] = [
       "Python executes source instructions using an interpreter; statements perform actions and expressions evaluate to values.",
       "print() displays values but does not store them.",
       "Parentheses make arithmetic precedence explicit; /, // and % have different meanings.",
-      "Syntax, runtime and logic errors require different debugging approaches."
+      "Syntax, runtime and logic errors require different debugging approaches.",
+      "The edit-run-observe-debug cycle is the core habit: predict, execute, compare and correct."
     ],
     "glossary": [
       {
@@ -212,6 +291,18 @@ export const pythonChapters: Chapter[] = [
       {
         "term": "Traceback",
         "definition": "A report showing where an exception occurred."
+      },
+      {
+        "term": "String literal",
+        "definition": "Text written between quotation marks, such as 'Hello'."
+      },
+      {
+        "term": "Logic error",
+        "definition": "Code that runs without an exception but produces an incorrect result."
+      },
+      {
+        "term": "Function call",
+        "definition": "An expression that runs a function, usually using parentheses and arguments."
       }
     ],
     "references": [
@@ -227,8 +318,8 @@ export const pythonChapters: Chapter[] = [
       }
     ],
     "assessment": {
-      "id": "python-intro-check-v2",
-      "version": 2,
+      "id": "python-intro-check-v3",
+      "version": 3,
       "title": "Chapter 1: Programming fundamentals checkpoint",
       "questions": [
         {
@@ -276,10 +367,10 @@ export const pythonChapters: Chapter[] = [
         {
           "id": "code",
           "kind": "code",
-          "prompt": "Implement solve() to return the total price of four tickets costing 75 each. Return the integer result, not printed text.",
-          "starter": "def solve():\n    # Return the ticket total\n    pass",
-          "tests": "assert callable(solve)\nassert solve() == 300\nassert isinstance(solve(), int)",
-          "hint": "Multiply the number of tickets by the price."
+          "prompt": "Implement ticket_total(count, price) returning the numeric total. Your function must work for different ticket counts and prices. Do not print the answer.",
+          "starter": "def ticket_total(count, price):\n    # Return count multiplied by price\n    pass",
+          "tests": "assert ticket_total(4, 75) == 300\nassert ticket_total(5, 75) == 375\nassert ticket_total(0, 75) == 0\nassert ticket_total(3, 120) == 360\nassert isinstance(ticket_total(2, 10), int)",
+          "hint": "Multiply the two parameters and return the result. Do not hardcode 300."
         }
       ]
     }
