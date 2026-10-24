@@ -14,10 +14,11 @@ export default function Overview() {
         <Link to="/catalog">Browse courses</Link>
       </div>
     );
-  const ch = course.modules[0]?.chapters[0];
-  const progress = ch
-    ? Math.round(((data.read[ch.id]?.length || 0) / ch.sections.length) * 100)
-    : 0;
+  const chapters = course.modules.flatMap((m) => m.chapters);
+  const ch = chapters[0];
+  const readSections = chapters.reduce((sum, c) => sum + (data.read[c.id]?.length || 0), 0);
+  const totalSections = chapters.reduce((sum, c) => sum + c.sections.length, 0);
+  const progress = totalSections ? Math.round((readSections / totalSections) * 100) : 0;
   return (
     <div className="page">
       <Link to="/catalog" className="back-link">
@@ -56,8 +57,7 @@ export default function Overview() {
           {ch ? (
             <>
               <p>
-                <Clock3 size={17} /> {course.minutes} minutes · 1 substantial
-                sample chapter
+                <Clock3 size={17} /> {course.minutes} estimated minutes · {chapters.length} chapters
               </p>
               <Progress value={progress} label="Course reading progress" />
               <p>{progress}% read · Assessment required for mastery</p>
@@ -71,7 +71,7 @@ export default function Overview() {
                   }))
                 }
               >
-                {progress ? "Resume learning" : "Begin sample chapter"}{" "}
+                {progress ? "Resume learning" : "Start learning"}{" "}
                 <ArrowRight size={17} />
               </Link>
             </>
@@ -93,15 +93,13 @@ export default function Overview() {
               ))}
             </ul>
           ) : (
-            <p>Prerequisites will be published with the curriculum.</p>
+            <p>No prior programming experience required.</p>
           )}
         </section>
         <section className="panel">
           <h2>Editorial approach</h2>
           <p>
-            Clear explanations, explicit assumptions and worked examples. The
-            sample is original educational content; it is not a certification or
-            accredited qualification.
+            Clear explanations, explicit assumptions and worked examples. This course uses original educational content, practical examples and assessments. It is not an accredited certification.
           </p>
         </section>
       </div>
@@ -114,9 +112,9 @@ export default function Overview() {
           course.modules.map((m) => (
             <div key={m.id}>
               <h3>{m.title}</h3>
-              {m.chapters.map((c) => (
+              {m.chapters.map((c, index) => (
                 <Link className="syllabus-row" to={`/read/${c.id}`} key={c.id}>
-                  <span>01</span>
+                  <span>{String(chapters.findIndex((x) => x.id === c.id) + 1).padStart(2, "0")}</span>
                   <strong>{c.title}</strong>
                   <span>{c.minutes} min</span>
                   <ArrowRight size={18} />
