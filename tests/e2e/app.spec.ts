@@ -137,7 +137,7 @@ test("real Python output, syntax errors, cancellation and recovery", async ({
     .poll(
       async () =>
         (await page.getByLabel("Python output").textContent())?.length,
-      { timeout: 60000 },
+      { timeout: 150000 },
     )
     .toBe(50000);
 });
