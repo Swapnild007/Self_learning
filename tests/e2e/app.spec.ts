@@ -72,13 +72,13 @@ test("search, filters and navigation", async ({ page }) => {
   await expect(page.locator(".course-card")).toHaveCount(1);
   await page.getByRole("textbox", { name: "Search catalog" }).fill("");
   await page.getByRole("button", { name: "Analytics", exact: true }).click();
-  await expect(page.locator(".course-card")).toHaveCount(2);
+  await expect(page.locator(".course-card")).toHaveCount(4);
   await page.getByRole("combobox").selectOption("Intermediate");
   await expect(
     page.getByRole("heading", { name: "No courses match yet." }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).click();
-  await expect(page.locator(".course-card")).toHaveCount(5);
+  await expect(page.locator(".course-card")).toHaveCount(35);
   await page.locator(".course-card").first().click();
   await page.getByRole("link", { name: "Begin sample chapter" }).click();
   await expect(page.locator("article h1")).toContainText("Functions");
