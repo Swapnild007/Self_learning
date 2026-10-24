@@ -1,3 +1,4 @@
+import { pythonChapters } from "./pythonCurriculum";
 import type { Chapter, Course } from "./schema";
 export const starter = `def average_wait(total_seconds, calls):\n    if calls == 0:\n        return 0\n    return total_seconds / calls\n\nprint(average_wait(150, 5))`;
 export const chapter: Chapter = {
@@ -275,16 +276,16 @@ export const courses: Course[] = [
     outcomes: chapter.objectives.map((x) => x.text),
     prerequisites: chapter.prerequisites,
     skills: ["Python", "Functions", "Testing", "Data reasoning"],
-    minutes: 35,
+    minutes: pythonChapters.reduce((total, c) => total + c.minutes, chapter.minutes),
     status: "Sample chapter",
     color: "blue",
     symbol: "Py",
-    editor: "Self Learning editorial • Original sample, v1",
+    editor: "Self Learning editorial • Progressive curriculum, v2",
     modules: [
       {
         id: "building-blocks",
         title: "Reusable building blocks",
-        chapters: [chapter],
+        chapters: [...pythonChapters.slice(0, 6), chapter, ...pythonChapters.slice(6)],
       },
     ],
     references: chapter.references,
