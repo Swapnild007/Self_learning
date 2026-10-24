@@ -280,7 +280,7 @@ export const pythonChapters: Chapter[] = [
           "starter": "def solve():\n    # Return the ticket total\n    pass",
           "tests": "assert callable(solve)\nassert solve() == 300\nassert isinstance(solve(), int)",
           "hint": "Multiply the number of tickets by the price.",
-          "explanation": "Four tickets at 75 each cost 300."
+          "hint": "Multiply the number of tickets by the price."
         }
       ]
     }
