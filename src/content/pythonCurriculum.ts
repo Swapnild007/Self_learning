@@ -3,155 +3,284 @@ import type { Chapter } from "./schema";
 export const pythonChapters: Chapter[] = [
   {
     "id": "python-intro",
-    "version": 1,
+    "version": 2,
     "title": "Programming and Python foundations",
-    "minutes": 15,
-    "introduction": "Programming and Python foundations teaches one coherent skill and how to apply it. Understand execution, expressions, errors and the REPL. Work through the explanation, execute the example, then solve the independent exercise.",
+    "minutes": 25,
+    "introduction": "Start from zero. Learn what a program is, how Python evaluates instructions, how to run code in this browser, and how to distinguish expressions, output, values and errors. You will write, predict and debug your first small programs without installing anything.",
     "objectives": [
       {
-        "id": "understand",
-        "text": "Understand execution, expressions, errors and the REPL."
+        "id": "execute",
+        "text": "Explain source code, interpreter, statement, expression and standard output."
       },
       {
-        "id": "apply",
-        "text": "Predict output, execute Python and explain the result."
+        "id": "predict",
+        "text": "Predict arithmetic precedence and string output before running code."
+      },
+      {
+        "id": "debug",
+        "text": "Recognize a syntax error, a runtime error and an incorrect result."
+      },
+      {
+        "id": "verify",
+        "text": "Write and test a short calculation with a meaningful output label."
       }
     ],
     "prerequisites": [],
     "sections": [
       {
-        "id": "concept",
-        "title": "1. Core idea and mental model",
+        "id": "how-programs-run",
+        "title": "1. What programming actually means",
         "blocks": [
           {
             "type": "paragraph",
-            "text": "A program is a sequence of instructions. Python executes statements in order; print writes a representation to standard output."
-          },
-          {
-            "type": "definition",
-            "term": "Programming and Python foundations",
-            "text": "Understand execution, expressions, errors and the REPL."
+            "text": "A program is a set of precise instructions that a computer executes. Python is a programming language; its interpreter reads and runs your source code. Source code is text written by a person. An expression evaluates to a value, such as 2 + 3 producing 5. A statement performs an action, such as assigning a name or calling print()."
           },
           {
             "type": "diagram",
-            "caption": "Learn, verify and apply",
+            "caption": "From idea to visible result",
             "steps": [
-              "Understand the rule",
-              "Run a concrete example",
-              "Test a changed input"
+              "Write Python source code",
+              "Interpreter evaluates statements in order",
+              "Values are calculated and functions run",
+              "print() writes text to the console"
             ]
+          },
+          {
+            "type": "definition",
+            "term": "Standard output",
+            "text": "The normal stream where print() sends text. Printing a value does not save it for later calculations."
+          },
+          {
+            "type": "paragraph",
+            "text": "In Self_learning, the Python laboratory executes code inside your browser. You can learn the language without a local installation. Professional development later uses a local Python interpreter, an editor, a virtual environment and automated tests."
           }
         ]
       },
       {
-        "id": "syntax",
-        "title": "2. Syntax and worked example",
+        "id": "first-program",
+        "title": "2. Run your first program",
         "blocks": [
           {
             "type": "syntax",
             "syntax": {
-              "signature": "print('Hello, Python!')",
-              "explanation": "A program is a sequence of instructions. Python executes statements in order; print writes a representation to standard output."
+              "signature": "print(value, ..., sep=' ', end='\\n')",
+              "explanation": "print() displays one or more values. By default it separates values with spaces and ends with a newline. Text literals use quotes; numbers do not."
             }
           },
           {
             "type": "code",
             "example": {
-              "source": "print('Hello, Python!')",
-              "expectedOutput": "Hello, Python!",
-              "explanation": "Expected console output: Hello, Python!. Inspect the inputs and follow execution step by step."
+              "source": "print('Hello, Python!')\nprint('Items:', 3)",
+              "expectedOutput": "Hello, Python!\nItems: 3",
+              "explanation": "The first call prints a string. The second prints a label and an integer separated by a space. The two calls appear on separate lines."
             }
           },
           {
             "type": "callout",
             "tone": "mistake",
-            "title": "SyntaxError",
-            "text": "A syntax error means Python cannot parse the instruction."
+            "title": "Quotes are not optional",
+            "text": "print(Hello) tries to find a variable named Hello and raises NameError if it does not exist. print('Hello') passes the literal text Hello."
+          }
+        ]
+      },
+      {
+        "id": "expressions",
+        "title": "3. Values, expressions and order of operations",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "Python follows mathematical precedence: multiplication and division happen before addition and subtraction. Parentheses make the intended grouping explicit. The / operator produces a floating-point result; // performs floor division; % gives a remainder."
+          },
+          {
+            "type": "code",
+            "example": {
+              "source": "print(2 + 3 * 4)\nprint((2 + 3) * 4)\nprint(7 / 2)\nprint(7 // 2)\nprint(7 % 2)",
+              "expectedOutput": "14\n20\n3.5\n3\n1",
+              "explanation": "Without parentheses, 3 * 4 is evaluated first. Parentheses change the order. Dividing 7 by 2 gives 3.5; floor division gives 3; the remainder is 1."
+            }
+          },
+          {
+            "type": "table",
+            "headers": [
+              "Expression",
+              "Result",
+              "Why"
+            ],
+            "rows": [
+              [
+                "2 + 3 * 4",
+                "14",
+                "Multiplication before addition"
+              ],
+              [
+                "(2 + 3) * 4",
+                "20",
+                "Parentheses first"
+              ],
+              [
+                "7 / 2",
+                "3.5",
+                "True division"
+              ],
+              [
+                "7 // 2",
+                "3",
+                "Floor division"
+              ],
+              [
+                "7 % 2",
+                "1",
+                "Remainder"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "id": "debugging",
+        "title": "4. Read errors instead of guessing",
+        "blocks": [
+          {
+            "type": "paragraph",
+            "text": "A SyntaxError means the interpreter cannot parse the source. A NameError means a referenced name has not been defined. A ZeroDivisionError occurs when dividing by zero. An incorrect but valid result is a logic error and may not produce any traceback. Read the last line of the traceback first, then inspect the failing line."
+          },
+          {
+            "type": "callout",
+            "tone": "debug",
+            "title": "Try and diagnose",
+            "text": "Run print(10 / 0) and read the ZeroDivisionError. Then change the divisor to 2. Next, try print('Total:', 2 + 3 * 4) and compare it with print('Total:', (2 + 3) * 4). Errors and surprising outputs are evidence, not a reason to stop."
+          },
+          {
+            "type": "case",
+            "study": {
+              "context": "A small order calculator needs to show the total cost of three items priced at 125 each.",
+              "problem": "Printing a label without calculating the expression would give an incomplete report; changing arithmetic precedence can also produce the wrong total.",
+              "solution": "Compute the expression, predict the value, run it and compare the result to the expected output.",
+              "limitations": "The example uses fixed values. Later chapters introduce variables, user input, money representation and validation."
+            }
           }
         ]
       },
       {
         "id": "practice",
-        "title": "3. Guided application and verification",
+        "title": "5. Independent practice and chapter checkpoint",
         "blocks": [
           {
             "type": "paragraph",
-            "text": "Try this independently in the Python laboratory. Why does multiplication happen before addition? Change the input, predict the result, and compare it with actual execution."
+            "text": "In the coding laboratory, write a program that prints a label and the total for four tickets costing 75 each. Predict the output first. Then change the number of tickets to five. Explain what changed and why. Do not copy the worked solution until you have tried."
           },
           {
             "type": "code",
             "example": {
-              "source": "print(2 + 3 * 4)",
-              "expectedOutput": "14",
-              "explanation": "This is one valid worked solution. Explain why it produces 14."
+              "source": "print('Ticket total:', 4 * 75)",
+              "expectedOutput": "Ticket total: 300",
+              "explanation": "Four tickets multiplied by 75 each produce 300. The label explains the number. Change 4 to 5 and the result becomes 375."
             }
           },
           {
-            "type": "case",
-            "study": {
-              "context": "A developer needs a small, dependable calculation or transformation.",
-              "problem": "An untested assumption can turn a simple script into an incorrect result.",
-              "solution": "State the expected behavior, run the example and test a boundary case.",
-              "limitations": "This introductory example is deliberately small; production programs also need validation, error handling and tests."
-            }
+            "type": "callout",
+            "tone": "note",
+            "title": "Mastery checklist",
+            "text": "Before continuing, you should be able to distinguish strings from numbers, predict expression results, run code, explain console output and interpret the final line of a traceback. Complete the assessment to check your understanding."
           }
         ]
       }
     ],
     "summary": [
-      "Understand execution, expressions, errors and the REPL.",
-      "A program is a sequence of instructions. Python executes statements in order; print writes a representation to standard output."
+      "Python executes source instructions using an interpreter; statements perform actions and expressions evaluate to values.",
+      "print() displays values but does not store them.",
+      "Parentheses make arithmetic precedence explicit; /, // and % have different meanings.",
+      "Syntax, runtime and logic errors require different debugging approaches."
     ],
     "glossary": [
       {
-        "term": "intro",
-        "definition": "Understand execution, expressions, errors and the REPL."
+        "term": "Interpreter",
+        "definition": "Software that executes Python source code."
+      },
+      {
+        "term": "Expression",
+        "definition": "Code that evaluates to a value."
+      },
+      {
+        "term": "Statement",
+        "definition": "An instruction that performs an action."
+      },
+      {
+        "term": "Standard output",
+        "definition": "The stream where print() writes text."
+      },
+      {
+        "term": "Traceback",
+        "definition": "A report showing where an exception occurred."
       }
     ],
     "references": [
       {
         "id": "python-tutorial",
-        "title": "Official Python tutorial",
+        "title": "Python official tutorial",
         "url": "https://docs.python.org/3/tutorial/"
+      },
+      {
+        "id": "python-builtins",
+        "title": "Python built-in functions: print",
+        "url": "https://docs.python.org/3/library/functions.html#print"
       }
     ],
     "assessment": {
-      "id": "python-intro-check",
-      "version": 1,
-      "title": "Verify understanding",
+      "id": "python-intro-check-v2",
+      "version": 2,
+      "title": "Chapter 1: Programming fundamentals checkpoint",
       "questions": [
         {
-          "id": "output",
+          "id": "precedence",
           "kind": "single",
-          "prompt": "What is the output of the worked example?",
+          "prompt": "What does print(2 + 3 * 4) display?",
           "options": [
-            "Hello, Python!",
-            "SyntaxError",
-            "None"
+            "20",
+            "14",
+            "24"
           ],
           "answer": [
-            0
+            1
           ],
-          "hint": "Trace the statements in order.",
-          "explanation": "The program prints Hello, Python!."
+          "hint": "Multiply before adding.",
+          "explanation": "3 * 4 = 12, then 2 + 12 = 14."
         },
         {
-          "id": "concept",
+          "id": "division",
+          "kind": "multiple",
+          "prompt": "Which expressions evaluate to the integer 3?",
+          "options": [
+            "7 // 2",
+            "7 / 2",
+            "7 % 4"
+          ],
+          "answer": [
+            0,
+            2
+          ],
+          "hint": "Compare true division, floor division and remainder.",
+          "explanation": "7 // 2 is 3 and 7 % 4 is 3; 7 / 2 is 3.5."
+        },
+        {
+          "id": "keyword",
           "kind": "short",
-          "prompt": "Which Python keyword displays a value on the console?",
+          "prompt": "Which built-in function writes values to standard output?",
           "accepted": [
-            "print"
+            "print",
+            "print()"
           ],
-          "hint": "It is a built-in function.",
-          "explanation": "print writes to standard output."
+          "hint": "It is used in the first example.",
+          "explanation": "print() writes values to standard output."
         },
         {
-          "id": "implement",
+          "id": "code",
           "kind": "code",
-          "prompt": "Implement solve() to compute the guided exercise result and return it as text.",
-          "starter": "def solve():\n    # Calculate the chapter exercise result\n    pass",
-          "tests": "assert callable(solve)\nassert str(solve()) == \"14\"",
-          "hint": "Use the guided example and return the computed result."
+          "prompt": "Implement solve() to return the total price of four tickets costing 75 each. Return the integer result, not printed text.",
+          "starter": "def solve():\n    # Return the ticket total\n    pass",
+          "tests": "assert callable(solve)\nassert solve() == 300\nassert isinstance(solve(), int)",
+          "hint": "Multiply the number of tickets by the price.",
+          "explanation": "Four tickets at 75 each cost 300."
         }
       ]
     }
