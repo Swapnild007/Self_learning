@@ -1,0 +1,49 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+[WebServer] (node:192) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+[WebServer] npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+[WebServer] (node:205) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+
+Running 20 tests using 1 worker
+
+(node:239) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:239) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/20] [desktop] › tests/e2e/app.spec.ts:11:1 › all screens render accessibly without overflow
+[2/20] [desktop] › tests/e2e/app.spec.ts:32:1 › search, filters and navigation
+[3/20] [desktop] › tests/e2e/app.spec.ts:65:1 › notes bookmarks reading progress and settings persist
+[4/20] [desktop] › tests/e2e/app.spec.ts:113:1 › real Python output, syntax errors, cancellation and recovery
+[5/20] [desktop] › tests/e2e/app.spec.ts:156:1 › assessment evaluates behavior and persists score
+[6/20] [desktop] › tests/e2e/app.spec.ts:197:1 › dialog keyboard, export, import and reset guard
+[7/20] [desktop] › tests/e2e/app.spec.ts:230:1 › dark screens remain accessible and reduced motion is honored
+[8/20] [desktop] › tests/e2e/app.spec.ts:257:1 › validated import restores data and confirmed reset removes it
+[9/20] [desktop] › tests/e2e/app.spec.ts:302:1 › syllabus control supports keyboard dismissal on mobile and desktop collapse
+[10/20] [desktop] › tests/e2e/app.spec.ts:329:1 › skip navigation preserves the current route
+(node:692) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:692) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[11/20] [mobile] › tests/e2e/app.spec.ts:11:1 › all screens render accessibly without overflow
+[12/20] [mobile] › tests/e2e/app.spec.ts:32:1 › search, filters and navigation
+[13/20] [mobile] › tests/e2e/app.spec.ts:65:1 › notes bookmarks reading progress and settings persist
+[14/20] [mobile] › tests/e2e/app.spec.ts:113:1 › real Python output, syntax errors, cancellation and recovery
+[15/20] [mobile] › tests/e2e/app.spec.ts:156:1 › assessment evaluates behavior and persists score
+[16/20] [mobile] › tests/e2e/app.spec.ts:197:1 › dialog keyboard, export, import and reset guard
+[17/20] [mobile] › tests/e2e/app.spec.ts:230:1 › dark screens remain accessible and reduced motion is honored
+[18/20] [mobile] › tests/e2e/app.spec.ts:257:1 › validated import restores data and confirmed reset removes it
+[19/20] [mobile] › tests/e2e/app.spec.ts:302:1 › syllabus control supports keyboard dismissal on mobile and desktop collapse
+[20/20] [mobile] › tests/e2e/app.spec.ts:329:1 › skip navigation preserves the current route
+  20 passed (1.3m)

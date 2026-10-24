@@ -1,6 +1,6 @@
 node_modules/
 dist/
-test-results/
-playwright-report/
-public/python/
+/test-results/
+/playwright-report/
 *.log
+public/python/
