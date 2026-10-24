@@ -37,12 +37,12 @@ export const pythonSyllabus = [
     "chapters": [
       {
         "number": 6,
-        "title": "Strings and text processing",
+        "title": "Strings and collections",
         "status": "planned"
       },
       {
         "number": 7,
-        "title": "Lists, tuples, sets and dictionaries",
+        "title": "Collections in depth and data structures",
         "status": "planned"
       },
       {
@@ -52,17 +52,17 @@ export const pythonSyllabus = [
       },
       {
         "number": 9,
-        "title": "Modules and packages",
+        "title": "Modules, files and exceptions",
         "status": "planned"
       },
       {
         "number": 10,
-        "title": "Files, paths and data formats",
+        "title": "Data processing and practical projects",
         "status": "planned"
       },
       {
         "number": 11,
-        "title": "Exceptions and defensive programming",
+        "title": "Error handling patterns and defensive programming",
         "status": "planned"
       }
     ]
@@ -78,7 +78,7 @@ export const pythonSyllabus = [
       },
       {
         "number": 13,
-        "title": "Comprehensions and expressive iteration",
+        "title": "Comprehensions, generators and performance",
         "status": "planned"
       },
       {
