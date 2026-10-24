@@ -1,3 +1,4 @@
+import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useState, type ReactNode } from "react";
 import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -129,9 +130,11 @@ export default function Shell({ children }: { children: ReactNode }) {
                 This is a private, local-first learner profile. No sign-in or
                 cloud synchronization is configured.
               </p>
-              <Link className="button primary" to="/settings">
-                Open settings
-              </Link>
+              <Dialog.Close asChild>
+                <Link className="button primary" to="/settings">
+                  Open settings
+                </Link>
+              </Dialog.Close>
             </Modal>
           </header>
           {storageError && (

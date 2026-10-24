@@ -314,3 +314,17 @@ test("skip navigation preserves the current route", async ({ page }) => {
   await expect(page.locator("#main")).toBeFocused();
   await expect(page).toHaveURL(/#\/catalog$/);
 });
+
+test("account settings navigation closes the account dialog", async ({
+  page,
+}) => {
+  await page.goto("/#/");
+  await page.getByRole("button", { name: "Open account menu" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.getByRole("link", { name: "Open settings", exact: true }).click();
+  await expect(page).toHaveURL(/#\/settings$/);
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "Your space. Your pace." }),
+  ).toBeVisible();
+});
