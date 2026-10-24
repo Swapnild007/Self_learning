@@ -80,7 +80,7 @@ test("search, filters and navigation", async ({ page }) => {
   await page.getByRole("button", { name: "Clear filters" }).click();
   await expect(page.locator(".course-card")).toHaveCount(35);
   await page.locator(".course-card").first().click();
-  await page.getByRole("link", { name: "Begin sample chapter" }).click();
+  await page.getByRole("link", { name: "Start learning" }).click();
   await expect(page.locator("article h1")).toContainText("Programming and Python foundations");
 });
 test("notes bookmarks reading progress and settings persist", async ({
@@ -278,7 +278,7 @@ test("validated import restores data and confirmed reset removes it", async ({
   await page.keyboard.press("Escape");
   await page.goto("/#/learning");
   await expect(
-    page.getByRole("textbox", { name: "Saved chapter notes" }),
+    page.getByRole("textbox", { name: "Saved chapter notes" }).first(),
   ).toHaveValue("");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
