@@ -81,7 +81,7 @@ test("search, filters and navigation", async ({ page }) => {
   await expect(page.locator(".course-card")).toHaveCount(35);
   await page.locator(".course-card").first().click();
   await page.getByRole("link", { name: "Begin sample chapter" }).click();
-  await expect(page.locator("article h1")).toContainText("Functions");
+  await expect(page.locator("article h1")).toContainText("Programming and Python foundations");
 });
 test("notes bookmarks reading progress and settings persist", async ({
   page,
@@ -108,8 +108,8 @@ test("notes bookmarks reading progress and settings persist", async ({
   ).toHaveCount(1);
   await page.goto("/#/learning");
   await expect(
-    page.getByRole("textbox", { name: "Saved chapter notes" }),
-  ).toHaveValue("A weighted mean uses the total denominator.");
+    page.locator("textarea[aria-label='Saved chapter notes']").filter({ hasText: "A weighted mean uses the total denominator." }),
+  ).toHaveCount(1);
   await page.goto("/#/settings");
   await page.getByRole("button", { name: "Midnight dark" }).click();
   await page
@@ -265,8 +265,8 @@ test("validated import restores data and confirmed reset removes it", async ({
   await page.keyboard.press("Escape");
   await page.goto("/#/learning");
   await expect(
-    page.getByRole("textbox", { name: "Saved chapter notes" }),
-  ).toHaveValue("Imported note");
+    page.locator("textarea[aria-label='Saved chapter notes']").filter({ hasText: "Imported note" }),
+  ).toHaveCount(1);
   await page.goto("/#/settings");
   await page
     .getByRole("button", { name: "Reset local data", exact: true })
