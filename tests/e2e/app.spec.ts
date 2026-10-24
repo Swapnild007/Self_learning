@@ -1,5 +1,22 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+
+async function replaceCode(page: Page, source: string) {
+  const editor = page.locator(".cm-content");
+  await editor.click();
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.keyboard.insertText(source);
+  await expect
+    .poll(() =>
+      editor.evaluate((el) =>
+        Array.from(
+          el.querySelectorAll(".cm-line"),
+          (line) => line.textContent,
+        ).join("\n"),
+      ),
+    )
+    .toBe(source);
+}
 const routes = [
   ["dashboard", "/"],
   ["catalog", "/catalog"],
@@ -116,22 +133,22 @@ test("real Python output, syntax errors, cancellation and recovery", async ({
   });
   const editor = page.locator(".cm-content");
 
-  await editor.fill("def broken(:\n    pass");
+  await replaceCode(page, "def broken(:\n    pass");
   await page.getByRole("button", { name: "Run Python" }).click();
   await expect(page.getByRole("alert")).toContainText("SyntaxError");
 
-  await editor.fill("while True:\n    pass");
+  await replaceCode(page, "while True:\n    pass");
   await page.getByRole("button", { name: "Run Python" }).click();
   await page.getByRole("button", { name: "Stop", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("cancelled");
 
-  await editor.fill("print(sum([1, 2, 3]))");
+  await replaceCode(page, "print(sum([1, 2, 3]))");
 
   await page.getByRole("button", { name: "Run Python" }).click();
   await expect(page.getByLabel("Python output")).toContainText("6", {
     timeout: 60000,
   });
-  await editor.fill('print("x" * 60000)');
+  await replaceCode(page, 'print("x" * 60000)');
   await page.getByRole("button", { name: "Run Python" }).click();
   await expect
     .poll(
@@ -153,20 +170,20 @@ test("assessment evaluates behavior and persists score", async ({ page }) => {
   await page
     .getByRole("textbox", { name: "Keyword", exact: true })
     .fill("return");
-  await page
-    .locator(".cm-content")
-    .fill(
-      "def average_wait(total_seconds, calls):\n    return total_seconds / calls if calls else 0",
-    );
+  await replaceCode(
+    page,
+    "def average_wait(total_seconds, calls):\n    return total_seconds / calls if calls else 0",
+  );
   await page.getByRole("button", { name: "Check my understanding" }).click();
   await expect(
     page.getByText("Score: 100%. Assessment mastered.", { exact: true }),
   ).toBeVisible({ timeout: 60000 });
   await page.reload();
   await expect(page.getByText("Latest score: 100% · Mastered")).toBeVisible();
-  await page
-    .locator(".cm-content")
-    .fill("def average_wait(total_seconds, calls):\n    return 30");
+  await replaceCode(
+    page,
+    "def average_wait(total_seconds, calls):\n    return 30",
+  );
   await page.getByRole("button", { name: "Check my understanding" }).click();
   await expect(
     page.getByText("Score: 0%. Review the feedback and try again.", {

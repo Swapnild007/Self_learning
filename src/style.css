@@ -2645,7 +2645,7 @@ th {
 }
 @keyframes page-arrive {
   from {
-    opacity: 0;
+    opacity: 1;
     transform: translateY(6px);
   }
   to {

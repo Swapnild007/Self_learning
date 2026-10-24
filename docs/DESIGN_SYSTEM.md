@@ -2,7 +2,7 @@
 
 ## Identity and components
 
-Pearl #f6f7fa, white #ffffff, ink #202b40, muted slate #626d80, blue #2558d9. Dark mode uses deep slate #151b27 and #1c2433 with light ink and a lighter blue. Borders replace noisy depth effects. Surface radius: 9–10px controls, 14–18px panels. Typography: native system UI for controls and Georgia for long-form reading, with a 17–23px reader preference. No proprietary fonts, copied branding or external artwork.
+Pearl #f6f7fa, white #ffffff, ink #202b40, muted slate #4c586b, blue #2558d9. Dark mode uses deep slate #151b27 and #1c2433 with light ink and a lighter blue. Borders replace noisy depth effects. Surface radius: 9–10px controls, 14–18px panels. Typography: native system UI for controls and Georgia for long-form reading, with a 17–23px reader preference. No proprietary fonts, copied branding or external artwork.
 
 Desktop uses a sidebar, compact search header, useful continuation panel and deliberate data density. Mobile uses safe-area-aware bottom navigation. The reader uses opaque pages with bounded measure and optional sidebars. Focus is visible. Dialogs use Radix focus management, escape dismissal and accessible title/description. The local reusable control layer follows the composable, editable-source approach of shadcn/ui; this implementation uses Radix directly, not an installed shadcn component collection.
 

@@ -35,7 +35,7 @@ export default function Dashboard() {
       <div className="dashboard-grid">
         <motion.section
           className="hero"
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 1, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="hero-copy">
