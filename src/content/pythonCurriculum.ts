@@ -148,9 +148,9 @@ export const pythonChapters: Chapter[] = [
         {
           "id": "implement",
           "kind": "code",
-          "prompt": "Write Python code that prints 14 using the exercise shown in this chapter.",
-          "starter": "# Write your solution here\n",
-          "tests": "assert \"14\" in __import__('io').StringIO().getvalue() if False else True",
+          "prompt": "Implement solve() to return the result of the guided exercise as text. Use the chapter's Python concepts, not print().",
+          "starter": "def solve():\\n    # Compute and return the exercise result as text\\n    pass",
+          "tests": "assert callable(solve)\\nassert str(solve()) == 14"14\" in __import__('io').StringIO().getvalue() if False else True",
           "hint": "Start with the guided application example."
         }
       ]
@@ -305,9 +305,9 @@ export const pythonChapters: Chapter[] = [
         {
           "id": "implement",
           "kind": "code",
-          "prompt": "Write Python code that prints 3 1 using the exercise shown in this chapter.",
-          "starter": "# Write your solution here\n",
-          "tests": "assert \"3 1\" in __import__('io').StringIO().getvalue() if False else True",
+          "prompt": "Implement solve() to return the result of the guided exercise as text. Use the chapter's Python concepts, not print().",
+          "starter": "def solve():\\n    # Compute and return the exercise result as text\\n    pass",
+          "tests": "assert callable(solve)\\nassert str(solve()) == 3 1"3 1\" in __import__('io').StringIO().getvalue() if False else True",
           "hint": "Start with the guided application example."
         }
       ]
@@ -462,9 +462,9 @@ export const pythonChapters: Chapter[] = [
         {
           "id": "implement",
           "kind": "code",
-          "prompt": "Write Python code that prints 7.5 km using the exercise shown in this chapter.",
-          "starter": "# Write your solution here\n",
-          "tests": "assert \"7.5 km\" in __import__('io').StringIO().getvalue() if False else True",
+          "prompt": "Implement solve() to return the result of the guided exercise as text. Use the chapter's Python concepts, not print().",
+          "starter": "def solve():\\n    # Compute and return the exercise result as text\\n    pass",
+          "tests": "assert callable(solve)\\nassert str(solve()) == 7.5 km"7.5 km\" in __import__('io').StringIO().getvalue() if False else True",
           "hint": "Start with the guided application example."
         }
       ]
@@ -619,9 +619,9 @@ export const pythonChapters: Chapter[] = [
         {
           "id": "implement",
           "kind": "code",
-          "prompt": "Write Python code that prints hot using the exercise shown in this chapter.",
-          "starter": "# Write your solution here\n",
-          "tests": "assert \"hot\" in __import__('io').StringIO().getvalue() if False else True",
+          "prompt": "Implement solve() to return the result of the guided exercise as text. Use the chapter's Python concepts, not print().",
+          "starter": "def solve():\\n    # Compute and return the exercise result as text\\n    pass",
+          "tests": "assert callable(solve)\\nassert str(solve()) == hot"hot\" in __import__('io').StringIO().getvalue() if False else True",
           "hint": "Start with the guided application example."
         }
       ]
@@ -776,9 +776,9 @@ export const pythonChapters: Chapter[] = [
         {
           "id": "implement",
           "kind": "code",
-          "prompt": "Write Python code that prints 12 using the exercise shown in this chapter.",
-          "starter": "# Write your solution here\n",
-          "tests": "assert \"12\" in __import__('io').StringIO().getvalue() if False else True",
+          "prompt": "Implement solve() to return the result of the guided exercise as text. Use the chapter's Python concepts, not print().",
+          "starter": "def solve():\\n    # Compute and return the exercise result as text\\n    pass",
+          "tests": "assert callable(solve)\\nassert str(solve()) == 12"12\" in __import__('io').StringIO().getvalue() if False else True",
           "hint": "Start with the guided application example."
         }
       ]
@@ -933,9 +933,9 @@ export const pythonChapters: Chapter[] = [
         {
           "id": "implement",
           "kind": "code",
-          "prompt": "Write Python code that prints 2 using the exercise shown in this chapter.",
-          "starter": "# Write your solution here\n",
-          "tests": "assert \"2\" in __import__('io').StringIO().getvalue() if False else True",
+          "prompt": "Implement solve() to return the result of the guided exercise as text. Use the chapter's Python concepts, not print().",
+          "starter": "def solve():\\n    # Compute and return the exercise result as text\\n    pass",
+          "tests": "assert callable(solve)\\nassert str(solve()) == 2"2\" in __import__('io').StringIO().getvalue() if False else True",
           "hint": "Start with the guided application example."
         }
       ]
@@ -1090,9 +1090,9 @@ export const pythonChapters: Chapter[] = [
         {
           "id": "implement",
           "kind": "code",
-          "prompt": "Write Python code that prints .csv using the exercise shown in this chapter.",
-          "starter": "# Write your solution here\n",
-          "tests": "assert \".csv\" in __import__('io').StringIO().getvalue() if False else True",
+          "prompt": "Implement solve() to return the result of the guided exercise as text. Use the chapter's Python concepts, not print().",
+          "starter": "def solve():\\n    # Compute and return the exercise result as text\\n    pass",
+          "tests": "assert callable(solve)\\nassert str(solve()) == .csv".csv\" in __import__('io').StringIO().getvalue() if False else True",
           "hint": "Start with the guided application example."
         }
       ]
@@ -1247,9 +1247,9 @@ export const pythonChapters: Chapter[] = [
         {
           "id": "implement",
           "kind": "code",
-          "prompt": "Write Python code that prints 4 using the exercise shown in this chapter.",
-          "starter": "# Write your solution here\n",
-          "tests": "assert \"4\" in __import__('io').StringIO().getvalue() if False else True",
+          "prompt": "Implement solve() to return the result of the guided exercise as text. Use the chapter's Python concepts, not print().",
+          "starter": "def solve():\\n    # Compute and return the exercise result as text\\n    pass",
+          "tests": "assert callable(solve)\\nassert str(solve()) == 4"4\" in __import__('io').StringIO().getvalue() if False else True",
           "hint": "Start with the guided application example."
         }
       ]
@@ -1404,9 +1404,9 @@ export const pythonChapters: Chapter[] = [
         {
           "id": "implement",
           "kind": "code",
-          "prompt": "Write Python code that prints True using the exercise shown in this chapter.",
-          "starter": "# Write your solution here\n",
-          "tests": "assert \"True\" in __import__('io').StringIO().getvalue() if False else True",
+          "prompt": "Implement solve() to return the result of the guided exercise as text. Use the chapter's Python concepts, not print().",
+          "starter": "def solve():\\n    # Compute and return the exercise result as text\\n    pass",
+          "tests": "assert callable(solve)\\nassert str(solve()) == True"True\" in __import__('io').StringIO().getvalue() if False else True",
           "hint": "Start with the guided application example."
         }
       ]
@@ -1561,9 +1561,9 @@ export const pythonChapters: Chapter[] = [
         {
           "id": "implement",
           "kind": "code",
-          "prompt": "Write Python code that prints 14 using the exercise shown in this chapter.",
-          "starter": "# Write your solution here\n",
-          "tests": "assert \"14\" in __import__('io').StringIO().getvalue() if False else True",
+          "prompt": "Implement solve() to return the result of the guided exercise as text. Use the chapter's Python concepts, not print().",
+          "starter": "def solve():\\n    # Compute and return the exercise result as text\\n    pass",
+          "tests": "assert callable(solve)\\nassert str(solve()) == 14"14\" in __import__('io').StringIO().getvalue() if False else True",
           "hint": "Start with the guided application example."
         }
       ]
@@ -1718,9 +1718,9 @@ export const pythonChapters: Chapter[] = [
         {
           "id": "implement",
           "kind": "code",
-          "prompt": "Write Python code that prints 20.0 using the exercise shown in this chapter.",
-          "starter": "# Write your solution here\n",
-          "tests": "assert \"20.0\" in __import__('io').StringIO().getvalue() if False else True",
+          "prompt": "Implement solve() to return the result of the guided exercise as text. Use the chapter's Python concepts, not print().",
+          "starter": "def solve():\\n    # Compute and return the exercise result as text\\n    pass",
+          "tests": "assert callable(solve)\\nassert str(solve()) == 20.0"20.0\" in __import__('io').StringIO().getvalue() if False else True",
           "hint": "Start with the guided application example."
         }
       ]
