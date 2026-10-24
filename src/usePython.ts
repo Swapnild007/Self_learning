@@ -78,8 +78,8 @@ export function usePython() {
         stop("Runtime unavailable");
       };
       timer.current = setTimeout(
-        () => stop("Time limit reached (60 seconds). Runtime reset."),
-        60000,
+        () => stop("Time limit reached (120 seconds). Runtime reset."),
+        120000,
       );
       worker.current.postMessage({
         source,
