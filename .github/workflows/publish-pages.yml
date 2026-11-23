@@ -1,7 +1,8 @@
 name: Publish Self Learning preview
 on:
   push:
-    branches: ["preview/self-learning-ui"]
+    branches:
+      - preview/self-learning-ui
   workflow_dispatch:
 permissions:
   contents: read
@@ -11,11 +12,8 @@ concurrency:
   group: self-learning-pages
   cancel-in-progress: true
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-24.04
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -26,9 +24,20 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build -- --mode pages
-      - uses: actions/configure-pages@v5
+      - uses: actions/upload-artifact@v4
+        with:
+          name: self-learning-preview-build
+          path: dist
+          retention-days: 7
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v4
