@@ -1,4 +1,4 @@
-name: Publish Self Learning to GitHub Pages
+name: Publish Self Learning preview
 on:
   push:
     branches: ["preview/self-learning-ui"]
