@@ -21,6 +21,7 @@ const routes = [
   ["dashboard", "/"],
   ["catalog", "/catalog"],
   ["paths", "/paths"],
+  ["visuals", "/visuals"],
   ["path-detail", "/paths/python-ai"],
   ["planned-course", "/course/sql"],
   ["overview", "/course/python"],
@@ -345,4 +346,21 @@ test("guided paths link to published chapters and expose planned curricula hones
   await page.getByRole("link", { name: "Explore the curriculum" }).first().click();
   await expect(page.locator(".planned-module")).toHaveCount(3);
   await expect(page.getByText("These are curriculum topics, not published or assessed lessons.")).toBeVisible();
+});
+
+test("interactive visual notes update measured values and support keyboard input", async ({ page }) => {
+  await page.goto("/#/visuals");
+  await expect(page.getByRole("heading", { name: /Change a number/ })).toBeVisible();
+  await expect(page.locator(".visual-formula")).toContainText("46.00 seconds");
+  await page.locator("#first-calls").focus();
+  await page.keyboard.press("End");
+  await expect(page.locator(".visual-formula")).toContainText("34.21 seconds");
+  await page.getByRole("button", { name: /Next-token predictions/ }).click();
+  await expect(page.locator(".visual-bar")).toHaveCount(3);
+  await expect(page.locator(".visual-formula")).toContainText("coding");
+  await page.getByRole("button", { name: /Algorithm growth/ }).click();
+  await expect(page.locator(".visual-formula")).toContainText("400");
+  await page.locator("#items-n").focus();
+  await page.keyboard.press("End");
+  await expect(page.locator(".visual-formula")).toContainText("10000");
 });
