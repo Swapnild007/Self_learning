@@ -29,7 +29,7 @@ function BlockView({ block: b }: { block: Block }) {
       return (
         <div className="syntax">
           <span className="eyebrow">SYNTAX REFERENCE</span>
-          <pre>
+          <pre tabIndex={0} aria-label="Syntax reference">
             <code>{b.syntax.signature}</code>
           </pre>
           <p>{b.syntax.explanation}</p>
@@ -41,12 +41,12 @@ function BlockView({ block: b }: { block: Block }) {
           <figcaption>
             PYTHON <Copy text={b.example.source} />
           </figcaption>
-          <pre>
+          <pre tabIndex={0} aria-label="Code example">
             <code>{b.example.source}</code>
           </pre>
           <div className="expected">
             <span>EXPECTED OUTPUT</span>
-            <pre>{b.example.expectedOutput}</pre>
+            <pre tabIndex={0} aria-label="Expected output">{b.example.expectedOutput}</pre>
           </div>
           <p>{b.example.explanation}</p>
           <Link className="button" to="/lab">Try this in the Python laboratory <ArrowRight size={15} /></Link>
