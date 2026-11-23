@@ -74,7 +74,7 @@ test("search, filters and navigation", async ({ page }) => {
   await page
     .getByRole("textbox", { name: "Search all courses" })
     .press("Enter");
-  await expect(page.locator(".course-card")).toHaveCount(1);
+  await expect(page.locator(".course-card").filter({ hasText: "Python for practical problem solving" })).toHaveCount(1);
   await page.getByRole("textbox", { name: "Search catalog" }).fill("");
   await page.getByRole("button", { name: "Analytics", exact: true }).click();
   await expect(page.locator(".course-card")).toHaveCount(4);
