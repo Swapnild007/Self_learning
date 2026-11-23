@@ -9,14 +9,17 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { courses, chapter } from "../content/catalog";
+import { courses, chapter, findChapter } from "../content/catalog";
+import { learningPaths, publishedCoursesInPath } from "../content/learningPaths";
 import { useStore } from "../store";
 import { Progress } from "../components/ui";
 import CourseCard from "../components/CourseCard";
 export default function Dashboard() {
   const { data } = useStore();
-  const read = data.read[chapter.id]?.length || 0;
-  const pct = Math.round((read / chapter.sections.length) * 100);
+  const recentEntry = data.visited.map((id) => findChapter(id)).find((entry) => entry !== undefined);
+  const featured = recentEntry?.chapter || chapter;
+  const read = data.read[featured.id]?.length || 0;
+  const pct = Math.round((read / featured.sections.length) * 100);
   const score = data.scores["functions-check-v1"];
   return (
     <div className="page">
@@ -26,7 +29,7 @@ export default function Dashboard() {
           <h1>
             Make room for discovery<span className="blue-dot">.</span>
           </h1>
-          <p>Welcome back, Swapnil. A little progress today goes a long way.</p>
+          <p>Your next useful insight is only one experiment away.</p>
         </div>
         <span className="pill">
           <span className="status-dot" /> Your personal learning space
@@ -41,26 +44,23 @@ export default function Dashboard() {
           <div className="hero-copy">
             <span className="eyebrow">CONTINUE LEARNING</span>
             <div className="hero-tags">
-              <span>PYTHON FOUNDATIONS</span>
-              <span>CHAPTER 01</span>
+              <span>{recentEntry ? recentEntry.course.title : "PYTHON FOUNDATIONS"}</span>
+              <span>{recentEntry ? "CONTINUE READING" : "START HERE"}</span>
             </div>
             <h2>
-              Small functions.
-              <br />
-              Powerful possibilities.
+              {recentEntry ? featured.title : <>Small functions.<br />Powerful possibilities.</>}
             </h2>
             <p>
-              Turn a familiar reporting problem into code you can reuse, test,
-              and trust.
+              {recentEntry ? featured.introduction : "Turn a familiar reporting problem into code you can reuse, test, and trust."}
             </p>
-            <Link className="button primary" to={`/read/${chapter.id}`}>
+            <Link className="button primary" to={`/read/${featured.id}`}>
               <Play size={16} fill="currentColor" />{" "}
               {read ? "Resume chapter" : "Start your first chapter"}{" "}
               <ArrowRight size={17} />
             </Link>
             <div className="hero-progress">
               <Progress value={pct} label="Chapter reading progress" />
-              <span>{pct}% read · 35 min chapter</span>
+              <span>{pct}% read · {featured.minutes} min chapter</span>
             </div>
           </div>
           <div className="hero-visual" aria-hidden="true">
@@ -94,7 +94,7 @@ export default function Dashboard() {
             <span>topics explored</span>
           </div>
           <p>Curiosity becomes a habit, one session at a time.</p>
-          <div className="week" aria-label="Weekly learning goal">
+          <div className="week" aria-label="Learning topic goal">
             {Array.from({ length: data.goal }, (_, i) => (
               <span className={i < data.visited.length ? "done" : ""} key={i}>
                 {i < data.visited.length ? "✓" : i + 1}
@@ -157,6 +157,19 @@ export default function Dashboard() {
           <CourseCard course={c} key={c.id} />
         ))}
       </div>
+      <div className="section-heading">
+        <div><h2>Learning journeys</h2><p>Follow a course sequence when you want a bigger goal.</p></div>
+        <Link to="/paths">See all paths <ArrowRight size={17} /></Link>
+      </div>
+      <div className="dashboard-paths">
+        {learningPaths.slice(0, 3).map((path) => (
+          <Link className="dashboard-path" key={path.id} to={"/paths/" + path.id}>
+            <span className="eyebrow">{path.focus}</span>
+            <strong>{path.title}</strong>
+            <span>{path.courses.length} courses · {publishedCoursesInPath(path)} ready to study <ArrowRight size={15} /></span>
+          </Link>
+        ))}
+      </div>
       <div className="bottom-grid">
         <section className="panel">
           <div className="section-title">
@@ -167,8 +180,8 @@ export default function Dashboard() {
             <Link className="recent-row" to={`/read/${chapter.id}`}>
               <span className="mini-symbol">Py</span>
               <span>
-                <strong>{chapter.title}</strong>
-                <small>Python · {pct}% read</small>
+                <strong>{featured.title}</strong>
+                <small>{recentEntry?.course.title || "Python"} · {pct}% read</small>
               </span>
               <ArrowRight size={18} />
             </Link>
