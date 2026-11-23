@@ -156,6 +156,17 @@ export const chapter: Chapter = {
           },
         },
         {
+          type: "chart",
+          title: "Why averaging averages can mislead",
+          xLabel: "Calculation method",
+          yLabel: "Average waiting time (seconds)",
+          values: [
+            { label: "Unweighted interval mean", value: 40 },
+            { label: "Call-weighted mean", value: 46 },
+          ],
+          note: "Illustrative data: interval A has 2 calls / 60 waiting seconds; interval B has 8 calls / 400 waiting seconds. The correct pooled mean is 460 / 10 = 46 seconds. This is not observed operational data.",
+        },
+        {
           type: "code",
           example: {
             source:
