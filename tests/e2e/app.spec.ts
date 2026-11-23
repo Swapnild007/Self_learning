@@ -26,6 +26,7 @@ const routes = [
   ["planned-course", "/course/sql"],
   ["overview", "/course/python"],
   ["reader", "/read/python-functions"],
+  ["llm-reader", "/read/llm-attention"],
   ["lab", "/lab"],
   ["practice", "/practice"],
   ["learning", "/learning"],
@@ -363,4 +364,17 @@ test("interactive visual notes update measured values and support keyboard input
   await page.locator("#items-n").focus();
   await page.keyboard.press("End");
   await expect(page.locator(".visual-formula")).toContainText("10000");
+});
+
+test("new LLM chapters provide real explanations and assessments", async ({ page }) => {
+  await page.goto("/#/course/llm-engineering");
+  await expect(page.getByRole("link", { name: /Embeddings: when meaning becomes geometry/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Attention: choosing context with numbers/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Retrieval-augmented generation: answers with evidence/ })).toBeVisible();
+  await page.goto("/#/read/llm-attention");
+  await expect(page.getByRole("heading", { name: /Attention: choosing context with numbers/ })).toBeVisible();
+  await expect(page.locator("figure.flow-diagram")).toBeVisible();
+  await expect(page.getByText("[0.665, 0.245, 0.09]", { exact: true })).toBeVisible();
+  await page.getByRole("link", { name: /Check your understanding/ }).last().click();
+  await expect(page.getByText("Numerical attention checkpoint")).toBeVisible();
 });
