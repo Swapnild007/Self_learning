@@ -87,6 +87,24 @@ function BlockView({ block: b }: { block: Block }) {
           <p>{b.text}</p>
         </aside>
       );
+    case "chart": {
+      const maximum = Math.max(1, ...b.values.map((point) => point.value));
+      return (
+        <figure className="learning-chart" aria-label={`${b.title}. ${b.values.map((p) => `${p.label}: ${p.value}`).join("; ")}. ${b.note}`}>
+          <figcaption><strong>{b.title}</strong></figcaption>
+          <div className="learning-chart-bars" role="img" aria-label={`${b.yLabel} by ${b.xLabel}`}>
+            {b.values.map((point) => (
+              <div className="learning-chart-row" key={point.label}>
+                <span>{point.label}</span>
+                <div className="learning-chart-track"><span style={{ width: `${Math.max(0, point.value / maximum * 100)}%` }} /></div>
+                <strong>{point.value}</strong>
+              </div>
+            ))}
+          </div>
+          <p>{b.note}</p>
+        </figure>
+      );
+    }
     case "diagram":
       return (
         <figure className="flow-diagram">
