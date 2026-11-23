@@ -2661,3 +2661,14 @@ th {
     opacity: 1;
   }
 }
+
+/* Accessible, responsive quantitative figures in textbook chapters. */
+.learning-chart { margin: 1.5rem 0; padding: 1.25rem; border: 1px solid var(--border, #b7bdc6); border-radius: 1rem; }
+.learning-chart figcaption { margin-bottom: 1rem; }
+.learning-chart-bars { display: grid; gap: .85rem; }
+.learning-chart-row { display: grid; grid-template-columns: minmax(9rem, 1.4fr) minmax(4rem, 3fr) 3rem; gap: .7rem; align-items: center; font-size: .9em; }
+.learning-chart-track { height: 1.15rem; border-radius: .35rem; background: rgba(127,127,127,.14); overflow: hidden; }
+.learning-chart-track > span { display: block; height: 100%; background: #3674bf; border-radius: .35rem; }
+.learning-chart p { font-size: .85em; line-height: 1.5; margin-top: 1rem; }
+@media (max-width: 540px) { .learning-chart { padding: .75rem; } .learning-chart-row { grid-template-columns: 1fr 2fr 2.5rem; gap: .35rem; font-size: .76em; } }
+@media (prefers-contrast: more) { .learning-chart-track > span { background: #00468f; } .learning-chart { border: 2px solid currentColor; } }
