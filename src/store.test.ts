@@ -20,11 +20,12 @@ describe("learning data contracts", () => {
     expect(grade([0], [0, 1])).toBe(false);
     expect(grade([0, 1, 2], [0, 1])).toBe(false);
   });
-  it("has stable unique sections and only one real sample", () => {
+  it("has stable unique sections and correctly registered authored courses", () => {
     expect(new Set(chapter.sections.map((s) => s.id)).size).toBe(
       chapter.sections.length,
     );
-    expect(courses.filter((c) => c.modules.length)).toHaveLength(1);
+    expect(courses.filter((c) => c.modules.length).length).toBeGreaterThanOrEqual(2);
+    expect(new Set(courses.map((c) => c.id)).size).toBe(courses.length);
     expect(chapter.assessment.questions.map((q) => q.kind)).toEqual([
       "single",
       "multiple",
