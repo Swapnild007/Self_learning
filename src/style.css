@@ -2742,3 +2742,13 @@ th {
 .planned-module-head small { color: var(--muted); font-size: 10px; }
 .planned-module ul { margin: 10px 0 0 42px; padding: 0; color: var(--muted); font-size: 13px; }
 @media (max-width: 550px) { .catalog-intro { padding: 22px 19px; } .catalog-metrics strong { font-size: 19px; } .planned-module { padding: 14px; } .planned-module-head { gap: 7px; flex-wrap: wrap; } .planned-module ul { margin-left: 17px; } }
+
+
+.dashboard-paths { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; margin-bottom: 30px; }
+.dashboard-path { display: flex; flex-direction: column; gap: 8px; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; color: var(--text); }
+.dashboard-path:hover { border-color: var(--blue); box-shadow: 0 8px 24px #2237550d; }
+.dashboard-path .eyebrow { margin: 0; }
+.dashboard-path > strong { font-size: 15px; }
+.dashboard-path > span:last-child { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 11px; margin-top: auto; }
+@media (max-width: 950px) { .dashboard-paths { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 620px) { .dashboard-paths { grid-template-columns: 1fr; } }
