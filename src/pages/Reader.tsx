@@ -29,7 +29,7 @@ function BlockView({ block: b }: { block: Block }) {
       return (
         <div className="syntax">
           <span className="eyebrow">SYNTAX REFERENCE</span>
-          <pre>
+          <pre tabIndex={0} aria-label="Syntax reference">
             <code>{b.syntax.signature}</code>
           </pre>
           <p>{b.syntax.explanation}</p>
@@ -41,12 +41,12 @@ function BlockView({ block: b }: { block: Block }) {
           <figcaption>
             PYTHON <Copy text={b.example.source} />
           </figcaption>
-          <pre>
+          <pre tabIndex={0} aria-label="Code example">
             <code>{b.example.source}</code>
           </pre>
           <div className="expected">
             <span>EXPECTED OUTPUT</span>
-            <pre>{b.example.expectedOutput}</pre>
+            <pre tabIndex={0} aria-label="Expected output">{b.example.expectedOutput}</pre>
           </div>
           <p>{b.example.explanation}</p>
           <Link className="button" to="/lab">Try this in the Python laboratory <ArrowRight size={15} /></Link>
@@ -87,6 +87,25 @@ function BlockView({ block: b }: { block: Block }) {
           <p>{b.text}</p>
         </aside>
       );
+    case "chart": {
+      const maximum = Math.max(1, ...b.values.map((point) => point.value));
+      return (
+        <figure className="learning-chart" aria-label={`${b.title}. ${b.values.map((p) => `${p.label}: ${p.value}`).join("; ")}. ${b.note}`}>
+          <figcaption><strong>{b.title}</strong></figcaption>
+          <div className="learning-chart-bars" role="img" aria-label={`${b.yLabel} by ${b.xLabel}`}>
+            {b.values.map((point) => (
+              <div className="learning-chart-row" key={point.label}>
+                <span>{point.label}</span>
+                <div className="learning-chart-track"><span style={{ width: `${Math.max(0, point.value / maximum * 100)}%` }} /></div>
+                <strong>{point.value}</strong>
+              </div>
+            ))}
+          </div>
+          <p>{b.note}</p>
+          <Link to="/visuals" className="path-step-link">Change the variables in the visual concept studio <ArrowRight size={15} /></Link>
+        </figure>
+      );
+    }
     case "diagram":
       return (
         <figure className="flow-diagram">
@@ -378,6 +397,9 @@ export default function Reader() {
               </Link>
               <Link className="button" to="/lab">
                 Open coding laboratory
+              </Link>
+              <Link className="button" to="/visuals">
+                Explore interactive visual notes
               </Link>
             </div>
           </section>

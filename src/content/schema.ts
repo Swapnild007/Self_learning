@@ -38,6 +38,7 @@ export type Block =
       title: string;
       text: string;
     }
+  | { type: "chart"; title: string; xLabel: string; yLabel: string; values: { label: string; value: number }[]; note: string }
   | { type: "diagram"; caption: string; steps: string[] }
   | { type: "case"; study: IndustryCaseStudy };
 export interface Section {

@@ -12,6 +12,9 @@ const Lab = lazy(() => import("./pages/Lab"));
 const Practice = lazy(() => import("./pages/Practice"));
 const Learning = lazy(() => import("./pages/Learning"));
 const Settings = lazy(() => import("./pages/Settings"));
+const LivingLab = lazy(() => import("./pages/LivingLab"));
+const LearningPaths = lazy(() => import("./pages/LearningPaths"));
+const VisualStudio = lazy(() => import("./pages/VisualStudio"));
 class Boundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() {
@@ -45,9 +48,13 @@ createRoot(document.getElementById("root")!).render(
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/catalog" element={<Catalog />} />
+                <Route path="/paths" element={<LearningPaths />} />
+                <Route path="/paths/:id" element={<LearningPaths />} />
+                <Route path="/visuals" element={<VisualStudio />} />
                 <Route path="/course/:id" element={<Overview />} />
                 <Route path="/read/:id" element={<Reader />} />
                 <Route path="/lab" element={<Lab />} />
+                <Route path="/living-lab" element={<LivingLab />} />
                 <Route path="/practice" element={<Practice />} />
                 <Route path="/learning" element={<Learning />} />
                 <Route path="/settings" element={<Settings />} />

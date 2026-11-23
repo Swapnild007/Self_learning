@@ -21,7 +21,7 @@ self.onmessage = async (
         : "Loading Python runtime… First use may take a moment.",
     });
     runtime ??= await loadPyodide({
-      indexURL: new URL("/python/", self.location.origin).href,
+      indexURL: new URL(import.meta.env.BASE_URL + "python/", self.location.origin).href,
       stdout: append,
       stderr: append,
     });

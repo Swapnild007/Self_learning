@@ -1,7 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  base: mode === "pages" ? "/Self_learning/" : "/",
   server: {
     headers: {
       "Cross-Origin-Opener-Policy": "same-origin",
@@ -17,4 +18,4 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   worker: { format: "es" },
   build: { chunkSizeWarningLimit: 600 },
-});
+}));

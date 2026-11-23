@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Clock3 } from "lucide-react";
 import type { Course } from "../content/schema";
 export default function CourseCard({ course: c }: { course: Course }) {
+  const authoredCount = c.modules.reduce((sum, module) => sum + module.chapters.length, 0);
   return (
     <Link className="course-card" to={`/course/${c.id}`}>
       <div className={`course-art ${c.color}`}>
@@ -12,16 +13,16 @@ export default function CourseCard({ course: c }: { course: Course }) {
       </div>
       <div className="course-body">
         <div className="meta">
-          {c.level} <span>•</span> {c.status}
+          {c.level} <span>•</span> {authoredCount ? "Lessons available" : "Syllabus blueprint"}
         </div>
         <h3>{c.title}</h3>
         <p>{c.description}</p>
         <div className="card-foot">
           <span>
             <Clock3 size={14} />
-            {c.minutes
-              ? `${c.minutes} min sample`
-              : "Curriculum in preparation"}
+            {authoredCount
+              ? `${authoredCount} original chapters`
+              : "Explore planned modules"}
           </span>
           <ArrowUpRight size={17} />
         </div>

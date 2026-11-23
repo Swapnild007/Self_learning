@@ -1,4 +1,5 @@
 import { pythonSyllabus } from "../content/pythonSyllabus";
+import { courseRoadmaps } from "../content/courseRoadmaps";
 import { useParams, Link } from "react-router-dom";
 import { ArrowRight, Check, Clock3, BookOpen } from "lucide-react";
 import { courses } from "../content/catalog";
@@ -94,7 +95,7 @@ export default function Overview() {
               ))}
             </ul>
           ) : (
-            <p>No prior programming experience required.</p>
+            <p>No formal prerequisites are listed. Start with the first available chapter or review the curriculum outline.</p>
           )}
         </section>
         <section className="panel">
@@ -151,7 +152,19 @@ export default function Overview() {
             </div>
           ))
         ) : (
-          <p>No lessons published yet.</p>
+          <p className="muted">The syllabus outline below is a course blueprint. Written lessons, exercises and assessments are not yet available.</p>
+        )}
+        {course.id !== "python" && courseRoadmaps[course.id]?.length > 0 && (
+          <div className="planned-curriculum">
+            <h3>{course.modules.length ? "Next chapters under development" : "Planned learning modules"}</h3>
+            <p className="muted">These are curriculum topics, not published or assessed lessons. They will open only when the original teaching material is ready.</p>
+            {courseRoadmaps[course.id].map((module, index) => (
+              <div className="planned-module" key={module.title}>
+                <div className="planned-module-head"><span>{String(index + 1).padStart(2, "0")}</span><h4>{module.title}</h4><small>In development</small></div>
+                <ul>{module.topics.map((topic) => <li key={topic}>{topic}</li>)}</ul>
+              </div>
+            ))}
+          </div>
         )}
       </section>
       {course.references.length > 0 && (

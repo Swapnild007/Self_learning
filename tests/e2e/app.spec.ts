@@ -20,8 +20,13 @@ async function replaceCode(page: Page, source: string) {
 const routes = [
   ["dashboard", "/"],
   ["catalog", "/catalog"],
+  ["paths", "/paths"],
+  ["visuals", "/visuals"],
+  ["path-detail", "/paths/python-ai"],
+  ["planned-course", "/course/sql"],
   ["overview", "/course/python"],
   ["reader", "/read/python-functions"],
+  ["llm-reader", "/read/llm-attention"],
   ["lab", "/lab"],
   ["practice", "/practice"],
   ["learning", "/learning"],
@@ -69,17 +74,17 @@ test("search, filters and navigation", async ({ page }) => {
   await page
     .getByRole("textbox", { name: "Search all courses" })
     .press("Enter");
-  await expect(page.locator(".course-card")).toHaveCount(1);
+  await expect(page.locator(".course-card").filter({ hasText: "Python for practical problem solving" })).toHaveCount(1);
   await page.getByRole("textbox", { name: "Search catalog" }).fill("");
   await page.getByRole("button", { name: "Analytics", exact: true }).click();
   await expect(page.locator(".course-card")).toHaveCount(4);
-  await page.getByRole("combobox").selectOption("Intermediate");
+  await page.getByRole("combobox", { name: "Level" }).selectOption("Intermediate");
   await expect(
-    page.getByRole("heading", { name: "No courses match yet." }),
+    page.getByRole("heading", { name: "No matching courses" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).click();
-  await expect(page.locator(".course-card")).toHaveCount(35);
-  await page.locator(".course-card").first().click();
+  await expect(page.locator(".course-card")).toHaveCount(36);
+  await page.locator(".course-card").filter({ hasText: "Python for practical problem solving" }).click();
   await page.getByRole("link", { name: "Start learning" }).click();
   await expect(page.locator("article h1")).toContainText("Programming and Python foundations");
 });
@@ -327,4 +332,49 @@ test("account settings navigation closes the account dialog", async ({
   await expect(
     page.getByRole("heading", { name: "Your space. Your pace." }),
   ).toBeVisible();
+});
+
+test("guided paths link to published chapters and expose planned curricula honestly", async ({ page }) => {
+  await page.goto("/#/paths");
+  await expect(page.locator(".path-card")).toHaveCount(8);
+  await page.getByRole("textbox", { name: "Search learning paths" }).fill("agents");
+  await expect(page.locator(".path-card")).toHaveCount(1);
+  await page.locator(".path-card").first().click();
+  await expect(page.locator(".path-step")).toHaveCount(5);
+  await expect(page.getByRole("heading", { name: "Reliable AI agents." })).toBeVisible();
+  await expect(page.getByText("Lessons available", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Curriculum planned", { exact: true }).first()).toBeVisible();
+  await page.getByRole("link", { name: "Explore the curriculum" }).first().click();
+  await expect(page.locator(".planned-module")).toHaveCount(3);
+  await expect(page.getByText("These are curriculum topics, not published or assessed lessons.")).toBeVisible();
+});
+
+test("interactive visual notes update measured values and support keyboard input", async ({ page }) => {
+  await page.goto("/#/visuals");
+  await expect(page.getByRole("heading", { name: /Change a number/ })).toBeVisible();
+  await expect(page.locator(".visual-formula")).toContainText("46.00 seconds");
+  await page.locator("#first-calls").focus();
+  await page.keyboard.press("End");
+  await expect(page.locator(".visual-formula")).toContainText("34.21 seconds");
+  await page.getByRole("button", { name: /Next-token predictions/ }).click();
+  await expect(page.locator(".visual-bar")).toHaveCount(3);
+  await expect(page.locator(".visual-formula")).toContainText("coding");
+  await page.getByRole("button", { name: /Algorithm growth/ }).click();
+  await expect(page.locator(".visual-formula")).toContainText("400");
+  await page.locator("#items-n").focus();
+  await page.keyboard.press("End");
+  await expect(page.locator(".visual-formula")).toContainText("10000");
+});
+
+test("new LLM chapters provide real explanations and assessments", async ({ page }) => {
+  await page.goto("/#/course/llm-engineering");
+  await expect(page.getByRole("link", { name: /Embeddings: when meaning becomes geometry/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Attention: choosing context with numbers/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Retrieval-augmented generation: answers with evidence/ })).toBeVisible();
+  await page.goto("/#/read/llm-attention");
+  await expect(page.getByRole("heading", { name: /Attention: choosing context with numbers/ })).toBeVisible();
+  await expect(page.locator("figure.flow-diagram")).toBeVisible();
+  await expect(page.getByText("[0.665, 0.245, 0.09]", { exact: true })).toBeVisible();
+  await page.getByRole("link", { name: /Check your understanding/ }).last().click();
+  await expect(page.getByText("Numerical attention checkpoint")).toBeVisible();
 });

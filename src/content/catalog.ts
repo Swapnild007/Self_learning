@@ -1,3 +1,6 @@
+import { llmChapters as llmFoundations } from "./llmCurriculum";
+import { llmAdvancedChapters } from "./llmAdvancedCurriculum";
+const llmChapters = [...llmFoundations, ...llmAdvancedChapters];
 import { pythonChapters } from "./pythonCurriculum";
 import type { Chapter, Course } from "./schema";
 export const starter = `def average_wait(total_seconds, calls):\n    if calls == 0:\n        return 0\n    return total_seconds / calls\n\nprint(average_wait(150, 5))`;
@@ -155,6 +158,17 @@ export const chapter: Chapter = {
           },
         },
         {
+          type: "chart",
+          title: "Why averaging averages can mislead",
+          xLabel: "Calculation method",
+          yLabel: "Average waiting time (seconds)",
+          values: [
+            { label: "Unweighted interval mean", value: 40 },
+            { label: "Call-weighted mean", value: 46 },
+          ],
+          note: "Illustrative data: interval A has 2 calls / 60 waiting seconds; interval B has 8 calls / 400 waiting seconds. The correct pooled mean is 460 / 10 = 46 seconds. This is not observed operational data.",
+        },
+        {
           type: "code",
           example: {
             source:
@@ -265,6 +279,27 @@ export const chapter: Chapter = {
   },
 };
 export const courses: Course[] = [
+  {
+    id: "llm-engineering",
+    version: 1,
+    title: "AI & LLM Engineering",
+    category: "AI & Machine Learning",
+    level: "Beginner",
+    description: "Learn language models from first principles through textbook chapters, executable Python labs and assessed exercises. Move from text prediction to embeddings, attention and retrieval, with practical checks and transparent next steps.",
+    outcomes: ["Explain training, inference and token prediction", "Build and test a tokenizer", "Compute similarity and attention weights", "Design a traceable retrieval pipeline"],
+    prerequisites: [],
+    skills: ["Language models", "Tokenization", "Python", "Model evaluation"],
+    minutes: llmChapters.reduce((sum, chapter) => sum + chapter.minutes, 0),
+    status: "Sample chapter",
+    color: "lavender",
+    symbol: "LLM",
+    editor: "Self Learning editorial • AI & LLM Engineering",
+    modules: [
+      { id: "llm-foundations-module", title: "Foundations: how language models work", chapters: llmFoundations },
+      { id: "llm-retrieval-module", title: "Vectors, attention and grounded answers", chapters: llmAdvancedChapters },
+    ],
+    references: llmChapters[0].references,
+  },
   {
     id: "python",
     version: 1,

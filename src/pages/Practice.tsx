@@ -74,8 +74,7 @@ function AssessmentView({
       <div className="eyebrow">PUT UNDERSTANDING INTO PRACTICE</div>
       <h1>Small checks. Lasting knowledge.</h1>
       <p className="lead">
-        Four questions, including a real Python challenge. Retry as often as you
-        need.
+        {assessment.questions.length} questions{codeQuestion ? ", including a runnable Python challenge" : ""}. Retry as often as you need.
       </p>
       <div className="assessment-summary panel">
         <div>
@@ -156,8 +155,7 @@ function AssessmentView({
                   disabled={py.busy}
                 />
                 <p className="muted">
-                  Checks include ordinary values, zero calls and a fractional
-                  result.
+                  The code is checked against this chapter\u0027s expected behavior in your browser.
                 </p>
               </>
             )}
