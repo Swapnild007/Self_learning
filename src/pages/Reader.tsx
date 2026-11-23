@@ -102,6 +102,7 @@ function BlockView({ block: b }: { block: Block }) {
             ))}
           </div>
           <p>{b.note}</p>
+          <Link to="/visuals" className="path-step-link">Change the variables in the visual concept studio <ArrowRight size={15} /></Link>
         </figure>
       );
     }
@@ -396,6 +397,9 @@ export default function Reader() {
               </Link>
               <Link className="button" to="/lab">
                 Open coding laboratory
+              </Link>
+              <Link className="button" to="/visuals">
+                Explore interactive visual notes
               </Link>
             </div>
           </section>
