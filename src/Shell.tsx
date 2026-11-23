@@ -5,6 +5,7 @@ import {
   BookOpen,
   LayoutDashboard,
   Compass,
+  Route as RouteIcon,
   Library,
   Code2,
   CheckCheck,
@@ -21,6 +22,7 @@ import { Modal } from "./components/ui";
 const links = [
   ["/", "Overview", LayoutDashboard],
   ["/catalog", "Explore courses", Compass],
+  ["/paths", "Learning paths", RouteIcon],
   ["/learning", "My learning", Library],
   ["/lab", "Coding laboratory", Code2],
   ["/practice", "Practice", CheckCheck],
@@ -99,7 +101,7 @@ export default function Shell({ children }: { children: ReactNode }) {
           <header className="topbar">
             <span className="breadcrumb">
               Workspace <span>/</span>{" "}
-              {links.find((x) => x[0] === location.pathname)?.[1] ||
+              {(location.pathname.startsWith("/paths/") ? "Learning paths" : links.find((x) => x[0] === location.pathname)?.[1]) ||
                 "Course learning"}
             </span>
             <form
