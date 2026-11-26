@@ -6,7 +6,6 @@ import {
   Home,
   Library,
   Route as RouteIcon,
-  Target,
   Settings,
   Search,
   PanelLeftClose,
@@ -23,16 +22,11 @@ const primaryLinks = [
   ["/", "Home", Home],
   ["/catalog", "Library", Library],
   ["/paths", "Paths", RouteIcon],
-  ["/practice", "Practice", Target],
-  ["/learning", "My learning", UserRound],
+  ["/lab", "Lab", FlaskConical],
+  ["/learning", "Progress", UserRound],
 ] as const;
 
-const toolLinks = [
-  ["/visuals", "Visual studio", FlaskConical],
-  ["/lab", "Code lab", BookOpen],
-] as const;
-
-const allLinks = [...primaryLinks, ...toolLinks, ["/settings", "Settings", Settings] as const];
+const allLinks = [...primaryLinks, ["/settings", "Settings", Settings] as const];
 
 export default function Shell({ children }: { children: ReactNode }) {
   const { data, storageError } = useStore();
@@ -55,7 +49,9 @@ export default function Shell({ children }: { children: ReactNode }) {
     (location.pathname.startsWith("/paths/")
       ? "Learning path"
       : allLinks.find(([to]) => to === location.pathname)?.[1]) ||
-    "Course";
+    (location.pathname.startsWith("/read/") ? "Lesson" :
+      location.pathname.startsWith("/course/") ? "Course" :
+      location.pathname.startsWith("/practice") ? "Practice" : "Learning");
 
   return (
     <MotionConfig reducedMotion={data.reduced ? "always" : "user"}>
@@ -87,14 +83,6 @@ export default function Shell({ children }: { children: ReactNode }) {
             <span className="eyebrow nav-label sorted-nav-label">LEARN</span>
             {primaryLinks.map(([to, label, Icon]) => (
               <NavLink key={to} to={to} end={to === "/"} title={label}>
-                <Icon size={19} />
-                <span className="nav-label">{label}</span>
-              </NavLink>
-            ))}
-
-            <span className="eyebrow nav-label sorted-nav-label tool-label">TOOLS</span>
-            {toolLinks.map(([to, label, Icon]) => (
-              <NavLink key={to} to={to} title={label}>
                 <Icon size={19} />
                 <span className="nav-label">{label}</span>
               </NavLink>
@@ -164,9 +152,7 @@ export default function Shell({ children }: { children: ReactNode }) {
 
           {storageError && <p role="alert" className="storage-error">{storageError}</p>}
 
-          <main id="main" tabIndex={-1}>
-            {children}
-          </main>
+          <main id="main" tabIndex={-1}>{children}</main>
 
           <footer className="nextgen-footer sorted-footer">
             <span><BookOpen size={15} /> NEXT GEN LEARNING HUB</span>
