@@ -4062,3 +4062,476 @@ th {
     border-top: 1px solid var(--line);
   }
 }
+
+
+/* ---------- Guided course studio ---------- */
+
+.ng-course-page {
+  padding-bottom: 50px;
+}
+
+.ng-course-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, .55fr);
+  gap: 18px;
+  margin-top: 16px;
+}
+
+.ng-course-identity,
+.ng-course-status,
+.ng-course-contract,
+.ng-course-map {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+}
+
+.ng-course-identity {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  gap: 26px;
+  padding: clamp(28px, 4vw, 48px);
+  background:
+    radial-gradient(circle at 94% 8%, color-mix(in srgb, var(--blue) 13%, transparent), transparent 28%),
+    var(--surface);
+}
+
+.ng-course-symbol {
+  width: 104px;
+  height: 104px;
+  border-radius: 27px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  box-shadow: 0 18px 34px #14203a12, inset 0 1px 0 #ffffffa8;
+  position: relative;
+  overflow: hidden;
+}
+
+.ng-course-symbol:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, #ffffff88, transparent 45%);
+}
+
+.ng-course-symbol span {
+  position: relative;
+  z-index: 1;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -.06em;
+}
+
+.ng-course-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.ng-course-identity h1 {
+  margin: 9px 0 12px;
+  max-width: 820px;
+  font-size: clamp(34px, 4.5vw, 58px);
+  line-height: 1;
+  letter-spacing: -.055em;
+}
+
+.ng-course-identity .lead {
+  max-width: 760px;
+  margin: 0;
+}
+
+.ng-course-tags {
+  margin-top: 18px;
+}
+
+.ng-course-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 25px;
+}
+
+.ng-blueprint-note {
+  margin-top: 24px;
+  padding: 15px 17px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  background: var(--soft);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.ng-blueprint-note svg {
+  color: var(--blue);
+  flex: 0 0 auto;
+}
+
+.ng-course-status {
+  padding: 27px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ng-course-progress-ring {
+  display: grid;
+  place-items: center;
+  margin: 24px 0;
+}
+
+.ng-course-progress-ring > div {
+  --course-progress: 0deg;
+  width: 138px;
+  height: 138px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background:
+    radial-gradient(circle at center, var(--surface) 0 56%, transparent 57%),
+    conic-gradient(var(--blue) var(--course-progress), color-mix(in srgb, var(--line) 60%, transparent) 0);
+}
+
+.ng-course-progress-ring strong,
+.ng-course-progress-ring span {
+  display: block;
+}
+
+.ng-course-progress-ring strong {
+  font-size: 27px;
+  letter-spacing: -.05em;
+}
+
+.ng-course-progress-ring span {
+  color: var(--muted);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+
+.ng-course-signal-list {
+  display: grid;
+  gap: 9px;
+}
+
+.ng-course-signal-list > div {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.ng-course-signal-list svg {
+  color: var(--blue);
+  flex: 0 0 auto;
+}
+
+.ng-course-signal-list span,
+.ng-course-signal-list strong {
+  display: block;
+}
+
+.ng-course-signal-list strong {
+  color: var(--text);
+  font-size: 12px;
+}
+
+.ng-course-signal-list span {
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.ng-course-status > .progress {
+  margin-top: 20px;
+}
+
+.ng-course-status > small {
+  margin-top: 9px;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.ng-course-contract {
+  margin-top: 20px;
+  padding: 28px;
+}
+
+.ng-outcome-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 22px;
+}
+
+.ng-outcome-grid article {
+  display: grid;
+  grid-template-columns: 37px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 17px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg);
+}
+
+.ng-outcome-grid article > span {
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--blue) 9%, var(--soft));
+  color: var(--blue);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.ng-outcome-grid p {
+  margin: 2px 0 0;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.ng-course-learning-loop {
+  margin: 18px 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.ng-course-learning-loop > div {
+  min-height: 145px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.ng-course-learning-loop svg {
+  color: var(--blue);
+  margin-bottom: 17px;
+}
+
+.ng-course-learning-loop strong {
+  font-size: 12px;
+}
+
+.ng-course-learning-loop span {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.ng-course-foundation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.ng-prereq-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+.ng-prereq-list li {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 11px;
+}
+
+.ng-prereq-list svg {
+  color: var(--blue);
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.ng-course-map {
+  padding: 28px;
+}
+
+.ng-course-map .section-title > div .eyebrow {
+  margin: 0 0 5px;
+}
+
+.ng-course-map .section-title > div h2 {
+  margin: 0;
+}
+
+.ng-course-level {
+  margin-top: 28px;
+}
+
+.ng-course-level > h3 {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.ng-course-level-list {
+  display: grid;
+  gap: 6px;
+}
+
+.ng-course-map .syllabus-row {
+  min-height: 55px;
+  border-radius: 11px;
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+  background: var(--bg);
+}
+
+.ng-course-map .syllabus-row + .syllabus-row {
+  margin-top: 0;
+}
+
+.ng-ready-row {
+  transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+
+.ng-ready-row:hover {
+  transform: translateX(3px);
+  border-color: color-mix(in srgb, var(--blue) 45%, var(--line));
+  box-shadow: 0 8px 20px #15213b0b;
+}
+
+.ng-ready-chip,
+.ng-planned-chip {
+  justify-self: end;
+  padding: 5px 8px;
+  border-radius: 999px;
+  font-size: 8px !important;
+  font-weight: 700;
+}
+
+.ng-ready-chip {
+  color: #23734a;
+  background: #e8f7ee;
+  border: 1px solid #b9dfc8;
+}
+
+.ng-planned-chip {
+  color: var(--muted);
+  background: var(--soft);
+  border: 1px solid var(--line);
+}
+
+[data-theme="dark"] .ng-ready-chip {
+  color: #a7e9bd;
+  background: #18372a;
+  border-color: #2d6247;
+}
+
+.ng-course-references {
+  margin-top: 18px;
+}
+
+.ng-course-references ul {
+  margin-top: 15px;
+}
+
+@media (max-width: 1080px) {
+  .ng-course-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-course-status {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 18px;
+    align-items: center;
+  }
+
+  .ng-course-status > .eyebrow {
+    grid-column: 1 / -1;
+  }
+
+  .ng-course-progress-ring {
+    margin: 0;
+  }
+
+  .ng-course-status > .progress,
+  .ng-course-status > small {
+    grid-column: 1 / -1;
+  }
+
+  .ng-course-learning-loop {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .ng-course-identity {
+    grid-template-columns: 1fr;
+    padding: 24px 19px;
+  }
+
+  .ng-course-symbol {
+    width: 84px;
+    height: 84px;
+    border-radius: 22px;
+  }
+
+  .ng-course-identity h1 {
+    font-size: 37px;
+  }
+
+  .ng-course-status {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-course-progress-ring {
+    justify-content: start;
+  }
+
+  .ng-outcome-grid,
+  .ng-course-foundation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-course-learning-loop {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ng-course-map {
+    padding: 20px 15px;
+  }
+
+  .ng-course-map .syllabus-row {
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+  }
+
+  .ng-course-map .syllabus-row > span:nth-of-type(2),
+  .ng-course-map .syllabus-row > svg {
+    display: none;
+  }
+
+  .ng-ready-chip,
+  .ng-planned-chip {
+    display: inline-flex !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .ng-course-learning-loop {
+    grid-template-columns: 1fr;
+  }
+}
