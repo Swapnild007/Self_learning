@@ -440,10 +440,7 @@ export default function Reader() {
                 Check your understanding <ArrowRight size={17} />
               </Link>
               <Link className="button" to="/lab">
-                Open coding laboratory
-              </Link>
-              <Link className="button" to="/visuals">
-                Explore interactive visual notes
+                Open Interactive Lab
               </Link>
             </div>
           </section>
