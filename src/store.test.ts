@@ -12,9 +12,15 @@ describe("learning data contracts", () => {
     { ...defaults, scores: { x: 101 } },
     { ...defaults, notes: { x: 42 } },
     { ...defaults, read: { x: [2] } },
+    { ...defaults, confidence: { "chapter:section": 4 } },
   ])("rejects invalid imports %j", (value) =>
     expect(() => validate(value)).toThrow(),
   );
+  it("accepts older v1 exports that predate confidence check-ins", () => {
+    const legacy = { ...defaults } as Record<string, unknown>;
+    delete legacy.confidence;
+    expect(validate(legacy).confidence).toEqual({});
+  });
   it("grades exact sets, independent of order", () => {
     expect(grade([1, 0], [0, 1])).toBe(true);
     expect(grade([0], [0, 1])).toBe(false);
