@@ -142,7 +142,7 @@ export default function Shell({ children }: { children: ReactNode }) {
             <Modal
               title="Your learning workspace"
               trigger={
-                <button className="avatar nextgen-avatar" aria-label="Open learner menu">
+                <button className="avatar nextgen-avatar" aria-label="Open account menu">
                   S
                 </button>
               }
