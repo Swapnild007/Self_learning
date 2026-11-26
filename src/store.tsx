@@ -17,6 +17,7 @@ export interface Data {
   visited: string[];
   read: Record<string, string[]>;
   scores: Record<string, number>;
+  confidence: Record<string, number>;
   enrolled: string[];
 }
 export const defaults: Data = {
@@ -30,6 +31,7 @@ export const defaults: Data = {
   visited: [],
   read: {},
   scores: {},
+  confidence: {},
   enrolled: ["python"],
 };
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -58,10 +60,15 @@ export function validate(value: unknown): Data {
     !isRecord(d.scores) ||
     Object.values(d.scores).some(
       (x) => typeof x !== "number" || !Number.isFinite(x) || x < 0 || x > 100,
-    )
+    ) ||
+    (d.confidence !== undefined &&
+      (!isRecord(d.confidence) ||
+        Object.values(d.confidence).some(
+          (x) => typeof x !== "number" || ![1, 2, 3].includes(x),
+        )))
   )
-    throw Error("This is not a valid Self Learning v1 export.");
-  return { ...defaults, ...d };
+    throw Error("This is not a valid Next Gen Learning Hub v1 export.");
+  return { ...defaults, ...d, confidence: isRecord(d.confidence) ? (d.confidence as Record<string, number>) : {} };
 }
 const Context = createContext<{
   data: Data;
