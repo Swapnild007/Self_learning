@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -133,7 +134,7 @@ export default function Dashboard() {
           <div className="ng-focus-visual" aria-hidden="true">
             <div
               className="ng-progress-orb"
-              style={{ "--progress": `${pct * 3.6}deg` } as React.CSSProperties}
+              style={{ "--progress": `${pct * 3.6}deg` } as CSSProperties}
             >
               <div>
                 <strong>{pct}%</strong>
