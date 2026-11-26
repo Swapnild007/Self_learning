@@ -9,7 +9,6 @@ import {
   BookOpen,
   Target,
   FlaskConical,
-  Brain,
   Layers3,
 } from "lucide-react";
 import { courses } from "../content/catalog";
@@ -289,9 +288,14 @@ export default function Overview() {
               <span className="eyebrow">LEARNING TOOLS</span>
               <h2>Use the right mode for the task</h2>
               <div className="sorted-resource-links">
-                <Link to="/visuals"><FlaskConical /><div><strong>Visual studio</strong><span>Change variables and inspect relationships.</span></div><ArrowRight size={16} /></Link>
-                <Link to="/lab"><BookOpen /><div><strong>Code lab</strong><span>Run and modify browser-based Python.</span></div><ArrowRight size={16} /></Link>
-                <Link to="/living-lab"><Brain /><div><strong>Explain-back lab</strong><span>Test whether you can explain the concept simply.</span></div><ArrowRight size={16} /></Link>
+                <Link to="/lab">
+                  <FlaskConical />
+                  <div>
+                    <strong>Interactive Lab</strong>
+                    <span>Visualize, explain, and code inside one workspace.</span>
+                  </div>
+                  <ArrowRight size={16} />
+                </Link>
               </div>
             </section>
 
