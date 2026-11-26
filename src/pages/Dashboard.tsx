@@ -7,10 +7,9 @@ import {
   BookOpen,
   CheckCircle2,
   FlaskConical,
-  Code2,
   Route,
   RefreshCw,
-  Lightbulb,
+  NotebookPen,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { courses, chapter, findChapter, chapterRegistry } from "../content/catalog";
@@ -143,38 +142,29 @@ export default function Dashboard() {
         <div className="sorted-tab-panel" role="tabpanel">
           {tab === "today" && (
             <div className="sorted-today-grid">
-              <Link to={`/read/${featured.id}`} className="sorted-action-card">
-                <BookOpen />
-                <div>
-                  <strong>Understand</strong>
-                  <span>Continue the chapter and mental model.</span>
-                </div>
-                <ArrowRight size={17} />
-              </Link>
-
-              <Link to="/visuals" className="sorted-action-card">
+              <Link to="/lab" className="sorted-action-card">
                 <FlaskConical />
                 <div>
-                  <strong>Experiment</strong>
-                  <span>Change variables and inspect the result.</span>
+                  <strong>Open Lab</strong>
+                  <span>Visualize, explain, or code in one interactive workspace.</span>
                 </div>
                 <ArrowRight size={17} />
               </Link>
 
-              <Link to="/living-lab" className="sorted-action-card">
-                <Lightbulb />
+              <Link to={`/practice?chapter=${featured.id}`} className="sorted-action-card">
+                <Target />
                 <div>
-                  <strong>Explain back</strong>
-                  <span>Put the concept into your own words.</span>
+                  <strong>Practice</strong>
+                  <span>Check understanding against the current chapter.</span>
                 </div>
                 <ArrowRight size={17} />
               </Link>
 
-              <Link to="/lab" className="sorted-action-card">
-                <Code2 />
+              <Link to="/learning" className="sorted-action-card">
+                <NotebookPen />
                 <div>
-                  <strong>Build</strong>
-                  <span>Run and modify code in the browser.</span>
+                  <strong>Review progress</strong>
+                  <span>See notes, confidence, and mastery evidence together.</span>
                 </div>
                 <ArrowRight size={17} />
               </Link>
