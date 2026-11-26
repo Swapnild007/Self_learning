@@ -3745,3 +3745,320 @@ th {
     justify-content: center;
   }
 }
+
+
+/* ---------- Active recall and learning evidence ---------- */
+
+.ng-confidence-check {
+  margin: 28px 0 16px;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--blue) 24%, var(--line));
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 95% 0%, color-mix(in srgb, var(--blue) 10%, transparent), transparent 34%),
+    color-mix(in srgb, var(--soft) 60%, var(--surface));
+}
+
+.ng-confidence-copy {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+}
+
+.ng-confidence-copy > svg {
+  flex: 0 0 auto;
+  color: var(--blue);
+  margin-top: 2px;
+}
+
+.ng-confidence-copy .eyebrow {
+  margin: 0 0 5px;
+}
+
+.ng-confidence-copy strong {
+  display: block;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.ng-confidence-copy p {
+  margin: 5px 0 0 !important;
+  font-size: 12px !important;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.ng-confidence-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.ng-confidence-options button {
+  min-height: 45px;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 9px 11px;
+  border-radius: 11px;
+  font-size: 10px;
+  text-align: left;
+}
+
+.ng-confidence-options button span {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.ng-confidence-options button.selected {
+  border-color: var(--blue);
+  background: color-mix(in srgb, var(--blue) 9%, var(--surface));
+  color: var(--blue);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--blue) 40%, transparent);
+}
+
+.ng-confidence-options button.selected span {
+  background: var(--blue);
+  color: white;
+}
+
+.ng-confidence-check > small {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.reader-aside > a {
+  justify-content: space-between;
+}
+
+.reader-aside > a > span {
+  min-width: 0;
+}
+
+.reader-aside > a > small {
+  color: var(--muted);
+  font-size: 8px;
+  flex: 0 0 auto;
+}
+
+.ng-learning-page {
+  padding-bottom: 48px;
+}
+
+.ng-learning-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(360px, .75fr);
+  gap: 30px;
+  align-items: end;
+  margin-bottom: 34px;
+}
+
+.ng-learning-header h1 {
+  margin: 6px 0 10px;
+  max-width: 760px;
+  font-size: clamp(35px, 4.5vw, 58px);
+  line-height: 1;
+  letter-spacing: -.05em;
+}
+
+.ng-learning-header .lead {
+  max-width: 700px;
+  margin: 0;
+}
+
+.ng-learning-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.ng-learning-summary > div {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.ng-learning-summary svg {
+  width: 16px;
+  color: var(--blue);
+  margin-bottom: 10px;
+}
+
+.ng-learning-summary strong,
+.ng-learning-summary span {
+  display: block;
+}
+
+.ng-learning-summary strong {
+  font-size: 25px;
+  letter-spacing: -.05em;
+}
+
+.ng-learning-summary span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.ng-learning-evidence {
+  margin-top: 34px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 21px;
+  background: var(--surface);
+}
+
+.ng-evidence-list {
+  margin-top: 22px;
+  display: grid;
+  gap: 10px;
+}
+
+.ng-evidence-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.5fr) repeat(3, minmax(130px, .8fr));
+  gap: 12px;
+  align-items: stretch;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--bg);
+}
+
+.ng-evidence-title,
+.ng-evidence-signal {
+  padding: 10px;
+}
+
+.ng-evidence-title span,
+.ng-evidence-title a {
+  display: block;
+}
+
+.ng-evidence-title span {
+  color: var(--blue);
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+
+.ng-evidence-title a {
+  margin-top: 5px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.ng-evidence-signal {
+  border-left: 1px solid var(--line);
+}
+
+.ng-evidence-signal > span,
+.ng-evidence-signal > strong,
+.ng-evidence-signal > small,
+.ng-evidence-signal > a {
+  display: block;
+}
+
+.ng-evidence-signal > span {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.ng-evidence-signal > strong {
+  margin-top: 5px;
+  font-size: 13px;
+}
+
+.ng-evidence-signal > small {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.ng-evidence-signal > a {
+  margin-top: 5px;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.ng-evidence-signal .progress {
+  margin-top: 8px;
+  height: 5px;
+}
+
+.ng-learning-secondary {
+  margin-top: 20px;
+}
+
+.ng-notes-panel .notes-label + .notes-label {
+  margin-top: 14px;
+}
+
+@media (max-width: 1050px) {
+  .ng-learning-header {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-learning-summary {
+    max-width: 600px;
+  }
+
+  .ng-evidence-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ng-evidence-title {
+    grid-column: 1 / -1;
+  }
+
+  .ng-evidence-signal {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 620px) {
+  .ng-confidence-check {
+    padding: 16px;
+  }
+
+  .ng-confidence-options {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-learning-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ng-learning-evidence {
+    padding: 19px 15px;
+  }
+
+  .ng-evidence-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ng-evidence-title,
+  .ng-evidence-signal {
+    grid-column: auto;
+  }
+
+  .ng-evidence-signal {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
