@@ -16,34 +16,46 @@ import {
   PanelLeftOpen,
   GraduationCap,
   ArrowUpRight,
+  Sparkles,
 } from "lucide-react";
 import { MotionConfig } from "motion/react";
 import { useStore } from "./store";
 import { Modal } from "./components/ui";
+
 const links = [
-  ["/", "Overview", LayoutDashboard],
-  ["/catalog", "Explore courses", Compass],
+  ["/", "Learning home", LayoutDashboard],
+  ["/catalog", "Knowledge library", Compass],
   ["/paths", "Learning paths", RouteIcon],
-  ["/visuals", "Visual concept studio", ChartColumn],
+  ["/visuals", "Visual studio", ChartColumn],
   ["/learning", "My learning", Library],
-  ["/lab", "Coding laboratory", Code2],
+  ["/lab", "Code lab", Code2],
   ["/practice", "Practice", CheckCheck],
   ["/settings", "Settings", Settings],
 ] as const;
+
 export default function Shell({ children }: { children: ReactNode }) {
   const { data, storageError } = useStore();
   const [collapsed, collapse] = useState(false);
   const [q, search] = useState("");
   const nav = useNavigate();
   const location = useLocation();
+
   useEffect(() => {
     document.documentElement.dataset.theme = data.theme;
     document.documentElement.dataset.reduced = String(data.reduced);
   }, [data.theme, data.reduced]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
     document.getElementById("main")?.focus();
   }, [location.pathname]);
+
+  const pageName =
+    (location.pathname.startsWith("/paths/")
+      ? "Learning path"
+      : links.find((x) => x[0] === location.pathname)?.[1]) ||
+    "Course learning";
+
   return (
     <MotionConfig reducedMotion={data.reduced ? "always" : "user"}>
       <a
@@ -56,18 +68,21 @@ export default function Shell({ children }: { children: ReactNode }) {
       >
         Skip to content
       </a>
-      <div className={`app ${collapsed ? "collapsed" : ""}`}>
-        <aside className="sidebar">
-          <Link to="/" className="brand">
-            <span className="brand-mark">
-              <BookOpen size={22} />
+
+      <div className={`app nextgen-app ${collapsed ? "collapsed" : ""}`}>
+        <aside className="sidebar nextgen-sidebar">
+          <Link to="/" className="brand nextgen-brand" aria-label="Next Gen Learning Hub home">
+            <span className="brand-mark nextgen-brand-mark">
+              <Sparkles size={20} />
             </span>
-            <span className="nav-label">
-              Self<span className="brand-light">Learning</span>
-              <small>A little further, every day.</small>
+            <span className="nav-label nextgen-brand-copy">
+              <strong>NEXT GEN</strong>
+              <span>Learning Hub</span>
+              <small>Understand deeply. Build confidently.</small>
             </span>
           </Link>
-          <span className="eyebrow nav-label">YOUR WORKSPACE</span>
+
+          <span className="eyebrow nav-label nextgen-nav-title">LEARNING SPACE</span>
           <nav aria-label="Main navigation">
             {links.map(([to, label, Icon]) => (
               <NavLink key={to} to={to} end={to === "/"} title={label}>
@@ -76,36 +91,37 @@ export default function Shell({ children }: { children: ReactNode }) {
               </NavLink>
             ))}
           </nav>
+
           <div className="sidebar-bottom nav-label">
-            <div className="quiet-card">
-              <GraduationCap size={25} />
-              <strong>Build a lasting habit.</strong>
-              <p>Small steps. Deeper understanding.</p>
-              <Link to="/settings">
-                Set your learning goal <ArrowUpRight size={15} />
+            <div className="quiet-card nextgen-quiet-card">
+              <GraduationCap size={24} />
+              <strong>Learn actively.</strong>
+              <p>Read less passively. Explain, experiment, practice, and build.</p>
+              <Link to="/paths">
+                Choose a learning path <ArrowUpRight size={15} />
               </Link>
             </div>
-            <span className="local-dot">Saved on this device</span>
+            <span className="local-dot">Local-first · no account required</span>
           </div>
+
           <button
             className="collapse icon"
             onClick={() => collapse(!collapsed)}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            {collapsed ? (
-              <PanelLeftOpen size={18} />
-            ) : (
-              <PanelLeftClose size={18} />
-            )}
+            {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
           </button>
         </aside>
+
         <div className="workspace">
-          <header className="topbar">
-            <span className="breadcrumb">
-              Workspace <span>/</span>{" "}
-              {(location.pathname.startsWith("/paths/") ? "Learning paths" : links.find((x) => x[0] === location.pathname)?.[1]) ||
-                "Course learning"}
-            </span>
+          <header className="topbar nextgen-topbar">
+            <div className="nextgen-location">
+              <span className="breadcrumb">
+                Next Gen <span>/</span> {pageName}
+              </span>
+              <small>Learn · Practice · Build · Master</small>
+            </div>
+
             <form
               className="global-search"
               onSubmit={(e) => {
@@ -116,23 +132,25 @@ export default function Shell({ children }: { children: ReactNode }) {
               <Search size={17} />
               <input
                 aria-label="Search all courses"
-                placeholder="What will you learn today?"
+                placeholder="Search a concept, skill, or technology"
                 value={q}
                 onChange={(e) => search(e.target.value)}
               />
               <kbd>↵</kbd>
             </form>
+
             <Modal
-              title="Your account"
+              title="Your learning workspace"
               trigger={
-                <button className="avatar" aria-label="Open account menu">
+                <button className="avatar nextgen-avatar" aria-label="Open learner menu">
                   S
                 </button>
               }
             >
               <p>
-                This is a private, local-first learner profile. No sign-in or
-                cloud synchronization is configured.
+                Your progress, notes, bookmarks, and assessment results stay on this
+                device unless you export them. No paid account or cloud service is
+                required.
               </p>
               <Dialog.Close asChild>
                 <Link className="button primary" to="/settings">
@@ -141,18 +159,21 @@ export default function Shell({ children }: { children: ReactNode }) {
               </Dialog.Close>
             </Modal>
           </header>
+
           {storageError && (
             <p role="alert" className="storage-error">
               {storageError}
             </p>
           )}
+
           <main id="main" tabIndex={-1}>
             {children}
           </main>
-          <footer>
-            SELF LEARNING{" "}
-            <span>Made for curiosity. Built for understanding.</span>
-            <Link to="/settings">Your data, your device</Link>
+
+          <footer className="nextgen-footer">
+            <span><BookOpen size={15} /> NEXT GEN LEARNING HUB</span>
+            <span>Built for active learning, not content scrolling.</span>
+            <Link to="/settings">Local learning data</Link>
           </footer>
         </div>
       </div>
