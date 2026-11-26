@@ -1,37 +1,28 @@
-import type { CSSProperties } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
   Play,
   Target,
   BookOpen,
-  Bookmark,
   CheckCircle2,
   FlaskConical,
   Code2,
   Route,
   RefreshCw,
-  Clock3,
   Lightbulb,
-  ArrowUpRight,
 } from "lucide-react";
 import { motion } from "motion/react";
-import {
-  courses,
-  chapter,
-  findChapter,
-  chapterRegistry,
-} from "../content/catalog";
-import {
-  learningPaths,
-  publishedCoursesInPath,
-  resolvePath,
-} from "../content/learningPaths";
+import { courses, chapter, findChapter, chapterRegistry } from "../content/catalog";
+import { learningPaths, resolvePath } from "../content/learningPaths";
 import { useStore } from "../store";
 import { Progress } from "../components/ui";
 
+type HomeTab = "today" | "path" | "review";
+
 export default function Dashboard() {
   const { data } = useStore();
+  const [tab, setTab] = useState<HomeTab>("today");
 
   const recentEntry = data.visited
     .map((id) => findChapter(id))
@@ -42,308 +33,210 @@ export default function Dashboard() {
   const read = data.read[featured.id]?.length || 0;
   const pct = Math.round((read / Math.max(1, featured.sections.length)) * 100);
   const assessmentKey = `${featured.assessment.id}-v${featured.assessment.version}`;
-  const assessmentScore = data.scores[assessmentKey];
+  const score = data.scores[assessmentKey];
 
-  const mastered = Object.values(data.scores).filter((score) => score === 100).length;
-  const authoredCourses = courses.filter((course) =>
-    course.modules.some((module) => module.chapters.length > 0),
-  ).length;
-  const noteCount = Object.values(data.notes).filter((note) => note.trim().length > 0).length;
-
-  const reviewQueue = chapterRegistry
-    .map((entry) => ({
-      ...entry,
-      score:
-        data.scores[
-          `${entry.chapter.assessment.id}-v${entry.chapter.assessment.version}`
-        ],
-    }))
-    .filter((entry) => entry.score !== undefined && entry.score < 100)
-    .slice(0, 3);
-
-  const recommendedPath =
+  const currentPath =
     learningPaths.find((path) => path.courses.includes(featuredCourse.id)) ||
     learningPaths[0];
-  const pathCourses = resolvePath(recommendedPath);
+  const pathCourses = resolvePath(currentPath);
+
+  const reviewQueue = useMemo(
+    () =>
+      chapterRegistry
+        .map((entry) => ({
+          ...entry,
+          score:
+            data.scores[
+              `${entry.chapter.assessment.id}-v${entry.chapter.assessment.version}`
+            ],
+        }))
+        .filter((entry) => entry.score !== undefined && entry.score < 100),
+    [data.scores],
+  );
 
   const masteryLabel =
-    assessmentScore === 100
+    score === 100
       ? "Mastered"
-      : assessmentScore !== undefined
-        ? `${assessmentScore}% assessment`
+      : score !== undefined
+        ? `${score}% assessment`
         : pct === 100
           ? "Ready to practice"
           : `${pct}% read`;
 
   return (
-    <div className="page nextgen-home">
-      <section className="ng-welcome">
+    <div className="page sorted-home">
+      <header className="sorted-home-header">
         <div>
-          <span className="eyebrow">YOUR LEARNING COCKPIT</span>
-          <h1>
-            Learn by doing, not by scrolling<span className="blue-dot">.</span>
-          </h1>
+          <span className="eyebrow">YOUR LEARNING SPACE</span>
+          <h1>Focus on one useful next step<span className="blue-dot">.</span></h1>
           <p>
-            Continue one real concept, test your understanding, change the variables,
-            and build something with it.
+            Continue learning, follow your path, or review a weak spot. Everything
+            else stays out of the way until you need it.
           </p>
         </div>
-        <div className="ng-trust-strip" aria-label="Learning model">
-          <span><CheckCircle2 size={16} /> Real progress only</span>
-          <span><Target size={16} /> Mastery over completion</span>
-          <span><BookOpen size={16} /> Local-first workspace</span>
-        </div>
-      </section>
+        <Link className="button" to="/catalog">
+          Explore library <ArrowRight size={16} />
+        </Link>
+      </header>
 
-      <div className="ng-hero-grid">
-        <motion.section
-          className="ng-focus-card"
-          initial={{ opacity: 1, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <div className="ng-focus-copy">
-            <div className="ng-focus-topline">
-              <span className="eyebrow">CONTINUE WHERE YOUR BRAIN LEFT OFF</span>
-              <span className="ng-state-pill">{masteryLabel}</span>
-            </div>
-            <span className="ng-course-name">{featuredCourse.title}</span>
-            <h2>{featured.title}</h2>
-            <p>{featured.introduction}</p>
-
-            <div className="ng-focus-actions">
-              <Link className="button primary" to={`/read/${featured.id}`}>
-                <Play size={16} fill="currentColor" />
-                {read ? "Resume learning" : "Start chapter"}
-                <ArrowRight size={17} />
-              </Link>
-              <Link className="button ng-secondary-button" to={`/practice?chapter=${featured.id}`}>
-                <Target size={16} />
-                Test understanding
-              </Link>
-            </div>
-
-            <div className="ng-progress-line">
-              <Progress value={pct} label="Current chapter reading progress" />
-              <div>
-                <strong>{pct}%</strong>
-                <span>{featured.minutes} min · {featured.sections.length} active sections</span>
-              </div>
-            </div>
+      <motion.section
+        className="sorted-focus"
+        initial={{ opacity: 1, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <div className="sorted-focus-copy">
+          <div className="sorted-focus-meta">
+            <span>{featuredCourse.title}</span>
+            <span>{masteryLabel}</span>
           </div>
+          <h2>{featured.title}</h2>
+          <p>{featured.introduction}</p>
 
-          <div className="ng-focus-visual" aria-hidden="true">
-            <div
-              className="ng-progress-orb"
-              style={{ "--progress": `${pct * 3.6}deg` } as CSSProperties}
-            >
-              <div>
-                <strong>{pct}%</strong>
-                <span>chapter</span>
-              </div>
-            </div>
-            <div className="ng-orbit-label one">read</div>
-            <div className="ng-orbit-label two">explain</div>
-            <div className="ng-orbit-label three">practice</div>
-          </div>
-        </motion.section>
-
-        <aside className="ng-mastery-card">
-          <div className="ng-card-heading">
-            <div>
-              <span className="eyebrow">MASTERY PULSE</span>
-              <h2>What is actually sticking?</h2>
-            </div>
-            <Target size={22} />
-          </div>
-
-          <div className="ng-mastery-number">
-            <strong>{mastered}</strong>
-            <span>assessments mastered</span>
-          </div>
-
-          <div className="ng-signal-grid">
-            <div>
-              <strong>{authoredCourses}</strong>
-              <span>courses with real lessons</span>
-            </div>
-            <div>
-              <strong>{data.visited.length}</strong>
-              <span>chapters explored</span>
-            </div>
-            <div>
-              <strong>{noteCount}</strong>
-              <span>chapters with notes</span>
-            </div>
-            <div>
-              <strong>{data.bookmarks.length}</strong>
-              <span>saved for return</span>
-            </div>
-          </div>
-
-          <Link className="ng-inline-link" to="/learning">
-            Open learning record <ArrowUpRight size={15} />
-          </Link>
-        </aside>
-      </div>
-
-      <section className="ng-learning-loop" aria-labelledby="learning-loop-title">
-        <div className="ng-section-intro">
-          <div>
-            <span className="eyebrow">ACTIVE LEARNING LOOP</span>
-            <h2 id="learning-loop-title">One concept. Five ways to make it yours.</h2>
-          </div>
-          <p>
-            Reading is only the first pass. The workspace deliberately moves you
-            from recognition to recall, experimentation, application, and proof.
-          </p>
-        </div>
-
-        <div className="ng-mode-grid">
-          <Link to={`/read/${featured.id}`} className="ng-mode-card">
-            <span className="ng-mode-index">01</span>
-            <BookOpen />
-            <strong>Understand</strong>
-            <p>Build the mental model with examples, diagrams, and explicit assumptions.</p>
-            <span>Open chapter <ArrowRight size={15} /></span>
-          </Link>
-
-          <Link to="/visuals" className="ng-mode-card">
-            <span className="ng-mode-index">02</span>
-            <FlaskConical />
-            <strong>Experiment</strong>
-            <p>Change variables and watch the concept react instead of memorising a static chart.</p>
-            <span>Open visual studio <ArrowRight size={15} /></span>
-          </Link>
-
-          <Link to="/living-lab" className="ng-mode-card">
-            <span className="ng-mode-index">03</span>
-            <Lightbulb />
-            <strong>Explain back</strong>
-            <p>Put the idea into your own words and expose weak understanding early.</p>
-            <span>Open explain-back lab <ArrowRight size={15} /></span>
-          </Link>
-
-          <Link to="/lab" className="ng-mode-card">
-            <span className="ng-mode-index">04</span>
-            <Code2 />
-            <strong>Build</strong>
-            <p>Move from reading code to changing it, breaking it, and observing real output.</p>
-            <span>Open code lab <ArrowRight size={15} /></span>
-          </Link>
-
-          <Link to={`/practice?chapter=${featured.id}`} className="ng-mode-card">
-            <span className="ng-mode-index">05</span>
-            <CheckCircle2 />
-            <strong>Prove it</strong>
-            <p>Use independent questions and runnable checks to turn confidence into evidence.</p>
-            <span>Take assessment <ArrowRight size={15} /></span>
-          </Link>
-        </div>
-      </section>
-
-      <div className="ng-two-column">
-        <section className="ng-path-panel">
-          <div className="ng-card-heading">
-            <div>
-              <span className="eyebrow">YOUR NEXT HORIZON</span>
-              <h2>{recommendedPath.title}</h2>
-              <p>{recommendedPath.description}</p>
-            </div>
-            <Route size={24} />
-          </div>
-
-          <div className="ng-path-rail" aria-label="Recommended learning sequence">
-            {pathCourses.map((course, index) => {
-              const available = course.modules.some((module) => module.chapters.length > 0);
-              return (
-                <Link
-                  key={course.id}
-                  to={`/course/${course.id}`}
-                  className={`ng-path-node ${available ? "is-ready" : ""}`}
-                >
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <div>
-                    <strong>{course.title}</strong>
-                    <small>{available ? "Lessons available" : "Curriculum mapped"}</small>
-                  </div>
-                  <ArrowRight size={16} />
-                </Link>
-              );
-            })}
-          </div>
-
-          <div className="ng-path-footer">
-            <span>
-              {publishedCoursesInPath(recommendedPath)} of {recommendedPath.courses.length} courses have authored lessons
-            </span>
-            <Link to={`/paths/${recommendedPath.id}`}>
-              View full path <ArrowRight size={15} />
+          <div className="sorted-focus-actions">
+            <Link className="button primary" to={`/read/${featured.id}`}>
+              <Play size={16} fill="currentColor" />
+              {read ? "Resume chapter" : "Start chapter"}
+            </Link>
+            <Link className="button" to={`/practice?chapter=${featured.id}`}>
+              <Target size={16} />
+              Practice
             </Link>
           </div>
-        </section>
+        </div>
 
-        <section className="ng-review-panel">
-          <div className="ng-card-heading">
-            <div>
-              <span className="eyebrow">REVIEW QUEUE</span>
-              <h2>Strengthen weak spots.</h2>
-            </div>
-            <RefreshCw size={22} />
-          </div>
+        <div className="sorted-focus-progress">
+          <strong>{pct}%</strong>
+          <span>reading progress</span>
+          <Progress value={pct} label="Current chapter progress" />
+          <small>{read} of {featured.sections.length} sections read</small>
+        </div>
+      </motion.section>
 
-          {reviewQueue.length ? (
-            <div className="ng-review-list">
-              {reviewQueue.map(({ chapter: item, course, score }) => (
-                <Link
-                  key={item.id}
-                  to={`/practice?chapter=${item.id}`}
-                  className="ng-review-item"
-                >
-                  <div>
-                    <span>{course.title}</span>
-                    <strong>{item.title}</strong>
-                  </div>
-                  <b>{score}%</b>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="ng-review-empty">
-              <CheckCircle2 size={28} />
-              <strong>No unfinished assessment attempts.</strong>
-              <p>
-                Your review queue will appear when an assessment has been attempted
-                but not yet mastered.
-              </p>
-              <Link to={`/practice?chapter=${featured.id}`}>
-                Try the current assessment <ArrowRight size={15} />
+      <section className="sorted-switcher">
+        <div className="sorted-tabs" role="tablist" aria-label="Home learning views">
+          <button
+            role="tab"
+            aria-selected={tab === "today"}
+            className={tab === "today" ? "selected" : ""}
+            onClick={() => setTab("today")}
+          >
+            Today
+          </button>
+          <button
+            role="tab"
+            aria-selected={tab === "path"}
+            className={tab === "path" ? "selected" : ""}
+            onClick={() => setTab("path")}
+          >
+            My path
+          </button>
+          <button
+            role="tab"
+            aria-selected={tab === "review"}
+            className={tab === "review" ? "selected" : ""}
+            onClick={() => setTab("review")}
+          >
+            Review {reviewQueue.length ? `(${reviewQueue.length})` : ""}
+          </button>
+        </div>
+
+        <div className="sorted-tab-panel" role="tabpanel">
+          {tab === "today" && (
+            <div className="sorted-today-grid">
+              <Link to={`/read/${featured.id}`} className="sorted-action-card">
+                <BookOpen />
+                <div>
+                  <strong>Understand</strong>
+                  <span>Continue the chapter and mental model.</span>
+                </div>
+                <ArrowRight size={17} />
+              </Link>
+
+              <Link to="/visuals" className="sorted-action-card">
+                <FlaskConical />
+                <div>
+                  <strong>Experiment</strong>
+                  <span>Change variables and inspect the result.</span>
+                </div>
+                <ArrowRight size={17} />
+              </Link>
+
+              <Link to="/living-lab" className="sorted-action-card">
+                <Lightbulb />
+                <div>
+                  <strong>Explain back</strong>
+                  <span>Put the concept into your own words.</span>
+                </div>
+                <ArrowRight size={17} />
+              </Link>
+
+              <Link to="/lab" className="sorted-action-card">
+                <Code2 />
+                <div>
+                  <strong>Build</strong>
+                  <span>Run and modify code in the browser.</span>
+                </div>
+                <ArrowRight size={17} />
               </Link>
             </div>
           )}
 
-          <div className="ng-review-meta">
-            <Clock3 size={15} />
-            <span>Review signals come from your real assessment results—not a fabricated streak score.</span>
-          </div>
-        </section>
-      </div>
+          {tab === "path" && (
+            <div className="sorted-path-view">
+              <div className="sorted-panel-heading">
+                <div>
+                  <span className="eyebrow">{currentPath.focus}</span>
+                  <h2>{currentPath.title}</h2>
+                  <p>{currentPath.description}</p>
+                </div>
+                <Route size={22} />
+              </div>
+              <div className="sorted-path-list">
+                {pathCourses.map((course, index) => {
+                  const ready = course.modules.some((module) => module.chapters.length > 0);
+                  return (
+                    <Link to={`/course/${course.id}`} key={course.id}>
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      <div>
+                        <strong>{course.title}</strong>
+                        <small>{ready ? "Lessons available" : "Curriculum mapped"}</small>
+                      </div>
+                      <ArrowRight size={16} />
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
-      <section className="ng-explore-strip">
-        <div>
-          <span className="eyebrow">EXPLORE WITHOUT LOSING DIRECTION</span>
-          <h2>36 subjects mapped. Only authored learning is marked ready.</h2>
-          <p>
-            Browse the full curriculum without pretending unfinished course outlines
-            are completed lessons.
-          </p>
-        </div>
-        <div className="ng-explore-actions">
-          <Link className="button primary" to="/catalog">
-            Explore knowledge library <ArrowRight size={16} />
-          </Link>
-          <Link className="button" to="/paths">
-            Browse guided paths
-          </Link>
+          {tab === "review" && (
+            <div className="sorted-review-view">
+              {reviewQueue.length ? (
+                reviewQueue.map(({ chapter: item, course, score }) => (
+                  <Link
+                    className="sorted-review-row"
+                    key={item.id}
+                    to={`/practice?chapter=${item.id}`}
+                  >
+                    <RefreshCw size={17} />
+                    <div>
+                      <strong>{item.title}</strong>
+                      <span>{course.title}</span>
+                    </div>
+                    <b>{score}%</b>
+                    <ArrowRight size={16} />
+                  </Link>
+                ))
+              ) : (
+                <div className="sorted-empty-state">
+                  <CheckCircle2 size={28} />
+                  <strong>No unfinished assessment attempts.</strong>
+                  <p>Your review queue appears only when an assessment needs another pass.</p>
+                  <Link to={`/practice?chapter=${featured.id}`}>Try the current assessment →</Link>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </section>
     </div>
