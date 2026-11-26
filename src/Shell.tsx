@@ -2,42 +2,43 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useState, type ReactNode } from "react";
 import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  BookOpen,
-  LayoutDashboard,
-  Compass,
-  Route as RouteIcon,
-  ChartColumn,
+  Sparkles,
+  Home,
   Library,
-  Code2,
-  CheckCheck,
+  Route as RouteIcon,
+  Target,
   Settings,
   Search,
   PanelLeftClose,
   PanelLeftOpen,
-  GraduationCap,
-  ArrowUpRight,
-  Sparkles,
+  FlaskConical,
+  BookOpen,
+  UserRound,
 } from "lucide-react";
 import { MotionConfig } from "motion/react";
 import { useStore } from "./store";
 import { Modal } from "./components/ui";
 
-const links = [
-  ["/", "Learning home", LayoutDashboard],
-  ["/catalog", "Knowledge library", Compass],
-  ["/paths", "Learning paths", RouteIcon],
-  ["/visuals", "Visual studio", ChartColumn],
-  ["/learning", "My learning", Library],
-  ["/lab", "Code lab", Code2],
-  ["/practice", "Practice", CheckCheck],
-  ["/settings", "Settings", Settings],
+const primaryLinks = [
+  ["/", "Home", Home],
+  ["/catalog", "Library", Library],
+  ["/paths", "Paths", RouteIcon],
+  ["/practice", "Practice", Target],
+  ["/learning", "My learning", UserRound],
 ] as const;
+
+const toolLinks = [
+  ["/visuals", "Visual studio", FlaskConical],
+  ["/lab", "Code lab", BookOpen],
+] as const;
+
+const allLinks = [...primaryLinks, ...toolLinks, ["/settings", "Settings", Settings] as const];
 
 export default function Shell({ children }: { children: ReactNode }) {
   const { data, storageError } = useStore();
-  const [collapsed, collapse] = useState(false);
-  const [q, search] = useState("");
-  const nav = useNavigate();
+  const [collapsed, setCollapsed] = useState(false);
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
@@ -53,60 +54,64 @@ export default function Shell({ children }: { children: ReactNode }) {
   const pageName =
     (location.pathname.startsWith("/paths/")
       ? "Learning path"
-      : links.find((x) => x[0] === location.pathname)?.[1]) ||
-    "Course learning";
+      : allLinks.find(([to]) => to === location.pathname)?.[1]) ||
+    "Course";
 
   return (
     <MotionConfig reducedMotion={data.reduced ? "always" : "user"}>
       <a
         className="skip"
         href="#main"
-        onClick={(e) => {
-          e.preventDefault();
+        onClick={(event) => {
+          event.preventDefault();
           document.getElementById("main")?.focus();
         }}
       >
         Skip to content
       </a>
 
-      <div className={`app nextgen-app ${collapsed ? "collapsed" : ""}`}>
-        <aside className="sidebar nextgen-sidebar">
-          <Link to="/" className="brand nextgen-brand" aria-label="Next Gen Learning Hub home">
+      <div className={`app nextgen-app sorted-app ${collapsed ? "collapsed" : ""}`}>
+        <aside className="sidebar sorted-sidebar">
+          <Link to="/" className="brand sorted-brand" aria-label="Next Gen Learning Hub home">
             <span className="brand-mark nextgen-brand-mark">
               <Sparkles size={20} />
             </span>
             <span className="nav-label nextgen-brand-copy">
               <strong>NEXT GEN</strong>
               <span>Learning Hub</span>
-              <small>Understand deeply. Build confidently.</small>
+              <small>Learn. Practice. Master.</small>
             </span>
           </Link>
 
-          <span className="eyebrow nav-label nextgen-nav-title">LEARNING SPACE</span>
-          <nav aria-label="Main navigation">
-            {links.map(([to, label, Icon]) => (
+          <nav aria-label="Primary navigation" className="sorted-nav">
+            <span className="eyebrow nav-label sorted-nav-label">LEARN</span>
+            {primaryLinks.map(([to, label, Icon]) => (
               <NavLink key={to} to={to} end={to === "/"} title={label}>
-                <Icon size={20} />
+                <Icon size={19} />
+                <span className="nav-label">{label}</span>
+              </NavLink>
+            ))}
+
+            <span className="eyebrow nav-label sorted-nav-label tool-label">TOOLS</span>
+            {toolLinks.map(([to, label, Icon]) => (
+              <NavLink key={to} to={to} title={label}>
+                <Icon size={19} />
                 <span className="nav-label">{label}</span>
               </NavLink>
             ))}
           </nav>
 
-          <div className="sidebar-bottom nav-label">
-            <div className="quiet-card nextgen-quiet-card">
-              <GraduationCap size={24} />
-              <strong>Learn actively.</strong>
-              <p>Read less passively. Explain, experiment, practice, and build.</p>
-              <Link to="/paths">
-                Choose a learning path <ArrowUpRight size={15} />
-              </Link>
-            </div>
-            <span className="local-dot">Local-first · no account required</span>
+          <div className="sidebar-bottom nav-label sorted-sidebar-bottom">
+            <Link className="sorted-settings-link" to="/settings">
+              <Settings size={18} />
+              <span>Settings</span>
+            </Link>
+            <span className="local-dot">Local-first · no paid account</span>
           </div>
 
           <button
             className="collapse icon"
-            onClick={() => collapse(!collapsed)}
+            onClick={() => setCollapsed(!collapsed)}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
@@ -114,27 +119,25 @@ export default function Shell({ children }: { children: ReactNode }) {
         </aside>
 
         <div className="workspace">
-          <header className="topbar nextgen-topbar">
-            <div className="nextgen-location">
-              <span className="breadcrumb">
-                Next Gen <span>/</span> {pageName}
-              </span>
-              <small>Learn · Practice · Build · Master</small>
+          <header className="topbar sorted-topbar">
+            <div className="sorted-page-label">
+              <strong>{pageName}</strong>
+              <span>Next Gen Learning Hub</span>
             </div>
 
             <form
-              className="global-search"
-              onSubmit={(e) => {
-                e.preventDefault();
-                nav(`/catalog?q=${encodeURIComponent(q)}`);
+              className="global-search sorted-search"
+              onSubmit={(event) => {
+                event.preventDefault();
+                navigate(`/catalog?q=${encodeURIComponent(query)}`);
               }}
             >
               <Search size={17} />
               <input
                 aria-label="Search all courses"
-                placeholder="Search a concept, skill, or technology"
-                value={q}
-                onChange={(e) => search(e.target.value)}
+                placeholder="Search a skill or concept"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
               />
               <kbd>↵</kbd>
             </form>
@@ -148,9 +151,8 @@ export default function Shell({ children }: { children: ReactNode }) {
               }
             >
               <p>
-                Your progress, notes, bookmarks, and assessment results stay on this
-                device unless you export them. No paid account or cloud service is
-                required.
+                Progress, notes, bookmarks, confidence check-ins, and assessment
+                results stay on this device unless you export them.
               </p>
               <Dialog.Close asChild>
                 <Link className="button primary" to="/settings">
@@ -160,20 +162,16 @@ export default function Shell({ children }: { children: ReactNode }) {
             </Modal>
           </header>
 
-          {storageError && (
-            <p role="alert" className="storage-error">
-              {storageError}
-            </p>
-          )}
+          {storageError && <p role="alert" className="storage-error">{storageError}</p>}
 
           <main id="main" tabIndex={-1}>
             {children}
           </main>
 
-          <footer className="nextgen-footer">
+          <footer className="nextgen-footer sorted-footer">
             <span><BookOpen size={15} /> NEXT GEN LEARNING HUB</span>
-            <span>Built for active learning, not content scrolling.</span>
-            <Link to="/settings">Local learning data</Link>
+            <span>Learning evidence over content consumption.</span>
+            <Link to="/settings">Local data</Link>
           </footer>
         </div>
       </div>
