@@ -50,7 +50,7 @@ function BlockView({ block: b }: { block: Block }) {
             <pre tabIndex={0} aria-label="Expected output">{b.example.expectedOutput}</pre>
           </div>
           <p>{b.example.explanation}</p>
-          <Link className="button" to="/lab">Try this in the Python laboratory <ArrowRight size={15} /></Link>
+          <Link className="button" to={`/lab?chapter=${chapter.id}`}>Try this in the Python laboratory <ArrowRight size={15} /></Link>
         </figure>
       );
     case "table":
