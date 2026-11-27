@@ -14,6 +14,8 @@ describe("learning data contracts", () => {
     { ...defaults, read: { x: [2] } },
     { ...defaults, confidence: { "chapter:section": 4 } },
     { ...defaults, labEvidence: { mission: { attempts: 1, best: 101, lastRun: 1 } } },
+    { ...defaults, personal: { ...defaults.personal, weeklyDays: 4 } },
+    { ...defaults, activity: [{ id: "x", type: "bad", subject: "x", at: 1 }] },
   ])("rejects invalid imports %j", (value) =>
     expect(() => validate(value)).toThrow(),
   );
@@ -21,8 +23,12 @@ describe("learning data contracts", () => {
     const legacy = { ...defaults } as Record<string, unknown>;
     delete legacy.confidence;
     delete legacy.labEvidence;
+    delete legacy.personal;
+    delete legacy.activity;
     expect(validate(legacy).confidence).toEqual({});
     expect(validate(legacy).labEvidence).toEqual({});
+    expect(validate(legacy).personal).toEqual(defaults.personal);
+    expect(validate(legacy).activity).toEqual([]);
   });
   it("grades exact sets, independent of order", () => {
     expect(grade([1, 0], [0, 1])).toBe(true);
