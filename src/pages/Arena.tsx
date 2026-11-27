@@ -5,13 +5,11 @@ import {
   ArrowRight,
   BarChart3,
   CheckCircle2,
-  Circle,
   Clock3,
   Code2,
   Database,
   FileText,
   LockKeyhole,
-  Medal,
   Play,
   Save,
   Target,
@@ -21,6 +19,8 @@ import { challenges } from "../content/challenges";
 import { useStore } from "../store";
 import CodeEditor from "../components/CodeEditor";
 import { usePython } from "../usePython";
+
+type PreviewRow = Record<string, string>;
 
 export default function Arena() {
   const { id } = useParams();
@@ -38,23 +38,22 @@ export default function Arena() {
 
   if (selected) return <CompetitionWorkspace challenge={selected} />;
 
-  const mastered = Object.values(data.challengeScores).filter((score) => score.best === 100).length;
   const attempts = Object.values(data.challengeScores).reduce((sum, score) => sum + score.attempts, 0);
 
   return (
     <div className="page arena-page">
       <header className="arena-hero">
         <div>
-          <span className="eyebrow">CHALLENGE ARENA · APPLY WHAT YOU KNOW</span>
-          <h1>Build under competition conditions<span className="blue-dot">.</span></h1>
+          <span className="eyebrow">CHALLENGE ARENA · BUILD, ANALYZE, SHIP</span>
+          <h1>Practice with real workspaces<span className="blue-dot">.</span></h1>
           <p>
-            Open a brief, inspect the data, work inside a saved notebook, run your solution,
-            complete the publishing checklist, and improve your personal best.
+            Competitions are project environments, not quizzes. Inspect data, build an artifact,
+            document your reasoning, and publish a reproducible submission.
           </p>
         </div>
         <div className="arena-stats">
-          <div><strong>{attempts}</strong><span>submissions</span></div>
-          <div><strong>{mastered}</strong><span>perfect scores</span></div>
+          <div><strong>{attempts}</strong><span>published attempts</span></div>
+          <div><strong>{Object.keys(data.challengeDrafts).length}</strong><span>saved workspaces</span></div>
         </div>
       </header>
 
@@ -76,10 +75,11 @@ export default function Arena() {
                 {challenge.skills.slice(0, 4).map((skill) => <span key={skill}>{skill}</span>)}
               </div>
               <div className="arena-card-foot">
-                <span>
-                  {draft ? "Draft saved" : challenge.domain + " · " + challenge.difficulty}
-                </span>
-                <strong>{score ? "Best " + score.best + "%" : "Open workspace"} <ArrowRight size={14} /></strong>
+                <span>{draft ? "Workspace saved" : challenge.domain + " · " + challenge.difficulty}</span>
+                <strong>
+                  {score?.attempts ? score.attempts + (score.attempts === 1 ? " submission" : " submissions") : "Open workspace"}
+                  <ArrowRight size={14} />
+                </strong>
               </div>
             </Link>
           );
@@ -95,13 +95,19 @@ function CompetitionWorkspace({ challenge }: { challenge: (typeof challenges)[nu
   const saved = data.challengeScores[challenge.id];
   const draft = data.challengeDrafts[challenge.id];
 
-  const [source, setSource] = useState(
-    draft?.source || challenge.notebook?.starter || "",
-  );
+  const [source, setSource] = useState(draft?.source || challenge.notebook?.starter || "");
   const [notes, setNotes] = useState(draft?.notes || "");
-  const [checklist, setChecklist] = useState<string[]>(draft?.checklist || []);
   const [runPassed, setRunPassed] = useState(Boolean(draft?.runPassed));
-  const [evidence, setEvidence] = useState<Record<string, boolean>>({});
+  const [dataOpened, setDataOpened] = useState(Boolean(draft?.dataOpened));
+  const [dimension, setDimension] = useState(draft?.analysisDimension || "region");
+  const [metric, setMetric] = useState(draft?.analysisMetric || "revenue");
+  const [chartBuilt, setChartBuilt] = useState(Boolean(draft?.chartBuilt));
+  const [previewRows, setPreviewRows] = useState<PreviewRow[]>([]);
+  const [previewHeaders, setPreviewHeaders] = useState<string[]>([]);
+  const [activeDataset, setActiveDataset] = useState(0);
+  const [dataError, setDataError] = useState("");
+
+  const isAnalytics = challenge.id === "analytics-decision-room";
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -112,34 +118,106 @@ function CompetitionWorkspace({ challenge }: { challenge: (typeof challenges)[nu
           [challenge.id]: {
             source,
             notes,
-            checklist,
+            checklist: [],
             runPassed,
             lastEdited: Date.now(),
+            dataOpened,
+            analysisMetric: metric,
+            analysisDimension: dimension,
+            chartBuilt,
           },
         },
       }));
-    }, 350);
+    }, 300);
     return () => window.clearTimeout(timer);
-  }, [challenge.id, source, notes, checklist, runPassed, update]);
+  }, [
+    challenge.id,
+    source,
+    notes,
+    runPassed,
+    dataOpened,
+    metric,
+    dimension,
+    chartBuilt,
+    update,
+  ]);
 
-  const score = useMemo(
-    () =>
-      challenge.rubric.reduce(
-        (sum, item) => sum + (evidence[item.label] ? item.points : 0),
-        0,
-      ),
-    [challenge.rubric, evidence],
+  useEffect(() => {
+    if (!challenge.datasets.length) return;
+    void loadDataset(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [challenge.id]);
+
+  async function loadDataset(index: number) {
+    const dataset = challenge.datasets[index];
+    if (!dataset) return;
+    setActiveDataset(index);
+    setDataError("");
+    try {
+      const response = await fetch(import.meta.env.BASE_URL + dataset.path);
+      if (!response.ok) throw new Error("Dataset could not be loaded.");
+      const text = await response.text();
+      const parsed = parseCsv(text);
+      setPreviewHeaders(parsed.headers);
+      setPreviewRows(parsed.rows);
+      setDataOpened(true);
+    } catch (error) {
+      setDataError(error instanceof Error ? error.message : "Dataset could not be loaded.");
+    }
+  }
+
+  useEffect(() => {
+    if (isAnalytics) setChartBuilt(false);
+  }, [dimension, metric, isAnalytics]);
+
+  const chartData = useMemo(() => {
+    if (!isAnalytics || !previewRows.length) return [];
+    const totals = new Map<string, number>();
+    for (const row of previewRows) {
+      const key = row[dimension] || "Unknown";
+      const value = Number(row[metric]);
+      if (!Number.isFinite(value)) continue;
+      totals.set(key, (totals.get(key) || 0) + value);
+    }
+    return Array.from(totals, ([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value);
+  }, [previewRows, dimension, metric, isAnalytics]);
+
+  const totalMetric = useMemo(
+    () => chartData.reduce((sum, item) => sum + item.value, 0),
+    [chartData],
   );
-
-  const allChecklist = challenge.checklist.every((item) => checklist.includes(item));
-  const notebookReady = challenge.notebook ? runPassed : true;
-  const publishReady = allChecklist && notebookReady && notes.trim().length > 0;
 
   async function runNotebook() {
     if (!challenge.notebook) return;
     const passed = await py.run(source, challenge.notebook.tests);
     setRunPassed(passed);
   }
+
+  const requirements = useMemo(() => {
+    if (isAnalytics) {
+      return [
+        { label: "Data inspected", detail: "The supplied CSV loaded in the workspace.", done: dataOpened },
+        { label: "Visual analysis built", detail: "A metric has been aggregated into a chart.", done: chartBuilt },
+        { label: "Decision insight written", detail: "Your memo contains a useful business interpretation.", done: notes.trim().length >= 80 },
+      ];
+    }
+
+    if (challenge.notebook) {
+      return [
+        { label: "Data inspected", detail: "The supplied competition data has been opened.", done: challenge.datasets.length ? dataOpened : true },
+        { label: "Notebook verified", detail: "The runnable solution passes the hidden behavior checks.", done: runPassed },
+        { label: "Evidence documented", detail: "Your notes explain what worked, failed, and what you would improve.", done: notes.trim().length >= 80 },
+      ];
+    }
+
+    return [
+      { label: "Artifact documented", detail: "Your workspace contains a substantive release/audit artifact.", done: notes.trim().length >= 160 },
+      { label: "Evidence language included", detail: "The write-up contains PASS, FAIL, or N/A evidence language.", done: /\b(PASS|FAIL|N\/A)\b/i.test(notes) },
+    ];
+  }, [challenge.datasets.length, challenge.notebook, dataOpened, isAnalytics, chartBuilt, notes, runPassed]);
+
+  const completedRequirements = requirements.filter((item) => item.done).length;
+  const publishReady = completedRequirements === requirements.length;
 
   function publish() {
     if (!publishReady) return;
@@ -154,7 +232,7 @@ function CompetitionWorkspace({ challenge }: { challenge: (typeof challenges)[nu
         challengeScores: {
           ...current.challengeScores,
           [challenge.id]: {
-            best: Math.max(previous.best, score),
+            best: 100,
             attempts: previous.attempts + 1,
             lastRun: Date.now(),
           },
@@ -171,21 +249,21 @@ function CompetitionWorkspace({ challenge }: { challenge: (typeof challenges)[nu
   }
 
   return (
-    <div className="page competition-workspace">
+    <div className="competition-workspace">
       <header className="competition-topbar">
         <Link className="competition-back" to="/arena" aria-label="Back to Arena">
           <ArrowLeft size={19} />
         </Link>
         <div>
-          <span>Competition</span>
+          <span>{challenge.domain}</span>
           <strong>{challenge.title}</strong>
         </div>
         <div className="competition-topbar-actions">
-          <span><Trophy size={14} /> Best {saved?.best ?? 0}%</span>
+          <span>{saved?.attempts ? saved.attempts + " published" : "Draft"}</span>
           {challenge.notebook && (
             <button type="button" onClick={() => void runNotebook()} disabled={py.busy}>
               <Play size={16} fill="currentColor" />
-              {py.busy ? "Running…" : "Run code"}
+              {py.busy ? "Running…" : "Run"}
             </button>
           )}
         </div>
@@ -195,239 +273,220 @@ function CompetitionWorkspace({ challenge }: { challenge: (typeof challenges)[nu
         {challenge.status === "open" ? <Target size={16} /> : <LockKeyhole size={16} />}
         <span>
           {challenge.status === "open"
-            ? "Open practice competition · your draft is saved in this browser."
-            : "Practice competition · no external leaderboard or deadline."}
+            ? "Open competition workspace · changes save automatically on this device."
+            : "Practice workspace · no external leaderboard or deadline."}
         </span>
       </div>
 
       <nav className="competition-workspace-nav" aria-label="Competition workspace sections">
         <button type="button" onClick={() => scrollTo("competition-brief")}><FileText size={15} /> Brief</button>
         <button type="button" onClick={() => scrollTo("competition-data")}><Database size={15} /> Data</button>
-        {challenge.notebook && (
-          <button type="button" onClick={() => scrollTo("competition-notebook")}><Code2 size={15} /> Code</button>
-        )}
+        <button type="button" onClick={() => scrollTo("competition-work")}><BarChart3 size={15} /> Workspace</button>
         <button type="button" onClick={() => scrollTo("competition-submit")}><Trophy size={15} /> Submit</button>
       </nav>
 
-      <section className="competition-publish-checklist">
-        <div>
-          <span className="eyebrow">CHECKLIST BEFORE PUBLISHING</span>
-          <h2>Make the submission reproducible.</h2>
-        </div>
-        <div className="competition-checklist-items">
-          {challenge.checklist.map((item) => {
-            const checked = checklist.includes(item);
-            return (
-              <button
-                key={item}
-                type="button"
-                className={checked ? "checked" : ""}
-                onClick={() =>
-                  setChecklist((current) =>
-                    checked ? current.filter((entry) => entry !== item) : [...current, item],
-                  )
-                }
-              >
-                {checked ? <CheckCircle2 size={17} /> : <Circle size={17} />}
-                <span>{item}</span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
+      <main className="competition-project-layout">
+        <aside className="competition-project-brief" id="competition-brief">
+          <span className="eyebrow">COMPETITION BRIEF</span>
+          <h1>{challenge.title}</h1>
+          <p className="competition-project-lead">{challenge.brief}</p>
 
-      <section className="competition-section" id="competition-brief">
-        <div className="competition-section-heading">
-          <FileText size={20} />
-          <div>
-            <span className="eyebrow">BACKGROUND</span>
-            <h1>{challenge.title}</h1>
+          <div className="competition-background-copy">
+            {challenge.background.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           </div>
-        </div>
-        <div className="competition-background-copy">
-          {challenge.background.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-        </div>
-        <div className="competition-brief-callout">
-          <strong>Competition challenge</strong>
-          <p>{challenge.brief}</p>
-          <span><Clock3 size={14} /> Target session: {challenge.minutes} minutes</span>
-        </div>
-      </section>
 
-      <section className="competition-section" id="competition-data">
-        <div className="competition-section-heading">
-          <Database size={20} />
-          <div>
-            <span className="eyebrow">THE DATA</span>
-            <h2>{challenge.datasets.length ? "Available workspace files" : "No dataset required"}</h2>
+          <div className="competition-brief-meta">
+            <span><Clock3 size={14} /> {challenge.minutes} min target</span>
+            <span>{challenge.difficulty}</span>
           </div>
-        </div>
 
-        {challenge.datasets.length ? (
-          <div className="competition-dataset-stack">
-            {challenge.datasets.map((dataset) => (
-              <article className="competition-dataset-card" key={dataset.name}>
-                <div className="competition-dataset-title">
-                  <div>
-                    <code>{dataset.name}</code>
-                    <strong>{dataset.description}</strong>
-                  </div>
-                  <a
-                    href={import.meta.env.BASE_URL + dataset.path}
-                    download
-                    className="text-button"
-                  >
-                    Open CSV
-                  </a>
-                </div>
-                <p>{dataset.rows} rows</p>
-                <div className="competition-data-table" role="table" aria-label={dataset.name + " variables"}>
-                  <div className="competition-data-row head" role="row">
-                    <strong role="columnheader">Variable</strong>
-                    <strong role="columnheader">Description</strong>
-                  </div>
-                  {dataset.columns.map((column) => (
-                    <div className="competition-data-row" role="row" key={column.name}>
-                      <code role="cell">{column.name}</code>
-                      <span role="cell">{column.description}</span>
-                    </div>
+          <div className="competition-deliverable compact">
+            <strong>Deliverable</strong>
+            <p>{challenge.deliverable}</p>
+          </div>
+
+          <section className="competition-evaluation-guide">
+            <span className="eyebrow">HOW THE WORK IS EVALUATED</span>
+            {challenge.rubric.map((item) => (
+              <div key={item.label}>
+                <strong>{item.label}</strong>
+                <span>{item.evidence}</span>
+                <b>{item.points} pts</b>
+              </div>
+            ))}
+          </section>
+        </aside>
+
+        <div className="competition-project-canvas">
+          <section className="competition-canvas-section" id="competition-data">
+            <div className="competition-canvas-heading">
+              <div>
+                <span className="eyebrow">01 · DATA</span>
+                <h2>Inspect what you have.</h2>
+              </div>
+              <span className={dataOpened ? "workspace-state ready" : "workspace-state"}>
+                {dataOpened ? "Loaded" : "Not opened"}
+              </span>
+            </div>
+
+            {challenge.datasets.length ? (
+              <>
+                <div className="competition-dataset-tabs">
+                  {challenge.datasets.map((dataset, index) => (
+                    <button
+                      type="button"
+                      className={activeDataset === index ? "selected" : ""}
+                      onClick={() => void loadDataset(index)}
+                      key={dataset.name}
+                    >
+                      <Database size={14} />
+                      {dataset.name}
+                    </button>
                   ))}
                 </div>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <p className="muted">This competition is based on architecture and evidence rather than a supplied dataset.</p>
-        )}
-      </section>
 
-      {challenge.notebook && (
-        <section className="competition-section competition-notebook" id="competition-notebook">
-          <div className="competition-section-heading">
-            <Code2 size={20} />
-            <div>
-              <span className="eyebrow">NOTEBOOK</span>
-              <h2>Build and run your solution</h2>
+                {dataError ? (
+                  <p role="alert" className="storage-error">{dataError}</p>
+                ) : (
+                  <DataPreview
+                    headers={previewHeaders}
+                    rows={previewRows}
+                    dataset={challenge.datasets[activeDataset]}
+                  />
+                )}
+              </>
+            ) : (
+              <div className="competition-empty-data">
+                <Database size={22} />
+                <strong>No supplied dataset</strong>
+                <span>This challenge is driven by architecture and release evidence.</span>
+              </div>
+            )}
+          </section>
+
+          <section className="competition-canvas-section" id="competition-work">
+            <div className="competition-canvas-heading">
+              <div>
+                <span className="eyebrow">02 · WORKSPACE</span>
+                <h2>{isAnalytics ? "Build the analysis." : challenge.notebook ? "Build the solution." : "Build the artifact."}</h2>
+              </div>
+              <span className="workspace-state">Autosaved</span>
             </div>
-          </div>
-          <p className="competition-notebook-goal">{challenge.notebook.goal}</p>
 
-          <div className="competition-cell-toolbar">
-            <button type="button" onClick={() => scrollTo("competition-data")}><Database size={15} /> Explore data</button>
-            <span><Code2 size={15} /> Python cell</span>
-            <button type="button" onClick={() => scrollTo("competition-submit")}><FileText size={15} /> Add evidence</button>
-            <span><BarChart3 size={15} /> Output follows code</span>
-          </div>
-
-          <div className="competition-code-cell">
-            <div className="competition-code-cell-head">
-              <span>Python · saved automatically</span>
-              <button type="button" onClick={() => void runNotebook()} disabled={py.busy}>
-                <Play size={15} fill="currentColor" /> {py.busy ? "Running…" : "Run"}
-              </button>
-            </div>
-            <CodeEditor
-              value={source}
-              onChange={(next) => {
-                setSource(next);
-                setRunPassed(false);
-              }}
-              label="Competition Python source"
-              disabled={py.busy}
-            />
-          </div>
-
-          <div className={"competition-output " + (runPassed ? "passed" : py.error ? "failed" : "")}>
-            <div>
-              <strong>{runPassed ? "Checks passed" : py.error ? "Execution needs attention" : py.status}</strong>
-              {py.busy && <button type="button" onClick={() => py.stop()}>Stop</button>}
-            </div>
-            <pre aria-label="Competition Python output">{py.error || py.output}</pre>
-          </div>
-        </section>
-      )}
-
-      <section className="competition-section" id="competition-submit">
-        <div className="competition-section-heading">
-          <Trophy size={20} />
-          <div>
-            <span className="eyebrow">SUBMISSION</span>
-            <h2>Publish evidence, not just an answer.</h2>
-          </div>
-        </div>
-
-        <div className="competition-deliverable">
-          <strong>Deliverable</strong>
-          <p>{challenge.deliverable}</p>
-        </div>
-
-        <div className="arena-rubric-list">
-          {challenge.rubric.map((item) => {
-            const checked = Boolean(evidence[item.label]);
-            return (
-              <button
-                type="button"
-                className={checked ? "checked" : ""}
-                onClick={() => setEvidence((current) => ({ ...current, [item.label]: !checked }))}
-                key={item.label}
-              >
-                {checked ? <CheckCircle2 size={18} /> : <Circle size={18} />}
-                <div>
-                  <strong>{item.label}</strong>
-                  <span>{item.evidence}</span>
+            {isAnalytics ? (
+              <AnalyticsWorkbench
+                headers={previewHeaders}
+                rows={previewRows}
+                dimension={dimension}
+                metric={metric}
+                chartBuilt={chartBuilt}
+                chartData={chartData}
+                totalMetric={totalMetric}
+                onDimension={setDimension}
+                onMetric={setMetric}
+                onBuild={() => setChartBuilt(true)}
+              />
+            ) : challenge.notebook ? (
+              <div className="competition-notebook-workbench">
+                <p className="competition-notebook-goal">{challenge.notebook.goal}</p>
+                <div className="competition-code-cell">
+                  <div className="competition-code-cell-head">
+                    <span>Python notebook · saved automatically</span>
+                    <button type="button" onClick={() => void runNotebook()} disabled={py.busy}>
+                      <Play size={15} fill="currentColor" /> {py.busy ? "Running…" : "Run"}
+                    </button>
+                  </div>
+                  <CodeEditor
+                    value={source}
+                    onChange={(next) => {
+                      setSource(next);
+                      setRunPassed(false);
+                    }}
+                    label="Competition Python source"
+                    disabled={py.busy}
+                  />
                 </div>
-                <b>{item.points} pts</b>
+
+                <div className={"competition-output " + (runPassed ? "passed" : py.error ? "failed" : "")}>
+                  <div>
+                    <strong>{runPassed ? "Behavior checks passed" : py.error ? "Execution needs attention" : py.status}</strong>
+                    {py.busy && <button type="button" onClick={() => py.stop()}>Stop</button>}
+                  </div>
+                  <pre aria-label="Competition Python output">{py.error || py.output}</pre>
+                </div>
+              </div>
+            ) : (
+              <div className="competition-document-workbench">
+                <div className="competition-document-toolbar">
+                  <FileText size={16} />
+                  <span>Release / audit workspace</span>
+                  <small>Write the artifact here. Use PASS / FAIL / N/A evidence where appropriate.</small>
+                </div>
+                <textarea
+                  aria-label="Competition working document"
+                  value={notes}
+                  onChange={(event) => setNotes(event.target.value)}
+                  placeholder="Build your audit, architecture note, decision memo, or release evidence here..."
+                />
+              </div>
+            )}
+
+            {(isAnalytics || challenge.notebook) && (
+              <label className="competition-insight-editor">
+                <span>{isAnalytics ? "Decision memo" : "Evidence notes"}</span>
+                <textarea
+                  aria-label={isAnalytics ? "Decision memo" : "Evidence notes"}
+                  value={notes}
+                  onChange={(event) => setNotes(event.target.value)}
+                  placeholder={
+                    isAnalytics
+                      ? "What changed? What is driving it? What decision should the business make next?"
+                      : "Explain what you built, tested, learned, and what you would improve next."
+                  }
+                />
+              </label>
+            )}
+          </section>
+
+          <section className="competition-canvas-section competition-submit-panel" id="competition-submit">
+            <div className="competition-canvas-heading">
+              <div>
+                <span className="eyebrow">03 · SUBMIT</span>
+                <h2>Publish when the work is reproducible.</h2>
+              </div>
+              <span className={publishReady ? "workspace-state ready" : "workspace-state"}>
+                {completedRequirements}/{requirements.length} ready
+              </span>
+            </div>
+
+            <div className="competition-readiness-list">
+              {requirements.map((item) => (
+                <div className={item.done ? "done" : ""} key={item.label}>
+                  <span>{item.done ? <CheckCircle2 size={17} /> : String(requirements.indexOf(item) + 1).padStart(2, "0")}</span>
+                  <div>
+                    <strong>{item.label}</strong>
+                    <small>{item.detail}</small>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="competition-publish-bar">
+              <div>
+                <strong>{publishReady ? "Ready to publish." : "Keep building the submission."}</strong>
+                <span>
+                  {publishReady
+                    ? "This saves a completed attempt to your local learning record."
+                    : "Readiness updates automatically from the work you do above."}
+                </span>
+              </div>
+              <button className="primary" type="button" onClick={publish} disabled={!publishReady}>
+                <Save size={16} /> Publish attempt
               </button>
-            );
-          })}
+            </div>
+          </section>
         </div>
-
-        <label className="arena-evidence-notes">
-          <span>Evidence notes</span>
-          <textarea
-            value={notes}
-            onChange={(event) => setNotes(event.target.value)}
-            placeholder="What did you build, test, measure, learn, and what would you improve next?"
-          />
-        </label>
-
-        <div className="competition-submit-readiness">
-          <div>
-            <span>Checklist</span>
-            <strong>{checklist.length}/{challenge.checklist.length}</strong>
-          </div>
-          <div>
-            <span>Notebook</span>
-            <strong>{challenge.notebook ? (runPassed ? "Passed" : "Not passed") : "N/A"}</strong>
-          </div>
-          <div>
-            <span>Rubric score</span>
-            <strong>{score}/100</strong>
-          </div>
-          <div>
-            <span>Personal best</span>
-            <strong>{saved?.best ?? 0}%</strong>
-          </div>
-        </div>
-
-        <div className="competition-publish-bar">
-          <div>
-            <strong>{publishReady ? "Submission is ready." : "Complete the checklist before publishing."}</strong>
-            <span>
-              {challenge.notebook && !runPassed
-                ? "Run the notebook until its hidden behavior checks pass."
-                : !allChecklist
-                  ? "Confirm every publishing requirement."
-                  : !notes.trim()
-                    ? "Add evidence notes."
-                    : "Ready to save this scored attempt."}
-            </span>
-          </div>
-          <button className="primary" type="button" onClick={publish} disabled={!publishReady}>
-            <Save size={16} /> Publish attempt
-          </button>
-        </div>
-      </section>
+      </main>
 
       {challenge.launch && (
         <Link className="competition-supporting-lab" to={challenge.launch}>
@@ -436,4 +495,173 @@ function CompetitionWorkspace({ challenge }: { challenge: (typeof challenges)[nu
       )}
     </div>
   );
+}
+
+function DataPreview({
+  headers,
+  rows,
+  dataset,
+}: {
+  headers: string[];
+  rows: PreviewRow[];
+  dataset: (typeof challenges)[number]["datasets"][number] | undefined;
+}) {
+  if (!dataset) return null;
+  if (!rows.length) {
+    return (
+      <div className="competition-data-loading">
+        <span>Loading {dataset.name}…</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="competition-data-preview">
+      <div className="competition-data-preview-meta">
+        <div>
+          <strong>{dataset.name}</strong>
+          <span>{dataset.description}</span>
+        </div>
+        <span>{dataset.rows} rows · {headers.length} columns</span>
+      </div>
+
+      <div className="competition-preview-scroll">
+        <table>
+          <thead>
+            <tr>{headers.map((header) => <th key={header}>{header}</th>)}</tr>
+          </thead>
+          <tbody>
+            {rows.slice(0, 8).map((row, index) => (
+              <tr key={index}>
+                {headers.map((header) => <td key={header}>{row[header]}</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <details className="competition-schema-details">
+        <summary>Variable dictionary</summary>
+        <div>
+          {dataset.columns.map((column) => (
+            <p key={column.name}>
+              <code>{column.name}</code>
+              <span>{column.description}</span>
+            </p>
+          ))}
+        </div>
+      </details>
+    </div>
+  );
+}
+
+function AnalyticsWorkbench({
+  headers,
+  rows,
+  dimension,
+  metric,
+  chartBuilt,
+  chartData,
+  totalMetric,
+  onDimension,
+  onMetric,
+  onBuild,
+}: {
+  headers: string[];
+  rows: PreviewRow[];
+  dimension: string;
+  metric: string;
+  chartBuilt: boolean;
+  chartData: Array<{ label: string; value: number }>;
+  totalMetric: number;
+  onDimension: (value: string) => void;
+  onMetric: (value: string) => void;
+  onBuild: () => void;
+}) {
+  const dimensions = headers.filter((header) =>
+    rows.some((row) => row[header] && !Number.isFinite(Number(row[header]))),
+  );
+  const metrics = headers.filter((header) =>
+    rows.length > 0 && rows.every((row) => row[header] === "" || Number.isFinite(Number(row[header]))),
+  );
+
+  const max = Math.max(...chartData.map((item) => item.value), 1);
+
+  return (
+    <div className="analytics-workbench">
+      <div className="analytics-builder">
+        <div>
+          <label>
+            <span>Group by</span>
+            <select value={dimension} onChange={(event) => onDimension(event.target.value)}>
+              {(dimensions.length ? dimensions : ["region", "product", "month"]).map((item) => (
+                <option value={item} key={item}>{item}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>Measure</span>
+            <select value={metric} onChange={(event) => onMetric(event.target.value)}>
+              {(metrics.length ? metrics : ["revenue", "units", "discount"]).map((item) => (
+                <option value={item} key={item}>{item}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <button type="button" onClick={onBuild} disabled={!rows.length}>
+          <BarChart3 size={16} /> Build visual
+        </button>
+      </div>
+
+      {chartBuilt ? (
+        <div className="analytics-chart-board">
+          <div className="analytics-kpi-strip">
+            <div>
+              <span>Total {metric}</span>
+              <strong>{formatMetric(totalMetric)}</strong>
+            </div>
+            <div>
+              <span>Groups</span>
+              <strong>{chartData.length}</strong>
+            </div>
+            <div>
+              <span>Top {dimension}</span>
+              <strong>{chartData[0]?.label || "—"}</strong>
+            </div>
+          </div>
+
+          <div className="analytics-bar-chart" role="img" aria-label={metric + " by " + dimension}>
+            {chartData.map((item) => (
+              <div className="analytics-bar-row" key={item.label}>
+                <span>{item.label}</span>
+                <div><i style={{ width: Math.max(4, (item.value / max) * 100) + "%" }} /></div>
+                <strong>{formatMetric(item.value)}</strong>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="analytics-empty-chart">
+          <BarChart3 size={28} />
+          <strong>Your visual will appear here.</strong>
+          <span>Choose a grouping and measure, then build the chart.</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function parseCsv(text: string) {
+  const lines = text.trim().split(/\r?\n/).filter(Boolean);
+  if (!lines.length) return { headers: [] as string[], rows: [] as PreviewRow[] };
+  const headers = lines[0].split(",").map((item) => item.trim());
+  const rows = lines.slice(1).map((line) => {
+    const values = line.split(",").map((item) => item.replace(/^"|"$/g, "").trim());
+    return Object.fromEntries(headers.map((header, index) => [header, values[index] || ""]));
+  });
+  return { headers, rows };
+}
+
+function formatMetric(value: number) {
+  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
 }
