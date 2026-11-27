@@ -393,7 +393,7 @@ test("guided paths expose complete AI and web capability stacks honestly", async
   await expect(page.locator(".path-step")).toHaveCount(34);
 });
 
-test("cheatsheets are searchable, pinnable, and Arena saves personal bests", async ({ page }) => {
+test("cheatsheets are pinnable and competitions use resumable notebook workspaces", async ({ page }) => {
   await page.goto("/#/catalog?view=cheatsheets");
   await expect(page.getByRole("tab", { name: "Cheatsheets" })).toHaveAttribute("aria-selected", "true");
   await page.getByRole("textbox", { name: "Search cheatsheets" }).fill("RAG");
@@ -406,13 +406,25 @@ test("cheatsheets are searchable, pinnable, and Arena saves personal bests", asy
   await expect(page.getByRole("button", { name: "Unpin" })).toBeVisible();
 
   await page.goto("/#/arena/rag-grounding-sprint");
-  await expect(page.getByRole("heading", { name: "RAG Grounding Sprint." })).toBeVisible();
-  for (const label of ["Retrieval design", "Grounding", "Security", "Evaluation"]) {
-    await page.getByRole("button", { name: new RegExp(label) }).click();
+  await expect(page.getByRole("heading", { name: "RAG Grounding Sprint" })).toBeVisible();
+  await expect(page.getByText("documents.csv", { exact: true })).toBeVisible();
+  await expect(page.getByText("queries.csv", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Competition Python source")).toBeVisible();
+
+  await page.goto("/#/arena/web-security-audit");
+  const checklistButtons = page.locator(".competition-checklist-items button");
+  for (let i = 0; i < await checklistButtons.count(); i += 1) {
+    await checklistButtons.nth(i).click();
   }
-  await page.getByRole("textbox", { name: "Evidence notes" }).fill("Validated retrieval, grounding, security boundary, and evaluation criteria.");
-  await page.getByRole("button", { name: "Save scored attempt" }).click();
-  await expect(page.getByText("Personal best: 100% · attempts: 1")).toBeVisible();
+  const rubricButtons = page.locator(".arena-rubric-list button");
+  for (let i = 0; i < await rubricButtons.count(); i += 1) {
+    await rubricButtons.nth(i).click();
+  }
+  await page.getByRole("textbox", { name: "Evidence notes" }).fill(
+    "Mapped all controls to trusted boundaries with concrete remediation evidence.",
+  );
+  await page.getByRole("button", { name: "Publish attempt" }).click();
+  await expect(page.getByText("100%", { exact: true }).last()).toBeVisible();
 });
 
 test("mission labs run real instruments and persist evidence", async ({ page }) => {
