@@ -1,4 +1,5 @@
 import { courses } from "./catalog";
+import { globalCsCourseOrder } from "./globalCsCurriculum";
 
 /** Original learning journeys. Only courses containing chapters are playable. */
 export interface LearningPath {
@@ -10,6 +11,14 @@ export interface LearningPath {
   courses: string[];
 }
 export const learningPaths: LearningPath[] = [
+  {
+    id: "global-cs-core",
+    title: "Global Computer Science Core",
+    focus: "University-grade computer science",
+    description: "A rigorous foundation-first curriculum synthesized from recurring structures used by globally recognized CS programs: mathematics, programming, algorithms, systems, data, theory, intelligent computing, engineering depth and capstone work.",
+    outcome: "Develop the breadth and depth to reason about software, algorithms, systems, data and intelligent computing—not just use frameworks.",
+    courses: globalCsCourseOrder,
+  },
   {
     id: "python-ai",
     title: "Python to AI engineer",
