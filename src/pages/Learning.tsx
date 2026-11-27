@@ -40,7 +40,14 @@ export default function Learning() {
     ...pathCourses.map((course) => course.id),
     ...studiedCourseIds,
   ]);
-  const activeCourses = courses.filter((course) => activeCourseIds.has(course.id));
+  const activeCourses = courses.filter(
+    (course) =>
+      activeCourseIds.has(course.id) &&
+      (
+        studiedCourseIds.has(course.id) ||
+        course.modules.some((module) => module.chapters.length > 0)
+      ),
+  );
   const activeChapters = chapterRegistry.filter(
     (entry) =>
       activeCourseIds.has(entry.course.id) &&
@@ -170,7 +177,7 @@ export default function Learning() {
 
             {activeCourses.length > 0 && (
               <div className="sorted-active-courses">
-                <span className="eyebrow">ACTIVE PATH · {activePath.title.toUpperCase()}</span>
+                <span className="eyebrow">CURRENT LEARNING · {activePath.title.toUpperCase()}</span>
                 <div>
                   {activeCourses.map((course) => (
                     <Link to={`/course/${course.id}`} key={course.id}>
