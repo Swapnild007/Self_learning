@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Download, Upload, Sun, Moon } from "lucide-react";
 import { defaults, useStore, validate } from "../store";
+import { learningPaths } from "../content/learningPaths";
 import { Modal } from "../components/ui";
 export default function Settings() {
   const { data, update } = useStore();
@@ -72,12 +73,81 @@ export default function Settings() {
           />
         </label>
       </section>
-      <section className="panel">
-        <h2>Learning preferences</h2>
+      <section className="panel personal-learning-settings">
+        <h2>Personal learning plan</h2>
+        <p>
+          These choices shape your Home dashboard and recommendations. They stay
+          only in this browser.
+        </p>
         <label className="setting-row">
           <span>
-            <strong>Topic exploration goal</strong>
-            <small>A gentle direction, never a deadline.</small>
+            <strong>Your name</strong>
+            <small>Used only for the personal learning dashboard.</small>
+          </span>
+          <input
+            aria-label="Learner display name"
+            maxLength={60}
+            placeholder="Learner"
+            value={data.personal.displayName}
+            onChange={(e) =>
+              update((d) => ({
+                ...d,
+                personal: { ...d.personal, displayName: e.target.value },
+              }))
+            }
+          />
+        </label>
+        <label className="setting-row">
+          <span>
+            <strong>Primary learning path</strong>
+            <small>The path Home uses to decide what should come next.</small>
+          </span>
+          <select
+            aria-label="Primary learning path"
+            value={data.personal.activePath}
+            onChange={(e) =>
+              update((d) => ({
+                ...d,
+                personal: { ...d.personal, activePath: e.target.value },
+              }))
+            }
+          >
+            {learningPaths.map((path) => (
+              <option key={path.id} value={path.id}>
+                {path.title}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="setting-row">
+          <span>
+            <strong>Weekly learning rhythm</strong>
+            <small>A day counts only when you actually read, assess, or run a lab.</small>
+          </span>
+          <select
+            aria-label="Weekly learning days"
+            value={data.personal.weeklyDays}
+            onChange={(e) =>
+              update((d) => ({
+                ...d,
+                personal: {
+                  ...d.personal,
+                  weeklyDays: Number(e.target.value) as 2 | 3 | 5 | 7,
+                },
+              }))
+            }
+          >
+            {[2, 3, 5, 7].map((n) => (
+              <option key={n} value={n}>
+                {n} learning days / week
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="setting-row">
+          <span>
+            <strong>Exploration goal</strong>
+            <small>How many topics you like to keep in active rotation.</small>
           </span>
           <select
             value={data.goal}
