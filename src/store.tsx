@@ -72,7 +72,7 @@ export function validate(value: unknown): Data {
     ![17, 19, 21, 23].includes(d.fontSize) ||
     typeof d.reduced !== "boolean" ||
     ![2, 3, 5].includes(d.goal) ||
-    !["bookmarks", "visited", "enrolled", "pinnedCheatSheets"].every(
+    !["bookmarks", "visited", "enrolled"].every(
       (k) =>
         Array.isArray(d[k as keyof Data]) &&
         (d[k as keyof Data] as unknown[]).every((x) => typeof x === "string"),
@@ -92,6 +92,9 @@ export function validate(value: unknown): Data {
         Object.values(d.confidence).some(
           (x) => typeof x !== "number" || ![1, 2, 3].includes(x),
         ))) ||
+    (d.pinnedCheatSheets !== undefined &&
+      (!Array.isArray(d.pinnedCheatSheets) ||
+        d.pinnedCheatSheets.some((x) => typeof x !== "string"))) ||
     (d.labEvidence !== undefined &&
       (!isRecord(d.labEvidence) ||
         Object.values(d.labEvidence).some(
