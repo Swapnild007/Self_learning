@@ -31,6 +31,8 @@ export interface Data {
   scores: Record<string, number>;
   confidence: Record<string, number>;
   labEvidence: Record<string, { attempts: number; best: number; lastRun: number }>;
+  pinnedCheatSheets: string[];
+  challengeScores: Record<string, { best: number; attempts: number; lastRun: number }>;
   personal: PersonalLearning;
   activity: LearningActivity[];
   enrolled: string[];
@@ -48,6 +50,8 @@ export const defaults: Data = {
   scores: {},
   confidence: {},
   labEvidence: {},
+  pinnedCheatSheets: [],
+  challengeScores: {},
   personal: {
     displayName: "",
     activePath: "global-cs-core",
@@ -68,7 +72,7 @@ export function validate(value: unknown): Data {
     ![17, 19, 21, 23].includes(d.fontSize) ||
     typeof d.reduced !== "boolean" ||
     ![2, 3, 5].includes(d.goal) ||
-    !["bookmarks", "visited", "enrolled"].every(
+    !["bookmarks", "visited", "enrolled", "pinnedCheatSheets"].every(
       (k) =>
         Array.isArray(d[k as keyof Data]) &&
         (d[k as keyof Data] as unknown[]).every((x) => typeof x === "string"),
@@ -104,6 +108,22 @@ export function validate(value: unknown): Data {
             !Number.isFinite(value.lastRun) ||
             value.lastRun < 0,
         ))) ||
+    (d.challengeScores !== undefined &&
+      (!isRecord(d.challengeScores) ||
+        Object.values(d.challengeScores).some(
+          (value) =>
+            !isRecord(value) ||
+            typeof value.best !== "number" ||
+            !Number.isFinite(value.best) ||
+            value.best < 0 ||
+            value.best > 100 ||
+            typeof value.attempts !== "number" ||
+            !Number.isFinite(value.attempts) ||
+            value.attempts < 0 ||
+            typeof value.lastRun !== "number" ||
+            !Number.isFinite(value.lastRun) ||
+            value.lastRun < 0,
+        ))) ||
     (d.personal !== undefined &&
       (!isRecord(d.personal) ||
         typeof d.personal.displayName !== "string" ||
@@ -130,6 +150,12 @@ export function validate(value: unknown): Data {
     confidence: isRecord(d.confidence) ? (d.confidence as Record<string, number>) : {},
     labEvidence: isRecord(d.labEvidence)
       ? (d.labEvidence as Data["labEvidence"])
+      : {},
+    pinnedCheatSheets: Array.isArray(d.pinnedCheatSheets)
+      ? d.pinnedCheatSheets.filter((x): x is string => typeof x === "string")
+      : [],
+    challengeScores: isRecord(d.challengeScores)
+      ? (d.challengeScores as Data["challengeScores"])
       : {},
     personal:
       isRecord(d.personal) &&
