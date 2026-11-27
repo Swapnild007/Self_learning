@@ -10,12 +10,21 @@ import {
   Target,
   FlaskConical,
   Layers3,
+  Gauge,
+  Brain,
+  ShieldCheck,
 } from "lucide-react";
 import { courses } from "../content/catalog";
 import { useStore } from "../store";
+import {
+  chapterEvidence,
+  courseMastery,
+  courseNextChapter,
+  hasMission,
+} from "../learningEngine";
 import { Progress } from "../components/ui";
 
-type CourseTab = "overview" | "curriculum" | "resources";
+type CourseTab = "overview" | "curriculum" | "mastery" | "resources";
 
 export default function Overview() {
   const { id } = useParams();
@@ -33,6 +42,10 @@ export default function Overview() {
 
   const chapters = course.modules.flatMap((module) => module.chapters);
   const firstChapter = chapters[0];
+  const nextChapter = courseNextChapter(course, data);
+  const nextEvidence = nextChapter ? chapterEvidence(nextChapter, data) : null;
+  const mastery = courseMastery(course, data);
+  const firstMission = chapters.find((item) => hasMission(item.id));
   const [tab, setTab] = useState<CourseTab>(firstChapter ? "overview" : "curriculum");
 
   const readSections = chapters.reduce(
@@ -65,13 +78,16 @@ export default function Overview() {
           ? "Needs review"
           : "Not checked";
 
-  const mastered = chapters.filter(
-    (item) =>
-      data.scores[
-        `${item.assessment.id}-v${item.assessment.version}`
-      ] === 100,
-  ).length;
   const roadmap = courseRoadmaps[course.id] || [];
+
+  function stateChip(item: typeof chapters[number]) {
+    const evidence = chapterEvidence(item, data);
+    return (
+      <span className={`course-state-chip state-${evidence.state}`}>
+        {evidence.label}
+      </span>
+    );
+  }
 
   return (
     <div className="page sorted-course-page">
@@ -93,11 +109,17 @@ export default function Overview() {
             <div className="tags">
               {course.skills.map((skill) => <span key={skill}>{skill}</span>)}
             </div>
-            {firstChapter && (
-              <div className="sorted-course-actions">
+
+            {nextChapter && nextEvidence && (
+              <div className="course-next-action">
+                <div>
+                  <span className="eyebrow">NEXT BEST ACTION</span>
+                  <strong>{nextChapter.title}</strong>
+                  <p>{nextEvidence.action.reason}</p>
+                </div>
                 <Link
                   className="button primary"
-                  to={`/read/${firstChapter.id}`}
+                  to={nextEvidence.action.to}
                   onClick={() =>
                     update((current) => ({
                       ...current,
@@ -105,11 +127,8 @@ export default function Overview() {
                     }))
                   }
                 >
-                  {progress ? "Resume learning" : "Start learning"}
+                  {nextEvidence.action.label}
                   <ArrowRight size={17} />
-                </Link>
-                <Link className="button" to={`/practice?chapter=${firstChapter.id}`}>
-                  <Target size={16} /> Practice
                 </Link>
               </div>
             )}
@@ -124,39 +143,26 @@ export default function Overview() {
             <div><strong>{progress}%</strong><span>read</span></div>
           </div>
           <dl>
-            <div><dt>Chapters</dt><dd>{chapters.length}</dd></div>
+            <div><dt>Published</dt><dd>{chapters.length} chapters</dd></div>
             <div><dt>Confidence</dt><dd>{confidenceText}</dd></div>
-            <div><dt>Mastered</dt><dd>{mastered}/{chapters.length}</dd></div>
-            <div><dt>Time</dt><dd>{course.minutes || "—"} min</dd></div>
+            <div><dt>Mastered</dt><dd>{mastery.mastered}/{mastery.total}</dd></div>
+            <div><dt>Review</dt><dd>{mastery.review}</dd></div>
           </dl>
         </aside>
       </section>
 
       <div className="sorted-course-tabs" role="tablist" aria-label="Course sections">
-        <button
-          role="tab"
-          aria-selected={tab === "overview"}
-          className={tab === "overview" ? "selected" : ""}
-          onClick={() => setTab("overview")}
-        >
-          Overview
-        </button>
-        <button
-          role="tab"
-          aria-selected={tab === "curriculum"}
-          className={tab === "curriculum" ? "selected" : ""}
-          onClick={() => setTab("curriculum")}
-        >
-          Curriculum
-        </button>
-        <button
-          role="tab"
-          aria-selected={tab === "resources"}
-          className={tab === "resources" ? "selected" : ""}
-          onClick={() => setTab("resources")}
-        >
-          Resources
-        </button>
+        {(["overview", "curriculum", "mastery", "resources"] as CourseTab[]).map((item) => (
+          <button
+            key={item}
+            role="tab"
+            aria-selected={tab === item}
+            className={tab === item ? "selected" : ""}
+            onClick={() => setTab(item)}
+          >
+            {item === "mastery" ? "Mastery" : item[0].toUpperCase() + item.slice(1)}
+          </button>
+        ))}
       </div>
 
       <section className="sorted-course-panel" role="tabpanel">
@@ -202,20 +208,74 @@ export default function Overview() {
           </div>
         )}
 
+        {tab === "mastery" && (
+          <div className="course-mastery-view">
+            <div className="sorted-panel-heading">
+              <div>
+                <span className="eyebrow">EVIDENCE-BASED MASTERY</span>
+                <h2>What should happen next?</h2>
+                <p>
+                  Reading, confidence, experiments, and assessment evidence determine
+                  the recommendation. Nothing is locked; the learner keeps control.
+                </p>
+              </div>
+              <Gauge size={22} />
+            </div>
+
+            <div className="course-mastery-summary">
+              <div><strong>{mastery.mastered}</strong><span>mastered</span></div>
+              <div><strong>{mastery.review}</strong><span>needs review</span></div>
+              <div><strong>{mastery.inProgress}</strong><span>in progress</span></div>
+              <div><strong>{mastery.total}</strong><span>published chapters</span></div>
+            </div>
+
+            <div className="course-mastery-list">
+              {chapters.map((item, index) => {
+                const evidence = chapterEvidence(item, data);
+                return (
+                  <article key={item.id} className={`course-mastery-row state-${evidence.state}`}>
+                    <span className="course-mastery-index">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <div className="course-mastery-copy">
+                      <div>
+                        <strong>{item.title}</strong>
+                        {stateChip(item)}
+                      </div>
+                      <p>{evidence.action.reason}</p>
+                    </div>
+                    <div className="course-mastery-evidence">
+                      <span><BookOpen size={14} /> {evidence.readPct}% read</span>
+                      <span><Brain size={14} /> {evidence.confidenceChecked}/{item.sections.length} checks</span>
+                      <span><Target size={14} /> {evidence.score === undefined ? "No score" : `${evidence.score}%`}</span>
+                      {evidence.hasLab && (
+                        <span><FlaskConical size={14} /> {evidence.labBest === undefined ? "Lab not run" : `${evidence.labBest}% lab`}</span>
+                      )}
+                    </div>
+                    <Link to={evidence.action.to}>
+                      {evidence.action.label} <ArrowRight size={14} />
+                    </Link>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {tab === "curriculum" && (
           <div className="sorted-curriculum">
             <div className="sorted-panel-heading">
               <div>
                 <span className="eyebrow">COURSE MAP</span>
                 <h2>Course syllabus</h2>
-                <p>Published lessons and future curriculum remain clearly separated.</p>
+                <p>Published lessons show learner state; future curriculum stays separate.</p>
               </div>
               <Layers3 size={22} />
             </div>
 
             {course.id === "python" ? (
               pythonSyllabus.map((level) => (
-                <details className="sorted-module" key={level.id} open={level.chapters.some((item) => chapters.some((chapter) => chapter.title === item.title))}>
+                <details className="sorted-module" key={level.id} open={level.chapters.some((item) => chapters.some((published) => published.title === item.title))}>
                   <summary>
                     <strong>{level.title}</strong>
                     <span>{level.chapters.length} chapters</span>
@@ -224,11 +284,11 @@ export default function Overview() {
                     {level.chapters.map((item) => {
                       const published = chapters.find((candidate) => candidate.title === item.title);
                       return published ? (
-                        <Link className="sorted-curriculum-row ready" to={`/read/${published.id}`} key={item.number}>
+                        <Link className="sorted-curriculum-row ready" to={chapterEvidence(published, data).action.to} key={item.number}>
                           <span>{String(item.number).padStart(2, "0")}</span>
                           <strong>{item.title}</strong>
                           <small>{published.minutes} min</small>
-                          <b>Ready</b>
+                          {stateChip(published)}
                           <ArrowRight size={16} />
                         </Link>
                       ) : (
@@ -251,15 +311,18 @@ export default function Overview() {
                     <span>{module.chapters.length} chapters</span>
                   </summary>
                   <div>
-                    {module.chapters.map((item, index) => (
-                      <Link className="sorted-curriculum-row ready" to={`/read/${item.id}`} key={item.id}>
-                        <span>{String(index + 1).padStart(2, "0")}</span>
-                        <strong>{item.title}</strong>
-                        <small>{item.minutes} min</small>
-                        <b>Ready</b>
-                        <ArrowRight size={16} />
-                      </Link>
-                    ))}
+                    {module.chapters.map((item, index) => {
+                      const evidence = chapterEvidence(item, data);
+                      return (
+                        <Link className="sorted-curriculum-row ready" to={evidence.action.to} key={item.id}>
+                          <span>{String(index + 1).padStart(2, "0")}</span>
+                          <strong>{item.title}</strong>
+                          <small>{item.minutes} min</small>
+                          {stateChip(item)}
+                          <ArrowRight size={16} />
+                        </Link>
+                      );
+                    })}
                   </div>
                 </details>
               ))
@@ -288,14 +351,21 @@ export default function Overview() {
               <span className="eyebrow">LEARNING TOOLS</span>
               <h2>Use the right mode for the task</h2>
               <div className="sorted-resource-links">
-                <Link to={firstChapter ? `/lab?chapter=${firstChapter.id}` : "/lab"}>
-                  <FlaskConical />
-                  <div>
-                    <strong>Interactive Lab</strong>
-                    <span>Visualize, explain, and code inside one workspace.</span>
+                {firstMission ? (
+                  <Link to={`/lab?chapter=${firstMission.id}`}>
+                    <FlaskConical />
+                    <div>
+                      <strong>Interactive Lab</strong>
+                      <span>Predict, manipulate, execute, and inspect evidence.</span>
+                    </div>
+                    <ArrowRight size={16} />
+                  </Link>
+                ) : (
+                  <div className="course-resource-note">
+                    <ShieldCheck size={18} />
+                    <span>No dedicated experiment mission is published for this course yet.</span>
                   </div>
-                  <ArrowRight size={16} />
-                </Link>
+                )}
               </div>
             </section>
 
