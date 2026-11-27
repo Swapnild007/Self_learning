@@ -39,6 +39,10 @@ export interface Data {
     checklist: string[];
     runPassed: boolean;
     lastEdited: number;
+    dataOpened?: boolean;
+    analysisMetric?: string;
+    analysisDimension?: string;
+    chartBuilt?: boolean;
   }>;
   personal: PersonalLearning;
   activity: LearningActivity[];
@@ -145,6 +149,10 @@ export function validate(value: unknown): Data {
             !Array.isArray(value.checklist) ||
             value.checklist.some((item) => typeof item !== "string") ||
             typeof value.runPassed !== "boolean" ||
+            (value.dataOpened !== undefined && typeof value.dataOpened !== "boolean") ||
+            (value.analysisMetric !== undefined && typeof value.analysisMetric !== "string") ||
+            (value.analysisDimension !== undefined && typeof value.analysisDimension !== "string") ||
+            (value.chartBuilt !== undefined && typeof value.chartBuilt !== "boolean") ||
             typeof value.lastEdited !== "number" ||
             !Number.isFinite(value.lastEdited) ||
             value.lastEdited < 0,
