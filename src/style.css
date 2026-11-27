@@ -7489,3 +7489,743 @@ th {
     padding: 12px;
   }
 }
+
+
+/* =========================================================
+   PERSONAL LEARNING LMS HOME
+   Real activity, real rhythm, progressive disclosure.
+   ========================================================= */
+
+.personal-lms-home {
+  max-width: 1380px !important;
+}
+
+.personal-lms-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: end;
+  margin-bottom: 20px;
+}
+
+.personal-lms-header h1 {
+  margin: 5px 0 8px;
+  max-width: 860px;
+  font-size: clamp(38px, 5vw, 64px);
+  line-height: .98;
+  letter-spacing: -.055em;
+}
+
+.personal-lms-header p {
+  max-width: 780px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.62;
+}
+
+.personal-command-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(290px, .55fr);
+  gap: 14px;
+}
+
+.personal-continue-card,
+.personal-week-card,
+.personal-path-card,
+.personal-mastery-card,
+.personal-achievements {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 18px 45px #15213b0b;
+}
+
+.personal-continue-card {
+  padding: clamp(26px, 4vw, 44px);
+  background:
+    radial-gradient(circle at 94% 12%, color-mix(in srgb, var(--blue) 15%, transparent), transparent 27%),
+    radial-gradient(circle at 82% 86%, color-mix(in srgb, #8d7adf 10%, transparent), transparent 26%),
+    var(--surface);
+  overflow: hidden;
+  position: relative;
+}
+
+.personal-continue-card:after {
+  content: "";
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  right: -70px;
+  bottom: -90px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--blue) 16%, transparent);
+  box-shadow:
+    0 0 0 34px color-mix(in srgb, var(--blue) 3%, transparent),
+    0 0 0 68px color-mix(in srgb, var(--blue) 2%, transparent);
+  pointer-events: none;
+}
+
+.personal-continue-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  position: relative;
+  z-index: 1;
+}
+
+.personal-continue-top .eyebrow {
+  margin: 0 0 7px;
+}
+
+.personal-course-label {
+  display: block;
+  color: var(--blue);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.personal-status-chip {
+  padding: 7px 10px;
+  border: 1px solid color-mix(in srgb, var(--blue) 26%, var(--line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--blue) 7%, var(--surface));
+  color: var(--blue);
+  font-size: 8px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.personal-continue-card h2 {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  margin: 24px 0 10px;
+  font-size: clamp(29px, 4vw, 47px);
+  line-height: 1.02;
+  letter-spacing: -.047em;
+}
+
+.personal-continue-card > p {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.personal-continue-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.personal-chapter-progress {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  margin-top: 28px;
+}
+
+.personal-chapter-progress .progress {
+  height: 7px;
+}
+
+.personal-chapter-progress span {
+  color: var(--muted);
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.personal-week-card {
+  padding: 24px;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  align-content: start;
+}
+
+.personal-ring-wrap {
+  display: grid;
+  place-items: center;
+  margin-bottom: 17px;
+}
+
+.personal-week-ring {
+  --weekly-progress: 0deg;
+  width: 142px;
+  height: 142px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at center, var(--surface) 0 57%, transparent 58%),
+    conic-gradient(var(--blue) var(--weekly-progress), color-mix(in srgb, var(--line) 64%, transparent) 0);
+  box-shadow: 0 16px 38px color-mix(in srgb, var(--blue) 13%, transparent);
+}
+
+.personal-week-ring div {
+  text-align: center;
+}
+
+.personal-week-ring strong,
+.personal-week-ring span {
+  display: block;
+}
+
+.personal-week-ring strong {
+  font-size: 34px;
+  line-height: .95;
+  letter-spacing: -.06em;
+}
+
+.personal-week-ring span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.personal-week-card .eyebrow {
+  margin-bottom: 5px;
+}
+
+.personal-week-card h2 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: -.035em;
+}
+
+.personal-week-card p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.personal-week-strip {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  align-self: end;
+  margin-top: 22px;
+}
+
+.personal-week-strip > div {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+}
+
+.personal-week-strip > div > span {
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 26px;
+  border-radius: 8px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+}
+
+.personal-week-strip > div > span.active[data-level="1"] {
+  background: color-mix(in srgb, var(--blue) 25%, var(--soft));
+  border-color: color-mix(in srgb, var(--blue) 28%, var(--line));
+}
+
+.personal-week-strip > div > span.active[data-level="2"] {
+  background: color-mix(in srgb, var(--blue) 42%, var(--soft));
+}
+
+.personal-week-strip > div > span.active[data-level="3"] {
+  background: color-mix(in srgb, var(--blue) 62%, var(--soft));
+}
+
+.personal-week-strip > div > span.active[data-level="4"] {
+  background: var(--blue);
+}
+
+.personal-week-strip small {
+  color: var(--muted);
+  font-size: 7px;
+}
+
+.personal-today-section {
+  margin-top: 28px;
+}
+
+.personal-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 22px;
+  margin-bottom: 13px;
+}
+
+.personal-section-heading.compact {
+  align-items: flex-start;
+}
+
+.personal-section-heading .eyebrow {
+  margin-bottom: 5px;
+}
+
+.personal-section-heading h2 {
+  margin: 0;
+  font-size: clamp(22px, 3vw, 32px);
+  letter-spacing: -.04em;
+}
+
+.personal-section-heading p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.personal-section-heading > svg {
+  color: var(--blue);
+  flex: 0 0 auto;
+}
+
+.personal-today-progress {
+  min-width: 220px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 10px;
+  align-items: baseline;
+}
+
+.personal-today-progress strong {
+  font-size: 20px;
+}
+
+.personal-today-progress span {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.personal-today-progress .progress {
+  grid-column: 1 / -1;
+  height: 5px;
+}
+
+.personal-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.personal-plan-card {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  padding: 17px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--text);
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease;
+}
+
+.personal-plan-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--blue) 42%, var(--line));
+  box-shadow: 0 14px 30px #15213b0d;
+}
+
+.personal-plan-card.done {
+  background:
+    linear-gradient(145deg, color-mix(in srgb, #2e8b57 5%, var(--surface)), var(--surface));
+}
+
+.personal-plan-index {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.personal-plan-index svg {
+  color: var(--muted);
+}
+
+.personal-plan-card.done .personal-plan-index svg {
+  color: #2e8b57;
+}
+
+.personal-plan-index span {
+  color: var(--muted);
+  font-size: 8px;
+  letter-spacing: .08em;
+}
+
+.personal-plan-card > svg {
+  color: var(--blue);
+  margin-bottom: 13px;
+}
+
+.personal-plan-card strong {
+  font-size: 13px;
+}
+
+.personal-plan-card p {
+  margin: 6px 0 18px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+.personal-plan-action {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--blue);
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.personal-middle-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr);
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.personal-path-card,
+.personal-mastery-card {
+  padding: 22px;
+}
+
+.personal-path-steps {
+  display: grid;
+  gap: 7px;
+}
+
+.personal-path-steps > a {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.personal-path-steps > a > span {
+  width: 29px;
+  height: 29px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--soft);
+  color: var(--blue);
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.personal-path-steps strong,
+.personal-path-steps small {
+  display: block;
+}
+
+.personal-path-steps strong {
+  font-size: 10px;
+}
+
+.personal-path-steps small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 7px;
+}
+
+.personal-inline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 14px;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.personal-mastery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-top: 16px;
+}
+
+.personal-mastery-grid > div {
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--bg);
+}
+
+.personal-mastery-grid strong,
+.personal-mastery-grid span {
+  display: block;
+}
+
+.personal-mastery-grid strong {
+  font-size: 24px;
+  letter-spacing: -.05em;
+}
+
+.personal-mastery-grid span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 7px;
+  line-height: 1.35;
+}
+
+.personal-review-callout,
+.personal-review-empty {
+  margin-top: 11px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--bg);
+}
+
+.personal-review-callout {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: center;
+  color: var(--text);
+}
+
+.personal-review-callout > svg:first-child {
+  color: var(--blue);
+}
+
+.personal-review-callout span,
+.personal-review-callout strong,
+.personal-review-callout small {
+  display: block;
+}
+
+.personal-review-callout span {
+  color: var(--blue);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .06em;
+}
+
+.personal-review-callout strong {
+  margin-top: 2px;
+  font-size: 10px;
+}
+
+.personal-review-callout small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 7px;
+}
+
+.personal-review-empty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.personal-review-empty svg {
+  color: #2e8b57;
+}
+
+.personal-achievements {
+  margin-top: 14px;
+  padding: 22px;
+}
+
+.personal-achievement-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.personal-achievement-row article {
+  min-height: 120px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: start;
+  padding: 12px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  opacity: .58;
+}
+
+.personal-achievement-row article.earned {
+  opacity: 1;
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--blue) 23%, var(--line));
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--blue) 5%, var(--surface)), var(--bg));
+}
+
+.personal-achievement-row article > svg:first-child {
+  color: var(--muted);
+}
+
+.personal-achievement-row article.earned > svg:first-child {
+  color: var(--blue);
+}
+
+.personal-achievement-row article > svg:last-child {
+  color: #2e8b57;
+}
+
+.personal-achievement-row strong,
+.personal-achievement-row span {
+  display: block;
+}
+
+.personal-achievement-row strong {
+  font-size: 9px;
+}
+
+.personal-achievement-row span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 7px;
+  line-height: 1.45;
+}
+
+.personal-explore-link {
+  margin-top: 15px;
+  padding-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.personal-explore-link svg:first-child {
+  color: var(--blue);
+}
+
+.personal-explore-link svg:last-child {
+  margin-left: auto;
+}
+
+.personal-learning-settings .setting-row > input {
+  width: min(280px, 100%);
+}
+
+@media (max-width: 1120px) {
+  .personal-command-grid,
+  .personal-middle-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .personal-week-card {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    gap: 16px 22px;
+    align-items: center;
+  }
+
+  .personal-ring-wrap {
+    grid-row: 1 / 3;
+    margin: 0;
+  }
+
+  .personal-week-strip {
+    grid-column: 2;
+    margin-top: 0;
+  }
+
+  .personal-achievement-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .personal-lms-header,
+  .personal-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .personal-lms-header h1 {
+    font-size: 38px;
+  }
+
+  .personal-plan-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .personal-plan-card {
+    min-height: 0;
+  }
+
+  .personal-plan-index {
+    margin-bottom: 18px;
+  }
+
+  .personal-today-progress {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .personal-achievement-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .personal-continue-card {
+    padding: 22px 18px;
+  }
+
+  .personal-continue-top {
+    flex-direction: column;
+  }
+
+  .personal-continue-card h2 {
+    margin-top: 20px;
+    font-size: 31px;
+  }
+
+  .personal-continue-actions .button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .personal-week-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .personal-ring-wrap,
+  .personal-week-strip {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .personal-week-strip {
+    width: 100%;
+  }
+
+  .personal-achievement-row {
+    grid-template-columns: 1fr;
+  }
+}
