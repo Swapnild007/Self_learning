@@ -323,7 +323,7 @@ export default function Dashboard() {
               <Play size={16} fill="currentColor" />
               {sectionsRead ? "Resume lesson" : "Start lesson"}
             </Link>
-            <Link className="button" to={`/lab?chapter=${featured.id}`}>
+            <Link className="button" to={`/lab?chapter=${relatedMission}`}>
               <FlaskConical size={16} /> Open mission
             </Link>
           </div>
