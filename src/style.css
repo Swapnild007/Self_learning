@@ -7382,3 +7382,110 @@ th {
     flex-direction: column;
   }
 }
+
+
+/* =========================================================
+   GLOBAL CS CORE — UNIVERSITY-GRADE CURRICULUM MAP
+   ========================================================= */
+
+.global-core-card {
+  background:
+    radial-gradient(circle at 88% 12%, color-mix(in srgb, var(--blue) 13%, transparent), transparent 26%),
+    var(--surface);
+  border-color: color-mix(in srgb, var(--blue) 28%, var(--line));
+}
+
+.global-core-card .path-card-index {
+  background: color-mix(in srgb, var(--blue) 10%, var(--soft));
+  color: var(--blue);
+}
+
+.global-core-phases {
+  display: grid;
+  gap: 24px;
+  margin-top: 26px;
+}
+
+.global-core-phase {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+}
+
+.global-core-phase > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(270px, .65fr);
+  gap: 24px;
+  align-items: start;
+  padding: 24px 26px;
+  border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--blue) 7%, var(--surface)),
+      var(--surface));
+}
+
+.global-core-phase > header h2 {
+  margin: 4px 0 7px;
+  font-size: clamp(22px, 3vw, 31px);
+  letter-spacing: -.035em;
+}
+
+.global-core-phase > header p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.global-phase-gate {
+  padding: 13px 14px;
+  border: 1px solid color-mix(in srgb, var(--blue) 23%, var(--line));
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.global-phase-gate strong,
+.global-phase-gate span {
+  display: block;
+}
+
+.global-phase-gate strong {
+  color: var(--blue);
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.global-phase-gate span {
+  margin-top: 5px;
+  color: var(--text);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.global-core-phase > .path-timeline {
+  margin: 0;
+  padding: 16px 18px 20px;
+}
+
+.global-core-phase .path-step {
+  margin-top: 0;
+}
+
+.global-core-phase .path-step + .path-step {
+  margin-top: 9px;
+}
+
+@media (max-width: 820px) {
+  .global-core-phase > header {
+    grid-template-columns: 1fr;
+    padding: 20px 18px;
+  }
+
+  .global-core-phase > .path-timeline {
+    padding: 12px;
+  }
+}
