@@ -266,6 +266,32 @@ export default function Dashboard() {
   const completedToday = todayPlan.filter((item) => item.done).length;
   const todayPct = Math.round((completedToday / todayPlan.length) * 100);
 
+  const pulseSteps = [
+    {
+      label: "Understand",
+      detail: "Build the mental model",
+      icon: BookOpen,
+      done: chapterProgress === 100,
+      active: ["not-started", "learning"].includes(featuredEvidence.state),
+    },
+    {
+      label: "Experiment",
+      detail: "Change something and observe",
+      icon: FlaskConical,
+      done: featuredEvidence.hasLab && featuredEvidence.labBest === 100,
+      active: featuredEvidence.state === "experiment",
+    },
+    {
+      label: "Recall",
+      detail: "Prove it from memory",
+      icon: Target,
+      done: chapterScore === 100,
+      active: ["practice", "review", "mastered"].includes(featuredEvidence.state),
+    },
+  ];
+
+  const visibleSections = featured.sections.slice(0, 3);
+
   const featuredPathIndex = pathCourses.findIndex(
     (course) => course.id === featuredCourse.id,
   );
@@ -287,30 +313,38 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="page personal-lms-home">
-      <header className="personal-lms-header">
-        <div>
-          <span className="eyebrow">YOUR PERSONAL LEARNING LMS</span>
+    <div className="page personal-lms-home pulse-home">
+      <header className="pulse-home-header">
+        <div className="pulse-home-copy">
+          <div className="pulse-live-row">
+            <span className="pulse-live-dot" aria-hidden="true" />
+            <span>PERSONAL LEARNING SPACE</span>
+            <span className="pulse-separator">·</span>
+            <span>{activeDays}/{weeklyGoal} learning days this week</span>
+          </div>
           <h1>
             {greeting}{learnerName ? `, ${learnerName}` : ""}<span className="blue-dot">.</span>
           </h1>
           <p>
-            Your dashboard adapts to what you actually read, practice, and master.
-            No fake streaks. No random recommendations.
+            One useful next step, chosen from your actual learning evidence.
           </p>
         </div>
-        <Link className="button" to="/settings">
-          <Settings2 size={16} /> Personalize
+
+        <Link className="pulse-personalize" to="/settings">
+          <Settings2 size={17} />
+          <span>Personalize</span>
+          <ArrowRight size={14} />
         </Link>
       </header>
 
-      <section className="personal-command-grid">
-        <motion.article
-          className="personal-continue-card"
-          initial={{ opacity: 1, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <div className="personal-continue-top">
+      <motion.section
+        className="learning-pulse-shell"
+        initial={{ opacity: 1, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: .28 }}
+      >
+        <article className="learning-pulse-copy">
+          <div className="learning-pulse-meta">
             <div>
               <span className="eyebrow">CONTINUE LEARNING</span>
               <span className="personal-course-label">{featuredCourse.title}</span>
@@ -321,103 +355,146 @@ export default function Dashboard() {
           </div>
 
           <h2>{featured.title}</h2>
-          <p>{featured.introduction}</p>
+          <p className="learning-pulse-intro">{featured.introduction}</p>
 
-          <div className="personal-next-reason">
-            <span>NEXT BEST ACTION</span>
-            <strong>{featuredEvidence.action.label}</strong>
-            <p>{featuredEvidence.action.reason}</p>
+          <div className="lesson-stage-strip" aria-label="Published lesson stages">
+            {visibleSections.map((section, index) => {
+              const isRead = (data.read[featured.id] || []).includes(section.id);
+              const isCurrent = !isRead && index === sectionsRead;
+              return (
+                <Link
+                  to={`/read/${featured.id}`}
+                  className={`lesson-stage ${isRead ? "done" : ""} ${isCurrent ? "current" : ""}`}
+                  key={section.id}
+                >
+                  <span>{isRead ? <CheckCircle2 size={14} /> : String(index + 1).padStart(2, "0")}</span>
+                  <div>
+                    <small>{isRead ? "COMPLETED" : isCurrent ? "UP NEXT" : "LATER"}</small>
+                    <strong>{section.title}</strong>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
 
-          <div className="personal-continue-actions">
-            <Link className="button primary" to={featuredEvidence.action.to}>
-              <Play size={16} fill="currentColor" />
-              {featuredEvidence.action.label}
+          <div className="pulse-action-panel">
+            <div>
+              <span>NEXT BEST ACTION</span>
+              <strong>{featuredEvidence.action.label}</strong>
+              <p>{featuredEvidence.action.reason}</p>
+            </div>
+            <Link className="pulse-primary-action" to={featuredEvidence.action.to}>
+              <Play size={17} fill="currentColor" />
+              <span>{featuredEvidence.action.label}</span>
+              <ArrowRight size={16} />
             </Link>
-            {featuredEvidence.action.to !== `/read/${featured.id}` && (
-              <Link className="button" to={`/read/${featured.id}`}>
-                <BookOpen size={16} /> Open lesson
-              </Link>
-            )}
           </div>
+        </article>
 
-          <div className="personal-chapter-progress">
-            <Progress value={chapterProgress} label="Current chapter progress" />
-            <span>{sectionsRead}/{featured.sections.length} sections</span>
-          </div>
-        </motion.article>
-
-        <aside className="personal-week-card">
-          <div className="personal-ring-wrap">
+        <aside className="learning-pulse-visual" aria-label="Current learning pulse">
+          <div className="pulse-visual-grid" aria-hidden="true" />
+          <motion.div
+            className="pulse-orbit"
+            animate={{ y: [0, -3, 0] }}
+            transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
+          >
             <div
-              className="personal-week-ring"
-              style={{ "--weekly-progress": `${weeklyPct * 3.6}deg` } as CSSProperties}
+              className="pulse-core"
+              style={{ "--chapter-progress": `${chapterProgress * 3.6}deg` } as CSSProperties}
             >
               <div>
-                <strong>{activeDays}</strong>
-                <span>of {weeklyGoal} days</span>
+                <span>CHAPTER</span>
+                <strong>{chapterProgress}%</strong>
+                <small>{sectionsRead}/{featured.sections.length} sections</small>
               </div>
             </div>
-          </div>
-          <div>
-            <span className="eyebrow">WEEKLY RHYTHM</span>
-            <h2>{weeklyPct >= 100 ? "Goal reached" : `${weeklyGoal - activeDays} learning day${weeklyGoal - activeDays === 1 ? "" : "s"} to go`}</h2>
-            <p>A day counts only after a real reading, assessment, confidence, or lab action.</p>
-          </div>
-          <div className="personal-week-strip" aria-label="Last seven learning days">
-            {daySeries.map((day) => (
-              <div key={day.key} title={`${day.full}: ${day.count} actions`}>
-                <span className={day.count ? "active" : ""} data-level={Math.min(day.count, 4)} />
-                <small>{day.label}</small>
-              </div>
-            ))}
+
+            {pulseSteps.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <motion.div
+                  className={`pulse-orbit-node node-${index + 1} ${step.done ? "done" : ""} ${step.active ? "active" : ""}`}
+                  key={step.label}
+                  initial={{ opacity: 0, scale: .92 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: .08 * index }}
+                >
+                  <Icon size={16} />
+                  <span>{step.label}</span>
+                </motion.div>
+              );
+            })}
+
+            <span className="pulse-orbit-line orbit-line-1" />
+            <span className="pulse-orbit-line orbit-line-2" />
+            <span className="pulse-orbit-line orbit-line-3" />
+          </motion.div>
+
+          <div className="pulse-signal-grid">
+            <div>
+              <span>READING</span>
+              <strong>{chapterProgress}%</strong>
+            </div>
+            <div>
+              <span>LAB</span>
+              <strong>{featuredEvidence.hasLab ? `${featuredEvidence.labBest ?? 0}%` : "—"}</strong>
+            </div>
+            <div>
+              <span>RECALL</span>
+              <strong>{chapterScore === undefined ? "—" : `${chapterScore}%`}</strong>
+            </div>
           </div>
         </aside>
-      </section>
+      </motion.section>
 
-      <section className="personal-today-section">
-        <div className="personal-section-heading">
+      <section className="pulse-today-section">
+        <div className="pulse-section-heading">
           <div>
-            <span className="eyebrow">TODAY'S PLAN</span>
-            <h2>Three moves for today.</h2>
-            <p>A focused session: understand, experiment, retrieve.</p>
+            <span className="eyebrow">TODAY'S FOCUS</span>
+            <h2>Three moves. One learning loop.</h2>
           </div>
-          <div className="personal-today-progress">
+          <div className="pulse-today-meter">
             <strong>{completedToday}/{todayPlan.length}</strong>
-            <span>completed today</span>
+            <span>done today</span>
             <Progress value={todayPct} label="Today's learning plan progress" />
           </div>
         </div>
 
-        <div className="personal-plan-grid">
+        <div className="pulse-mission-deck">
           {todayPlan.map((item, index) => {
             const Icon = item.icon;
             return (
-              <Link
-                className={`personal-plan-card ${item.done ? "done" : ""}`}
-                to={item.to}
+              <motion.div
                 key={item.title}
+                whileHover={{ y: -3 }}
+                transition={{ type: "spring", stiffness: 280, damping: 22 }}
               >
-                <div className="personal-plan-index">
-                  {item.done ? <CheckCircle2 size={18} /> : <Circle size={18} />}
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                </div>
-                <Icon size={22} />
-                <div>
-                  <strong>{item.title}</strong>
-                  <p>{item.detail}</p>
-                </div>
-                <span className="personal-plan-action">
-                  {item.done ? "Done today" : item.action} <ArrowRight size={14} />
-                </span>
-              </Link>
+                <Link
+                  className={`pulse-mission-card ${item.done ? "done" : ""}`}
+                  to={item.to}
+                >
+                  <div className="pulse-mission-card-top">
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    {item.done ? <CheckCircle2 size={18} /> : <Icon size={19} />}
+                  </div>
+                  <div>
+                    <small>{item.done ? "COMPLETE" : "TODAY"}</small>
+                    <strong>{item.title}</strong>
+                    <p>{item.detail}</p>
+                  </div>
+                  <span className="pulse-mission-cta">
+                    {item.done ? "Done" : item.action}
+                    <ArrowRight size={14} />
+                  </span>
+                </Link>
+              </motion.div>
             );
           })}
         </div>
       </section>
 
-      <section className="personal-middle-grid">
-        <article className="personal-path-card">
+      <section className="personal-middle-grid pulse-lower-grid">
+        <article className="personal-path-card pulse-path-card">
           <div className="personal-section-heading compact">
             <div>
               <span className="eyebrow">YOUR PATH</span>
@@ -448,11 +525,11 @@ export default function Dashboard() {
           </Link>
         </article>
 
-        <article className="personal-mastery-card">
+        <article className="personal-mastery-card pulse-mastery-card">
           <div className="personal-section-heading compact">
             <div>
-              <span className="eyebrow">MASTERY SNAPSHOT</span>
-              <h2>Evidence, not completion.</h2>
+              <span className="eyebrow">MASTERY SIGNALS</span>
+              <h2>Your evidence at a glance.</h2>
             </div>
             <Target size={22} />
           </div>
@@ -477,10 +554,7 @@ export default function Dashboard() {
           </div>
 
           {reviewPriority ? (
-            <Link
-              className="personal-review-callout"
-              to={reviewPriority.to}
-            >
+            <Link className="personal-review-callout" to={reviewPriority.to}>
               <NotebookPen size={18} />
               <div>
                 <span>RECOMMENDED REVIEW</span>
@@ -498,7 +572,7 @@ export default function Dashboard() {
         </article>
       </section>
 
-      <section className="personal-achievements">
+      <section className="personal-achievements pulse-achievements">
         <div className="personal-section-heading compact">
           <div>
             <span className="eyebrow">MILESTONES</span>
