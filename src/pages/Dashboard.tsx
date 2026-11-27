@@ -39,13 +39,37 @@ function dayKey(value: number | Date) {
 export default function Dashboard() {
   const { data } = useStore();
 
+  const preferredPath =
+    learningPaths.find((path) => path.id === data.personal.activePath) ||
+    learningPaths[0];
+  const pathCourses = resolvePath(preferredPath);
+  const firstPlayablePathEntry = pathCourses
+    .flatMap((course) =>
+      course.modules.flatMap((module) =>
+        module.chapters.map((item) => ({ chapter: item, course })),
+      ),
+    )
+    .find(Boolean);
+
+  const latestActivityEntry = [...data.activity]
+    .sort((a, b) => b.at - a.at)
+    .map((item) => findChapter(item.subject))
+    .find((entry) => entry !== undefined);
+
   const recentEntry = data.visited
     .map((id) => findChapter(id))
     .find((entry) => entry !== undefined);
 
-  const featured = recentEntry?.chapter || chapter;
+  const featured =
+    latestActivityEntry?.chapter ||
+    recentEntry?.chapter ||
+    firstPlayablePathEntry?.chapter ||
+    chapter;
   const featuredCourse =
-    recentEntry?.course || courses.find((course) => course.id === "python")!;
+    latestActivityEntry?.course ||
+    recentEntry?.course ||
+    firstPlayablePathEntry?.course ||
+    courses.find((course) => course.id === "python")!;
 
   const sectionsRead = data.read[featured.id]?.length || 0;
   const chapterProgress = Math.round(
@@ -53,11 +77,6 @@ export default function Dashboard() {
   );
   const assessmentKey = `${featured.assessment.id}-v${featured.assessment.version}`;
   const chapterScore = data.scores[assessmentKey];
-
-  const preferredPath =
-    learningPaths.find((path) => path.id === data.personal.activePath) ||
-    learningPaths[0];
-  const pathCourses = resolvePath(preferredPath);
 
   const now = Date.now();
   const todayStart = startOfDay(now);
@@ -96,6 +115,49 @@ export default function Dashboard() {
     }))
     .filter((entry) => entry.score !== undefined && entry.score < 100)
     .sort((a, b) => (a.score || 0) - (b.score || 0));
+
+  const lowConfidence = chapterRegistry
+    .flatMap((entry) =>
+      entry.chapter.sections
+        .map((section) => ({
+          ...entry,
+          section,
+          confidence: data.confidence[`${entry.chapter.id}:${section.id}`],
+        }))
+        .filter((item) => item.confidence === 1),
+    );
+
+  const reviewPriority =
+    reviewQueue.length > 0
+      ? {
+          kind: "assessment" as const,
+          title: reviewQueue[0].chapter.title,
+          detail: `${reviewQueue[0].score}% latest assessment`,
+          to: `/practice?chapter=${reviewQueue[0].chapter.id}`,
+        }
+      : lowConfidence.length > 0
+        ? {
+            kind: "confidence" as const,
+            title: lowConfidence[0].section.title,
+            detail: `${lowConfidence[0].chapter.title} · marked needs another pass`,
+            to: `/read/${lowConfidence[0].chapter.id}`,
+          }
+        : null;
+
+  const missionChapters = new Set([
+    "python-functions",
+    "llm-foundations",
+    "llm-embeddings",
+    "llm-attention",
+    "llm-rag",
+  ]);
+  const relatedMission =
+    (missionChapters.has(featured.id) && featured.id) ||
+    pathCourses
+      .flatMap((course) => course.modules.flatMap((module) => module.chapters))
+      .find((item) => missionChapters.has(item.id))?.id ||
+    "python-functions";
+  const relatedMissionEntry = findChapter(relatedMission);
 
   const masteredAssessments = Object.values(data.scores).filter(
     (score) => score === 100,
@@ -169,23 +231,25 @@ export default function Dashboard() {
     },
     {
       title: "Run one experiment",
-      detail: "Use a mission to predict, manipulate, execute, and inspect evidence.",
+      detail: relatedMissionEntry
+        ? `${relatedMissionEntry.chapter.title} · evidence-backed mission`
+        : "Predict, manipulate, execute, and inspect evidence.",
       done: todayTypes.has("lab"),
-      to: `/lab?chapter=${featured.id}`,
+      to: `/lab?chapter=${relatedMission}`,
       action: "Open Lab",
       icon: FlaskConical,
     },
     {
-      title: "Retrieve from memory",
-      detail:
-        reviewQueue.length > 0
-          ? `Weakest current assessment: ${reviewQueue[0].chapter.title}`
-          : "Use the current chapter assessment as retrieval practice.",
-      done: todayTypes.has("assessment"),
-      to: reviewQueue.length
-        ? `/practice?chapter=${reviewQueue[0].chapter.id}`
-        : `/practice?chapter=${featured.id}`,
-      action: "Practice",
+      title: reviewPriority?.kind === "confidence" ? "Strengthen a weak spot" : "Retrieve from memory",
+      detail: reviewPriority
+        ? `${reviewPriority.title} · ${reviewPriority.detail}`
+        : "Use the current chapter assessment as retrieval practice.",
+      done:
+        reviewPriority?.kind === "confidence"
+          ? todayTypes.has("confidence")
+          : todayTypes.has("assessment"),
+      to: reviewPriority?.to || `/practice?chapter=${featured.id}`,
+      action: reviewPriority?.kind === "confidence" ? "Revisit" : "Practice",
       icon: Target,
     },
   ];
@@ -193,7 +257,25 @@ export default function Dashboard() {
   const completedToday = todayPlan.filter((item) => item.done).length;
   const todayPct = Math.round((completedToday / todayPlan.length) * 100);
 
-  const recommendedCourses = pathCourses.slice(0, 4);
+  const featuredPathIndex = pathCourses.findIndex(
+    (course) => course.id === featuredCourse.id,
+  );
+  const firstPlayableCourseIndex = pathCourses.findIndex((course) =>
+    course.modules.some((module) => module.chapters.length > 0),
+  );
+  const pathAnchor =
+    featuredPathIndex >= 0
+      ? featuredPathIndex
+      : Math.max(0, firstPlayableCourseIndex);
+  const visiblePathCount = Math.min(5, Math.max(2, data.goal));
+  const pathStart = Math.max(
+    0,
+    Math.min(pathAnchor, Math.max(0, pathCourses.length - visiblePathCount)),
+  );
+  const recommendedCourses = pathCourses.slice(
+    pathStart,
+    pathStart + visiblePathCount,
+  );
 
   return (
     <div className="page personal-lms-home">
@@ -284,8 +366,8 @@ export default function Dashboard() {
         <div className="personal-section-heading">
           <div>
             <span className="eyebrow">TODAY'S PLAN</span>
-            <h2>Three useful actions. Then stop.</h2>
-            <p>Short, deliberate learning beats endless content scrolling.</p>
+            <h2>Three moves for today.</h2>
+            <p>A focused session: understand, experiment, retrieve.</p>
           </div>
           <div className="personal-today-progress">
             <strong>{completedToday}/{todayPlan.length}</strong>
@@ -333,11 +415,11 @@ export default function Dashboard() {
           </div>
 
           <div className="personal-path-steps">
-            {recommendedCourses.map((course, index) => {
+            {recommendedCourses.map((course) => {
               const ready = course.modules.some((module) => module.chapters.length > 0);
               return (
                 <Link to={`/course/${course.id}`} key={course.id}>
-                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <span>{String(pathCourses.findIndex((item) => item.id === course.id) + 1).padStart(2, "0")}</span>
                   <div>
                     <strong>{course.title}</strong>
                     <small>{ready ? "Lessons available" : "Curriculum mapped"}</small>
@@ -376,28 +458,28 @@ export default function Dashboard() {
               <span>sections you can explain</span>
             </div>
             <div>
-              <strong>{reviewQueue.length}</strong>
-              <span>items needing review</span>
+              <strong>{reviewQueue.length + lowConfidence.length}</strong>
+              <span>review signals</span>
             </div>
           </div>
 
-          {reviewQueue.length > 0 ? (
+          {reviewPriority ? (
             <Link
               className="personal-review-callout"
-              to={`/practice?chapter=${reviewQueue[0].chapter.id}`}
+              to={reviewPriority.to}
             >
               <NotebookPen size={18} />
               <div>
                 <span>RECOMMENDED REVIEW</span>
-                <strong>{reviewQueue[0].chapter.title}</strong>
-                <small>{reviewQueue[0].score}% latest assessment</small>
+                <strong>{reviewPriority.title}</strong>
+                <small>{reviewPriority.detail}</small>
               </div>
               <ArrowRight size={16} />
             </Link>
           ) : (
             <div className="personal-review-empty">
               <CheckCircle2 size={20} />
-              <span>No incomplete assessment attempts yet.</span>
+              <span>No weak assessment or low-confidence item is waiting.</span>
             </div>
           )}
         </article>
