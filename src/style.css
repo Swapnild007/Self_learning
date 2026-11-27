@@ -10275,3 +10275,630 @@ th {
     justify-content: center;
   }
 }
+
+
+/* =========================================================
+   COMPETITION NOTEBOOK WORKSPACE
+   Inspired by the supplied competition sample, using our own UI.
+   ========================================================= */
+
+.competition-workspace {
+  max-width: 1220px !important;
+}
+
+.competition-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 8;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  margin: -14px -14px 0;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 91%, transparent);
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+}
+
+.competition-back {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: var(--text);
+}
+
+.competition-topbar > div:nth-child(2) span,
+.competition-topbar > div:nth-child(2) strong {
+  display: block;
+}
+
+.competition-topbar > div:nth-child(2) span {
+  color: var(--muted);
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.competition-topbar > div:nth-child(2) strong {
+  margin-top: 2px;
+  overflow: hidden;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.competition-topbar-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.competition-topbar-actions > span,
+.competition-topbar-actions > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.competition-topbar-actions > span {
+  color: var(--muted);
+  font-size: 7px;
+}
+
+.competition-topbar-actions > button {
+  min-height: 36px;
+  padding: 0 11px;
+  border-radius: 10px;
+  background: #10243b;
+  color: white;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.competition-status-banner {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 14px 0 10px;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.competition-status-banner.open {
+  border-color: color-mix(in srgb, #c69536 28%, var(--line));
+  background: color-mix(in srgb, #d4aa52 7%, var(--surface));
+  color: #7f5c1e;
+}
+
+[data-theme="dark"] .competition-status-banner.open {
+  color: #e5c776;
+}
+
+.competition-workspace-nav {
+  position: sticky;
+  top: 61px;
+  z-index: 7;
+  display: flex;
+  gap: 5px;
+  margin-bottom: 12px;
+  padding: 5px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  backdrop-filter: blur(16px);
+  scrollbar-width: none;
+}
+
+.competition-workspace-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.competition-workspace-nav button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  box-shadow: none;
+  font-size: 7.5px;
+  font-weight: 800;
+}
+
+.competition-workspace-nav button:hover {
+  background: var(--soft);
+  color: var(--text);
+}
+
+.competition-publish-checklist,
+.competition-section {
+  margin-bottom: 11px;
+  padding: 18px;
+  scroll-margin-top: 112px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.competition-publish-checklist {
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, #4a86d8 7%, transparent), transparent 28%),
+    var(--surface);
+}
+
+.competition-publish-checklist h2,
+.competition-section h2 {
+  margin: 4px 0 0;
+  font-size: 20px;
+  letter-spacing: -.035em;
+}
+
+.competition-checklist-items {
+  display: grid;
+  gap: 7px;
+  margin-top: 13px;
+}
+
+.competition-checklist-items button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  padding: 10px 11px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: none;
+  text-align: left;
+}
+
+.competition-checklist-items button.checked {
+  border-color: color-mix(in srgb, #2e8b57 32%, var(--line));
+  background: color-mix(in srgb, #2e8b57 5%, var(--surface));
+}
+
+.competition-checklist-items button svg {
+  margin-top: 1px;
+  color: var(--muted);
+}
+
+.competition-checklist-items button.checked svg {
+  color: #2e8b57;
+}
+
+.competition-checklist-items button span {
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.competition-section-heading {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.competition-section-heading > svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--blue);
+}
+
+.competition-section-heading h1 {
+  margin: 4px 0 0;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1;
+  letter-spacing: -.05em;
+}
+
+.competition-background-copy {
+  max-width: 900px;
+  margin-top: 14px;
+}
+
+.competition-background-copy p {
+  margin: 0 0 10px;
+  color: var(--text);
+  font-size: 10px;
+  line-height: 1.72;
+}
+
+.competition-brief-callout {
+  margin-top: 15px;
+  padding: 13px 14px;
+  border: 1px solid color-mix(in srgb, var(--blue) 20%, var(--line));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--blue) 5%, var(--surface));
+}
+
+.competition-brief-callout strong,
+.competition-brief-callout p,
+.competition-brief-callout span {
+  display: block;
+}
+
+.competition-brief-callout strong {
+  font-size: 10px;
+}
+
+.competition-brief-callout p {
+  margin: 5px 0 9px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+.competition-brief-callout span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 7px;
+}
+
+.competition-dataset-stack {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.competition-dataset-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.competition-dataset-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.competition-dataset-title > div {
+  min-width: 0;
+}
+
+.competition-dataset-title code,
+.competition-dataset-title strong {
+  display: block;
+}
+
+.competition-dataset-title code {
+  width: fit-content;
+  padding: 3px 5px;
+  border-radius: 5px;
+  background: var(--soft);
+  font-size: 8px;
+}
+
+.competition-dataset-title strong {
+  margin-top: 5px;
+  font-size: 8px;
+}
+
+.competition-dataset-card > p {
+  margin: 8px 12px 0;
+  color: var(--muted);
+  font-size: 7px;
+}
+
+.competition-data-table {
+  margin-top: 7px;
+}
+
+.competition-data-row {
+  display: grid;
+  grid-template-columns: minmax(120px, .42fr) minmax(0, 1fr);
+  gap: 10px;
+  padding: 9px 12px;
+  border-top: 1px solid var(--line);
+}
+
+.competition-data-row.head {
+  background: color-mix(in srgb, var(--soft) 55%, var(--surface));
+}
+
+.competition-data-row strong {
+  font-size: 8px;
+}
+
+.competition-data-row code {
+  width: fit-content;
+  padding: 2px 4px;
+  border-radius: 5px;
+  background: var(--soft);
+  font-size: 7.5px;
+}
+
+.competition-data-row span {
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.4;
+}
+
+.competition-notebook-goal {
+  margin: 11px 0 13px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+.competition-cell-toolbar {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  padding: 7px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.competition-cell-toolbar button,
+.competition-cell-toolbar span {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 9px;
+  border-radius: 8px;
+  font-size: 7px;
+}
+
+.competition-cell-toolbar button {
+  border: 0;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: none;
+}
+
+.competition-cell-toolbar span {
+  color: var(--muted);
+}
+
+.competition-code-cell {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.competition-code-cell-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--soft) 50%, var(--surface));
+}
+
+.competition-code-cell-head > span {
+  color: var(--muted);
+  font-size: 7px;
+}
+
+.competition-code-cell-head > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 31px;
+  padding: 0 9px;
+  border-radius: 8px;
+  background: #10243b;
+  color: white;
+  font-size: 7px;
+  font-weight: 800;
+}
+
+.competition-code-cell .cm-editor {
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+.competition-output {
+  margin-top: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #0f1928;
+  color: #e8eef9;
+}
+
+.competition-output.passed {
+  border-color: rgba(76, 177, 117, .5);
+}
+
+.competition-output.failed {
+  border-color: rgba(221, 102, 102, .5);
+}
+
+.competition-output > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.competition-output > div strong {
+  font-size: 7px;
+}
+
+.competition-output > div button {
+  padding: 4px 7px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 7px;
+  background: transparent;
+  color: white;
+  font-size: 6px;
+}
+
+.competition-output pre {
+  min-height: 70px;
+  max-height: 230px;
+  margin: 0;
+  padding: 11px;
+  overflow: auto;
+  font-size: 8px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.competition-deliverable {
+  margin: 13px 0;
+  padding: 11px 12px;
+  border-left: 3px solid var(--blue);
+  background: color-mix(in srgb, var(--blue) 5%, var(--surface));
+}
+
+.competition-deliverable strong {
+  display: block;
+  font-size: 8px;
+}
+
+.competition-deliverable p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.competition-submit-readiness {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.competition-submit-readiness > div {
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.competition-submit-readiness span,
+.competition-submit-readiness strong {
+  display: block;
+}
+
+.competition-submit-readiness span {
+  color: var(--muted);
+  font-size: 6px;
+}
+
+.competition-submit-readiness strong {
+  margin-top: 3px;
+  font-size: 10px;
+}
+
+.competition-publish-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-top: 12px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--soft) 42%, var(--surface));
+}
+
+.competition-publish-bar strong,
+.competition-publish-bar span {
+  display: block;
+}
+
+.competition-publish-bar strong {
+  font-size: 9px;
+}
+
+.competition-publish-bar span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 7px;
+}
+
+.competition-supporting-lab {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--blue) 20%, var(--line));
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--blue) 5%, var(--surface));
+  color: var(--blue);
+  font-size: 8px;
+  font-weight: 800;
+}
+
+@media (max-width: 620px) {
+  .competition-topbar {
+    top: 0;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .competition-topbar-actions {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+  }
+
+  .competition-workspace-nav {
+    top: 93px;
+  }
+
+  .competition-publish-checklist,
+  .competition-section {
+    padding: 14px;
+  }
+
+  .competition-section-heading h1 {
+    font-size: 31px;
+  }
+
+  .competition-data-row {
+    grid-template-columns: minmax(96px, .4fr) minmax(0, 1fr);
+  }
+
+  .competition-dataset-title {
+    align-items: flex-start;
+  }
+
+  .competition-submit-readiness {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .competition-publish-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .competition-publish-bar .primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .competition-code-cell .cm-editor {
+    font-size: 13px;
+  }
+}
