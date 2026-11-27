@@ -1,6 +1,76 @@
 /** Original course outlines. These are future lesson titles, not published chapters. */
 export interface RoadmapModule { title: string; topics: string[] }
 const outlines: Record<string, string[]> = {
+  "calculus-computing": [
+    "Functions and change|Limits and continuity|Derivatives as rates|Optimization and approximation",
+    "Accumulation|Definite integrals|Numerical integration|Continuous models in computing",
+    "Multivariable ideas|Partial derivatives|Gradients|Optimization landscapes and sensitivity",
+  ],
+  "linear-algebra": [
+    "Vectors and geometry|Vector spaces|Dot products and projections|Linear independence and basis",
+    "Matrices and transformations|Matrix multiplication|Rank and systems of equations|Inverse and conditioning",
+    "Structure and applications|Eigenvalues and eigenvectors|Orthogonality|Least squares and dimensionality",
+  ],
+  "discrete-math": [
+    "Logic and proof|Propositions and predicates|Direct proof and contradiction|Mathematical induction",
+    "Discrete structures|Sets and relations|Functions and equivalence|Counting and combinatorics",
+    "Graphs and reasoning|Trees and graphs|Connectivity and paths|Recurrences and asymptotic arguments",
+  ],
+  "probability-statistics": [
+    "Probability foundations|Sample spaces and events|Conditional probability|Bayes rule and independence",
+    "Random variables|Discrete and continuous distributions|Expectation and variance|Concentration intuition",
+    "Inference for computing|Sampling and estimation|Confidence and uncertainty|Experiments and model evaluation",
+  ],
+  "computer-architecture": [
+    "Representation and logic|Bits, integers and floating point|Boolean logic|Combinational and sequential circuits",
+    "From instructions to execution|ISA concepts|Assembly and calling conventions|Datapaths and control",
+    "Memory and performance|Caches and locality|Virtual memory interface|Pipelining and performance trade-offs",
+  ],
+  "operating-systems": [
+    "Process abstraction|Processes and threads|System calls|Scheduling and context switching",
+    "Concurrency and memory|Synchronization|Deadlock|Virtual memory and address spaces",
+    "Persistent and protected systems|Filesystems|Isolation and permissions|Failure, recovery and observability",
+  ],
+  "computer-networks": [
+    "Network foundations|Layering and encapsulation|Ethernet and IP|Addressing and routing",
+    "Transport and applications|TCP and UDP|Congestion and reliability|DNS and HTTP",
+    "Modern network engineering|TLS and trust|Performance measurement|Distributed failure and debugging",
+  ],
+  "database-systems": [
+    "Data models and relational foundations|Relational algebra|Schemas and constraints|Normalization",
+    "Query execution|SQL semantics|Indexes and access paths|Query planning and optimization",
+    "Transactions and storage|ACID and isolation|Concurrency control|Recovery, replication and scale",
+  ],
+  "programming-languages": [
+    "Meaning and abstraction|Syntax versus semantics|Environments and scope|Functions and closures",
+    "Programming paradigms|Imperative and functional models|Types and polymorphism|Mutation and effects",
+    "Language implementation|Parsing|Interpreters and evaluation|Runtime representation and garbage collection",
+  ],
+  "theory-computation": [
+    "Automata and languages|Finite automata|Regular languages|Context-free grammars and pushdown automata",
+    "Computability|Turing machines|Decidability|Reductions and undecidable problems",
+    "Complexity|Time and space|P, NP and completeness|Limits of efficient computation",
+  ],
+  "software-engineering": [
+    "Construct software deliberately|Specifications and invariants|Testing and coverage|Abstraction and modularity",
+    "Design for change|Interfaces and data types|Concurrency and race conditions|Version control and review",
+    "Build in teams|Architecture and trade-offs|Observability and release discipline|Ethics, maintainability and documentation",
+  ],
+  "distributed-systems": [
+    "Distributed foundations|Time, ordering and partial failure|RPC and messaging|Replication",
+    "Consistency and coordination|Consensus intuition|Leader election|Transactions across services",
+    "Resilient platforms|Partitioning and rebalancing|Fault tolerance|Observability, recovery and chaos testing",
+  ],
+  hci: [
+    "Understand users and tasks|Human capabilities and limitations|Task analysis|Research ethics",
+    "Design and prototype|Interaction models|Information architecture|Accessible prototypes",
+    "Evaluate with evidence|Usability testing|Experimental design|Iteration and design rationale",
+  ],
+  "cs-capstone": [
+    "Frame the problem|Stakeholders and requirements|Literature and prior art|Success metrics and ethics",
+    "Build and investigate|System design|Implementation and experiments|Testing, measurement and iteration",
+    "Defend the work|Results and limitations|Technical report|Demonstration, presentation and retrospective",
+  ],
   "llm-engineering": [
     "Mathematical foundations|Probability distributions and entropy|Vectors, matrices and cosine similarity|Gradients and optimization",
     "Transformers in practice|Embeddings and positions|Attention explained with numbers|Training, inference and decoding",
