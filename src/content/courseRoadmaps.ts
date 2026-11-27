@@ -157,9 +157,13 @@ const outlines: Record<string, string[]> = {
     "Operational decisions|Transactions and write concerns|Backups and access control|Design a data-backed application",
   ],
   n8n: [
-    "Visual automation|Triggers and webhook inputs|Expressions and data mapping|Execution history",
-    "Connected workflows|HTTP and API credentials|Branching and retries|Human approval steps",
-    "Reliable orchestration|Rate limits and partial failures|Monitoring and audit trails|A documented workflow project",
+    "Workflow foundations|Triggers and webhooks|Expressions and data mapping|Credentials|Execution history|Sub-workflows",
+    "API and automation engineering|HTTP Request|Pagination|Branching|Retries|Idempotency|Error workflows|Human approval",
+    "AI in n8n|Chat models|Basic LLM chains|Tools agents|Memory|Structured outputs|Human-in-the-loop tool calls",
+    "RAG in n8n|Document loaders|Text splitters|Embeddings|Vector stores|Retrievers|Rerankers|Grounded Q&A",
+    "MCP and agent integration|MCP client tools|n8n MCP server|Workflow tools|Tool permissions|Agent-to-workflow boundaries",
+    "Evaluation and operations|Light and metric evaluations|Tracing|Logs|OpenTelemetry|Queue mode|Concurrency|Scaling",
+    "Secure self-hosting|Docker|Secrets|SSRF protection|User management|2FA|Encryption keys|Security audit|Backups",
   ],
   "data-analytics": [
     "Questions before charts|Metric definitions and units|Data quality and missingness|Sampling and bias",
