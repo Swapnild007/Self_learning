@@ -336,7 +336,7 @@ test("account settings navigation closes the account dialog", async ({
 
 test("guided paths link to published chapters and expose planned curricula honestly", async ({ page }) => {
   await page.goto("/#/paths");
-  await expect(page.locator(".path-card")).toHaveCount(8);
+  await expect(page.locator(".path-card")).toHaveCount(9);
   await page.getByRole("textbox", { name: "Search learning paths" }).fill("agents");
   await expect(page.locator(".path-card")).toHaveCount(1);
   await page.locator(".path-card").first().click();
