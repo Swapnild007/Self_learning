@@ -1,0 +1,92 @@
+[
+  {
+    "path": "docs/screenshots/desktop-catalog.png",
+    "size": 74443,
+    "sha": "17590c0bee8d889338b24f49937b2ff974028ac0"
+  },
+  {
+    "path": "docs/screenshots/desktop-dark-dashboard.png",
+    "size": 123819,
+    "sha": "7ae6833e6a1b4411a8de40ff33580f3012b09ec1"
+  },
+  {
+    "path": "docs/screenshots/desktop-dashboard.png",
+    "size": 125263,
+    "sha": "16a90140d7c026368ee446763a34ff2d33539db5"
+  },
+  {
+    "path": "docs/screenshots/desktop-lab.png",
+    "size": 43793,
+    "sha": "0537db9938383e5b6236e4723138dacfd0f1733b"
+  },
+  {
+    "path": "docs/screenshots/desktop-learning.png",
+    "size": 58753,
+    "sha": "fc8d16f8a2a4de686767b8bb95d68721a87a5ef3"
+  },
+  {
+    "path": "docs/screenshots/desktop-overview.png",
+    "size": 68694,
+    "sha": "27eeb9293387edb3d03743a95afcc30952982da2"
+  },
+  {
+    "path": "docs/screenshots/desktop-practice.png",
+    "size": 70027,
+    "sha": "e81a6a6382d48ca067cdb60ead524c9dd588e29e"
+  },
+  {
+    "path": "docs/screenshots/desktop-reader.png",
+    "size": 71163,
+    "sha": "01799e80e468052067d3582e5be77accdc0bd01f"
+  },
+  {
+    "path": "docs/screenshots/desktop-settings.png",
+    "size": 51733,
+    "sha": "30d3406322cadad2f0ddb427063ae232b0930a9c"
+  },
+  {
+    "path": "docs/screenshots/mobile-catalog.png",
+    "size": 217517,
+    "sha": "e820fbab1909094cf687c188277b62cb28ed4d59"
+  },
+  {
+    "path": "docs/screenshots/mobile-dark-dashboard.png",
+    "size": 289150,
+    "sha": "54eb805b20791490775f46bb88239ebdcc2aef35"
+  },
+  {
+    "path": "docs/screenshots/mobile-dashboard.png",
+    "size": 300250,
+    "sha": "1271ed2acca91315167ba2eb258325a0e263fc8a"
+  },
+  {
+    "path": "docs/screenshots/mobile-lab.png",
+    "size": 95481,
+    "sha": "cfafc49c9121833a8fead7e1b492f5e9cad67a27"
+  },
+  {
+    "path": "docs/screenshots/mobile-learning.png",
+    "size": 143500,
+    "sha": "39bf6bd7053c2c258f46a38ce570c8528f8860c5"
+  },
+  {
+    "path": "docs/screenshots/mobile-overview.png",
+    "size": 174957,
+    "sha": "4c7e6dadb03a029bfab2218fefb6549bdce0675c"
+  },
+  {
+    "path": "docs/screenshots/mobile-practice.png",
+    "size": 164811,
+    "sha": "a55038e1e9fc4c3197cadcd8bd3feb692e51835d"
+  },
+  {
+    "path": "docs/screenshots/mobile-reader.png",
+    "size": 97834,
+    "sha": "d6670bd9caecb9d5fe049caaa1ee7f0104a0dc98"
+  },
+  {
+    "path": "docs/screenshots/mobile-settings.png",
+    "size": 124348,
+    "sha": "89dd2de83e00360a51cac73def4312ffff6e3198"
+  }
+]
