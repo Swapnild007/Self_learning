@@ -66,26 +66,32 @@ test("all screens render accessibly without overflow", async ({
     });
   }
 });
-test("search, filters and navigation", async ({ page }) => {
+test("search, filters and adaptive course navigation", async ({ page }) => {
   await page.goto("/#/");
   await page
     .getByRole("textbox", { name: "Search all courses" })
-    .fill("Python");
+    .fill("Python for Practical Problem Solving");
   await page
     .getByRole("textbox", { name: "Search all courses" })
     .press("Enter");
-  await expect(page.locator(".course-card").filter({ hasText: "Python for practical problem solving" })).toHaveCount(1);
+
+  const pythonRow = page.locator(".sorted-course-row").filter({
+    hasText: "Python for Practical Problem Solving",
+  });
+  await expect(pythonRow).toHaveCount(1);
+
   await page.getByRole("textbox", { name: "Search catalog" }).fill("");
-  await page.getByRole("button", { name: "Analytics", exact: true }).click();
-  await expect(page.locator(".course-card")).toHaveCount(4);
-  await page.getByRole("combobox", { name: "Level" }).selectOption("Intermediate");
-  await expect(
-    page.getByRole("heading", { name: "No matching courses" }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Clear filters" }).click();
-  await expect(page.locator(".course-card")).toHaveCount(36);
-  await page.locator(".course-card").filter({ hasText: "Python for practical problem solving" }).click();
-  await page.getByRole("link", { name: "Start learning" }).click();
+  await page.getByRole("button", { name: "Ready now", exact: true }).click();
+  await expect(page.locator(".sorted-course-row")).not.toHaveCount(0);
+
+  await page.getByRole("button", { name: "All", exact: true }).click();
+  await page.getByRole("combobox").filter({ has: page.locator("option") }).selectOption("az");
+  await expect(page.locator(".sorted-course-row").first()).toBeVisible();
+
+  await page.getByRole("textbox", { name: "Search catalog" }).fill("Python for Practical Problem Solving");
+  await pythonRow.click();
+  await expect(page.getByText("NEXT BEST ACTION", { exact: true })).toBeVisible();
+  await page.getByRole("link", { name: /Start lesson|Continue lesson|Run experiment|Check understanding|Retry with feedback/ }).first().click();
   await expect(page.locator("article h1")).toContainText("Programming and Python foundations");
 });
 test("notes bookmarks reading progress and settings persist", async ({
@@ -246,6 +252,9 @@ test("personal LMS follows profile, activity, and review evidence", async ({ pag
   await expect(page.getByText("Strengthen a weak spot", { exact: true })).toBeVisible();
   await expect(page.getByText("Global Computer Science Core", { exact: true })).toBeVisible();
   await page.goto("/#/learning");
+  await expect(page.getByRole("tab", { name: "Mastery" })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByText(/MASTERY MAP · GLOBAL COMPUTER SCIENCE CORE/)).toBeVisible();
+  await page.getByRole("tab", { name: "Evidence" }).click();
   await expect(page.getByText(/CURRENT LEARNING · GLOBAL COMPUTER SCIENCE CORE/)).toBeVisible();
 });
 
@@ -408,11 +417,17 @@ test("mission labs run real instruments and persist evidence", async ({ page }) 
   await expect(page.getByText("untrusted instruction", { exact: true })).toBeVisible();
 });
 
-test("new LLM chapters provide real explanations and assessments", async ({ page }) => {
+test("new LLM chapters expose curriculum, mastery and assessments", async ({ page }) => {
   await page.goto("/#/course/llm-engineering");
-  await expect(page.getByRole("link", { name: /Embeddings: when meaning becomes geometry/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Attention: choosing context with numbers/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Retrieval-augmented generation: answers with evidence/ })).toBeVisible();
+  await page.getByRole("tab", { name: "Curriculum" }).click();
+  await expect(page.getByText(/Embeddings: when meaning becomes geometry/).first()).toBeVisible();
+  await expect(page.getByText(/Attention: choosing context with numbers/).first()).toBeVisible();
+  await expect(page.getByText(/Retrieval-augmented generation: answers with evidence/).first()).toBeVisible();
+
+  await page.getByRole("tab", { name: "Mastery" }).click();
+  await expect(page.getByRole("heading", { name: "What should happen next?" })).toBeVisible();
+  await expect(page.locator(".course-mastery-row")).not.toHaveCount(0);
+
   await page.goto("/#/read/llm-attention");
   await expect(page.getByRole("heading", { name: /Attention: choosing context with numbers/ })).toBeVisible();
   await expect(page.locator("figure.flow-diagram")).toBeVisible();
