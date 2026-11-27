@@ -33,6 +33,13 @@ export interface Data {
   labEvidence: Record<string, { attempts: number; best: number; lastRun: number }>;
   pinnedCheatSheets: string[];
   challengeScores: Record<string, { best: number; attempts: number; lastRun: number }>;
+  challengeDrafts: Record<string, {
+    source: string;
+    notes: string;
+    checklist: string[];
+    runPassed: boolean;
+    lastEdited: number;
+  }>;
   personal: PersonalLearning;
   activity: LearningActivity[];
   enrolled: string[];
@@ -52,6 +59,7 @@ export const defaults: Data = {
   labEvidence: {},
   pinnedCheatSheets: [],
   challengeScores: {},
+  challengeDrafts: {},
   personal: {
     displayName: "",
     activePath: "global-cs-core",
@@ -127,6 +135,20 @@ export function validate(value: unknown): Data {
             !Number.isFinite(value.lastRun) ||
             value.lastRun < 0,
         ))) ||
+    (d.challengeDrafts !== undefined &&
+      (!isRecord(d.challengeDrafts) ||
+        Object.values(d.challengeDrafts).some(
+          (value) =>
+            !isRecord(value) ||
+            typeof value.source !== "string" ||
+            typeof value.notes !== "string" ||
+            !Array.isArray(value.checklist) ||
+            value.checklist.some((item) => typeof item !== "string") ||
+            typeof value.runPassed !== "boolean" ||
+            typeof value.lastEdited !== "number" ||
+            !Number.isFinite(value.lastEdited) ||
+            value.lastEdited < 0,
+        ))) ||
     (d.personal !== undefined &&
       (!isRecord(d.personal) ||
         typeof d.personal.displayName !== "string" ||
@@ -159,6 +181,9 @@ export function validate(value: unknown): Data {
       : [],
     challengeScores: isRecord(d.challengeScores)
       ? (d.challengeScores as Data["challengeScores"])
+      : {},
+    challengeDrafts: isRecord(d.challengeDrafts)
+      ? (d.challengeDrafts as Data["challengeDrafts"])
       : {},
     personal:
       isRecord(d.personal) &&
