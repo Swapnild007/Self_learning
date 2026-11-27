@@ -34,6 +34,7 @@ export default function Shell({ children }: { children: ReactNode }) {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const competitionMode = /^\/arena\/[^/]+/.test(location.pathname);
 
   useEffect(() => {
     document.documentElement.dataset.theme = data.theme;
@@ -67,8 +68,8 @@ export default function Shell({ children }: { children: ReactNode }) {
         Skip to content
       </a>
 
-      <div className={`app nextgen-app sorted-app ${collapsed ? "collapsed" : ""}`}>
-        <aside className="sidebar sorted-sidebar">
+      <div className={`app nextgen-app sorted-app ${collapsed ? "collapsed" : ""} ${competitionMode ? "competition-mode" : ""}`}>
+        {!competitionMode && <aside className="sidebar sorted-sidebar">
           <Link to="/" className="brand sorted-brand" aria-label="Next Gen Learning Hub home">
             <span className="brand-mark nextgen-brand-mark">
               <Sparkles size={20} />
@@ -105,10 +106,10 @@ export default function Shell({ children }: { children: ReactNode }) {
           >
             {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
           </button>
-        </aside>
+        </aside>}
 
         <div className="workspace">
-          <header className="topbar sorted-topbar">
+          {!competitionMode && <header className="topbar sorted-topbar">
             <div className="sorted-page-label">
               <strong>{pageName}</strong>
               <span>Next Gen Learning Hub</span>
@@ -150,17 +151,17 @@ export default function Shell({ children }: { children: ReactNode }) {
                 </Link>
               </Dialog.Close>
             </Modal>
-          </header>
+          </header>}
 
           {storageError && <p role="alert" className="storage-error">{storageError}</p>}
 
           <main id="main" tabIndex={-1}>{children}</main>
 
-          <footer className="nextgen-footer sorted-footer">
+          {!competitionMode && <footer className="nextgen-footer sorted-footer">
             <span><BookOpen size={15} /> NEXT GEN LEARNING HUB</span>
             <span>Learning evidence over content consumption.</span>
             <Link to="/settings">Local data</Link>
-          </footer>
+          </footer>}
         </div>
       </div>
     </MotionConfig>
