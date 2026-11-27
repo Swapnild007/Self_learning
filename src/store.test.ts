@@ -13,13 +13,16 @@ describe("learning data contracts", () => {
     { ...defaults, notes: { x: 42 } },
     { ...defaults, read: { x: [2] } },
     { ...defaults, confidence: { "chapter:section": 4 } },
+    { ...defaults, labEvidence: { mission: { attempts: 1, best: 101, lastRun: 1 } } },
   ])("rejects invalid imports %j", (value) =>
     expect(() => validate(value)).toThrow(),
   );
-  it("accepts older v1 exports that predate confidence check-ins", () => {
+  it("accepts older v1 exports that predate newer learning evidence", () => {
     const legacy = { ...defaults } as Record<string, unknown>;
     delete legacy.confidence;
+    delete legacy.labEvidence;
     expect(validate(legacy).confidence).toEqual({});
+    expect(validate(legacy).labEvidence).toEqual({});
   });
   it("grades exact sets, independent of order", () => {
     expect(grade([1, 0], [0, 1])).toBe(true);
