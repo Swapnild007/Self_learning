@@ -8053,7 +8053,7 @@ th {
 
 .personal-achievement-row {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 7px;
 }
 
@@ -8227,5 +8227,44 @@ th {
 
   .personal-achievement-row {
     grid-template-columns: 1fr;
+  }
+}
+
+
+.personal-milestone-count {
+  text-align: right;
+}
+
+.personal-milestone-count strong,
+.personal-milestone-count span {
+  display: block;
+}
+
+.personal-milestone-count strong {
+  font-size: 23px;
+  line-height: 1;
+  letter-spacing: -.05em;
+}
+
+.personal-milestone-count span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 7px;
+}
+
+.personal-path-steps > a:hover,
+.personal-review-callout:hover {
+  border-color: color-mix(in srgb, var(--blue) 38%, var(--line));
+  transform: translateY(-1px);
+}
+
+.personal-path-steps > a,
+.personal-review-callout {
+  transition: transform .16s ease, border-color .16s ease;
+}
+
+@media (max-width: 760px) {
+  .personal-milestone-count {
+    text-align: left;
   }
 }
