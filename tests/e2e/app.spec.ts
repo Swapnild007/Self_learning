@@ -112,19 +112,32 @@ test("notes bookmarks reading progress and settings persist", async ({
     page.getByRole("button", { name: "Section read", exact: true }),
   ).toHaveCount(1);
   await page.goto("/#/learning");
+  await page.getByRole("tab", { name: /Notes/ }).click();
   await expect(
-    page.locator("textarea[aria-label='Saved chapter notes']").filter({ hasText: "A weighted mean uses the total denominator." }),
-  ).toHaveCount(1);
+    page.getByRole("textbox", { name: /Notes for/ }).first(),
+  ).toHaveValue("A weighted mean uses the total denominator.");
   await page.goto("/#/settings");
   await page.getByRole("button", { name: "Midnight dark" }).click();
   await page
     .getByRole("combobox", { name: "Reading font size" })
     .selectOption("23");
+  await page
+    .getByRole("textbox", { name: "Learner display name" })
+    .fill("Swapnil");
+  await page
+    .getByRole("combobox", { name: "Primary learning path" })
+    .selectOption("global-cs-core");
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(
     page.getByRole("combobox", { name: "Reading font size" }),
   ).toHaveValue("23");
+  await expect(
+    page.getByRole("textbox", { name: "Learner display name" }),
+  ).toHaveValue("Swapnil");
+  await expect(
+    page.getByRole("combobox", { name: "Primary learning path" }),
+  ).toHaveValue("global-cs-core");
   await page.goto("/#/read/python-functions");
   await expect(page.locator("article")).toHaveCSS("font-size", "23px");
 });
@@ -221,6 +234,21 @@ test("dialog keyboard, export, import and reset guard", async ({ page }) => {
   );
 });
 
+test("personal LMS follows profile, activity, and review evidence", async ({ page }) => {
+  await page.goto("/#/settings");
+  await page.getByRole("textbox", { name: "Learner display name" }).fill("Swapnil");
+  await page.getByRole("combobox", { name: "Primary learning path" }).selectOption("global-cs-core");
+  await page.goto("/#/read/python-functions");
+  await page.getByRole("button", { name: "Needs another pass" }).first().click();
+  await page.getByRole("button", { name: "Mark section as read", exact: true }).first().click();
+  await page.goto("/#/");
+  await expect(page.getByRole("heading", { name: /Swapnil/ })).toBeVisible();
+  await expect(page.getByText("Strengthen a weak spot", { exact: true })).toBeVisible();
+  await expect(page.getByText("Global Computer Science Core", { exact: true })).toBeVisible();
+  await page.goto("/#/learning");
+  await expect(page.getByText(/CURRENT LEARNING · GLOBAL COMPUTER SCIENCE CORE/)).toBeVisible();
+});
+
 test("dark screens remain accessible and reduced motion is honored", async ({
   page,
 }, info) => {
@@ -269,9 +297,10 @@ test("validated import restores data and confirmed reset removes it", async ({
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await page.keyboard.press("Escape");
   await page.goto("/#/learning");
+  await page.getByRole("tab", { name: /Notes/ }).click();
   await expect(
-    page.locator("textarea[aria-label='Saved chapter notes']").filter({ hasText: "Imported note" }),
-  ).toHaveCount(1);
+    page.getByRole("textbox", { name: /Notes for/ }).first(),
+  ).toHaveValue("Imported note");
   await page.goto("/#/settings");
   await page
     .getByRole("button", { name: "Reset local data", exact: true })
@@ -282,8 +311,9 @@ test("validated import restores data and confirmed reset removes it", async ({
     .click();
   await page.keyboard.press("Escape");
   await page.goto("/#/learning");
+  await page.getByRole("tab", { name: /Notes/ }).click();
   await expect(
-    page.getByRole("textbox", { name: "Saved chapter notes" }).first(),
+    page.getByRole("textbox", { name: /Notes for/ }).first(),
   ).toHaveValue("");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
