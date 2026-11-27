@@ -15,7 +15,7 @@ import { findChapter } from "../content/catalog";
 import type { Block } from "../content/schema";
 import { useStore } from "../store";
 import { Progress, Modal } from "../components/ui";
-function BlockView({ block: b }: { block: Block }) {
+function BlockView({ block: b, chapterId }: { block: Block; chapterId: string }) {
   switch (b.type) {
     case "paragraph":
       return <p>{b.text}</p>;
@@ -50,7 +50,7 @@ function BlockView({ block: b }: { block: Block }) {
             <pre tabIndex={0} aria-label="Expected output">{b.example.expectedOutput}</pre>
           </div>
           <p>{b.example.explanation}</p>
-          <Link className="button" to={`/lab?chapter=${chapter.id}`}>Try this in the Python laboratory <ArrowRight size={15} /></Link>
+          <Link className="button" to={`/lab?chapter=${chapterId}`}>Try this in the Interactive Lab <ArrowRight size={15} /></Link>
         </figure>
       );
     case "table":
@@ -339,7 +339,7 @@ export default function Reader() {
             <section id={s.id} key={s.id}>
               <h2>{s.title}</h2>
               {s.blocks.map((b, i) => (
-                <BlockView block={b} key={i} />
+                <BlockView block={b} chapterId={chapter.id} key={i} />
               ))}
               <div className="ng-confidence-check">
                 <div className="ng-confidence-copy">
