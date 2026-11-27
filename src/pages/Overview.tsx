@@ -288,7 +288,7 @@ export default function Overview() {
               <span className="eyebrow">LEARNING TOOLS</span>
               <h2>Use the right mode for the task</h2>
               <div className="sorted-resource-links">
-                <Link to="/lab">
+                <Link to={firstChapter ? `/lab?chapter=${firstChapter.id}` : "/lab"}>
                   <FlaskConical />
                   <div>
                     <strong>Interactive Lab</strong>
