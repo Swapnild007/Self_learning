@@ -48,11 +48,11 @@ createRoot(document.getElementById("root")!).render(
                 <Route path="/catalog" element={<Catalog />} />
                 <Route path="/paths" element={<LearningPaths />} />
                 <Route path="/paths/:id" element={<LearningPaths />} />
-                <Route path="/visuals" element={<Navigate replace to="/lab?mode=visual" />} />
+                <Route path="/visuals" element={<Navigate replace to="/lab?chapter=llm-foundations" />} />
                 <Route path="/course/:id" element={<Overview />} />
                 <Route path="/read/:id" element={<Reader />} />
                 <Route path="/lab" element={<Lab />} />
-                <Route path="/living-lab" element={<Navigate replace to="/lab?mode=explain" />} />
+                <Route path="/living-lab" element={<Navigate replace to="/lab?chapter=llm-foundations" />} />
                 <Route path="/practice" element={<Practice />} />
                 <Route path="/learning" element={<Learning />} />
                 <Route path="/settings" element={<Settings />} />
