@@ -20,6 +20,9 @@ async function replaceCode(page: Page, source: string) {
 const routes = [
   ["dashboard", "/"],
   ["catalog", "/catalog"],
+  ["cheatsheet", "/cheatsheet/rag-engineering"],
+  ["arena", "/arena"],
+  ["arena-detail", "/arena/rag-grounding-sprint"],
   ["paths", "/paths"],
   ["visuals", "/visuals"],
   ["path-detail", "/paths/python-ai"],
@@ -373,19 +376,43 @@ test("account settings navigation closes the account dialog", async ({
   ).toBeVisible();
 });
 
-test("guided paths link to published chapters and expose planned curricula honestly", async ({ page }) => {
+test("guided paths expose complete AI and web capability stacks honestly", async ({ page }) => {
   await page.goto("/#/paths");
   await expect(page.locator(".path-card")).toHaveCount(9);
-  await page.getByRole("textbox", { name: "Search learning paths" }).fill("agents");
+
+  await page.getByRole("textbox", { name: "Search learning paths" }).fill("AI Agents");
   await expect(page.locator(".path-card")).toHaveCount(1);
   await page.locator(".path-card").first().click();
-  await expect(page.locator(".path-step")).toHaveCount(5);
-  await expect(page.getByRole("heading", { name: "Reliable AI agents." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "AI Agents & Automation." })).toBeVisible();
+  await expect(page.locator(".path-step")).toHaveCount(15);
   await expect(page.getByText("Lessons available", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Curriculum planned", { exact: true }).first()).toBeVisible();
-  await page.getByRole("link", { name: "Explore the curriculum" }).first().click();
-  await expect(page.locator(".planned-module")).toHaveCount(3);
-  await expect(page.getByText("These are curriculum topics, not published or assessed lessons.")).toBeVisible();
+
+  await page.goto("/#/paths/full-stack");
+  await expect(page.getByRole("heading", { name: "Full-Stack Web Engineer · Complete Stack." })).toBeVisible();
+  await expect(page.locator(".path-step")).toHaveCount(34);
+});
+
+test("cheatsheets are searchable, pinnable, and Arena saves personal bests", async ({ page }) => {
+  await page.goto("/#/catalog?view=cheatsheets");
+  await expect(page.getByRole("tab", { name: "Cheatsheets" })).toHaveAttribute("aria-selected", "true");
+  await page.getByRole("textbox", { name: "Search cheatsheets" }).fill("RAG");
+  await expect(page.locator(".cheat-library-card")).toHaveCount(1);
+  await page.locator(".cheat-library-card").click();
+
+  await expect(page.getByRole("heading", { name: "RAG Engineering." })).toBeVisible();
+  await page.getByRole("button", { name: "Pin reference" }).click();
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Unpin" })).toBeVisible();
+
+  await page.goto("/#/arena/rag-grounding-sprint");
+  await expect(page.getByRole("heading", { name: "RAG Grounding Sprint." })).toBeVisible();
+  for (const label of ["Retrieval design", "Grounding", "Security", "Evaluation"]) {
+    await page.getByRole("button", { name: new RegExp(label) }).click();
+  }
+  await page.getByRole("textbox", { name: "Evidence notes" }).fill("Validated retrieval, grounding, security boundary, and evaluation criteria.");
+  await page.getByRole("button", { name: "Save scored attempt" }).click();
+  await expect(page.getByText("Personal best: 100% · attempts: 1")).toBeVisible();
 });
 
 test("mission labs run real instruments and persist evidence", async ({ page }) => {
