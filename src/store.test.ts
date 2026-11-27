@@ -14,6 +14,8 @@ describe("learning data contracts", () => {
     { ...defaults, read: { x: [2] } },
     { ...defaults, confidence: { "chapter:section": 4 } },
     { ...defaults, labEvidence: { mission: { attempts: 1, best: 101, lastRun: 1 } } },
+    { ...defaults, challengeScores: { arena: { attempts: 1, best: 101, lastRun: 1 } } },
+    { ...defaults, pinnedCheatSheets: [42] },
     { ...defaults, personal: { ...defaults.personal, weeklyDays: 4 } },
     { ...defaults, activity: [{ id: "x", type: "bad", subject: "x", at: 1 }] },
   ])("rejects invalid imports %j", (value) =>
@@ -25,10 +27,14 @@ describe("learning data contracts", () => {
     delete legacy.labEvidence;
     delete legacy.personal;
     delete legacy.activity;
+    delete legacy.pinnedCheatSheets;
+    delete legacy.challengeScores;
     expect(validate(legacy).confidence).toEqual({});
     expect(validate(legacy).labEvidence).toEqual({});
     expect(validate(legacy).personal).toEqual(defaults.personal);
     expect(validate(legacy).activity).toEqual([]);
+    expect(validate(legacy).pinnedCheatSheets).toEqual([]);
+    expect(validate(legacy).challengeScores).toEqual({});
   });
   it("grades exact sets, independent of order", () => {
     expect(grade([1, 0], [0, 1])).toBe(true);
