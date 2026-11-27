@@ -493,6 +493,20 @@ export default function Dashboard() {
         </div>
       </section>
 
+      <section className="home-arena-strip">
+        <div>
+          <span className="eyebrow">CHALLENGE ARENA</span>
+          <h2>Turn learning into a scored challenge.</h2>
+          <p>Use a transparent rubric, save your personal best, and improve the evidence—not just the score.</p>
+        </div>
+        <div className="home-arena-actions">
+          <span><Trophy size={17} /> {Object.values(data.challengeScores).reduce((sum, item) => sum + item.attempts, 0)} attempts</span>
+          <Link className="button" to="/arena">
+            Enter Arena <ArrowRight size={15} />
+          </Link>
+        </div>
+      </section>
+
       <section className="personal-middle-grid pulse-lower-grid">
         <article className="personal-path-card pulse-path-card">
           <div className="personal-section-heading compact">
