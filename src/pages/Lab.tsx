@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
   Activity,
@@ -15,7 +15,7 @@ import {
   Target,
   Terminal,
   TriangleAlert,
-  VectorSquare,
+  Box,
 } from "lucide-react";
 import CodeEditor from "../components/CodeEditor";
 import { usePython } from "../usePython";
@@ -68,7 +68,7 @@ const missions: Mission[] = [
     description: "Move vectors in three dimensions and test whether cosine similarity crosses a retrieval threshold.",
     objective: "Understand similarity as geometry rather than a truth or confidence score.",
     chapter: "llm-embeddings",
-    icon: VectorSquare,
+    icon: Box,
   },
   {
     id: "llm-attention",
@@ -143,7 +143,7 @@ function Evidence({
 }: {
   title: string;
   tone: "good" | "warn" | "neutral";
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div className={`mission-evidence ${tone}`} role="status">
@@ -488,7 +488,7 @@ function EmbeddingMission({ onEvidence }: { onEvidence: (score: number) => void 
             </Evidence>
           </>
         ) : (
-          <div className="mission-output-locked"><VectorSquare /><strong>Measurement hidden</strong><p>Predict first, then measure.</p></div>
+          <div className="mission-output-locked"><Box /><strong>Measurement hidden</strong><p>Predict first, then measure.</p></div>
         )}
       </section>
     </div>
