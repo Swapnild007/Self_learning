@@ -18,6 +18,7 @@ export interface Data {
   read: Record<string, string[]>;
   scores: Record<string, number>;
   confidence: Record<string, number>;
+  labEvidence: Record<string, { attempts: number; best: number; lastRun: number }>;
   enrolled: string[];
 }
 export const defaults: Data = {
@@ -32,6 +33,7 @@ export const defaults: Data = {
   read: {},
   scores: {},
   confidence: {},
+  labEvidence: {},
   enrolled: ["python"],
 };
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -65,10 +67,33 @@ export function validate(value: unknown): Data {
       (!isRecord(d.confidence) ||
         Object.values(d.confidence).some(
           (x) => typeof x !== "number" || ![1, 2, 3].includes(x),
+        ))) ||
+    (d.labEvidence !== undefined &&
+      (!isRecord(d.labEvidence) ||
+        Object.values(d.labEvidence).some(
+          (value) =>
+            !isRecord(value) ||
+            typeof value.attempts !== "number" ||
+            !Number.isFinite(value.attempts) ||
+            value.attempts < 0 ||
+            typeof value.best !== "number" ||
+            !Number.isFinite(value.best) ||
+            value.best < 0 ||
+            value.best > 100 ||
+            typeof value.lastRun !== "number" ||
+            !Number.isFinite(value.lastRun) ||
+            value.lastRun < 0,
         )))
   )
     throw Error("This is not a valid Next Gen Learning Hub v1 export.");
-  return { ...defaults, ...d, confidence: isRecord(d.confidence) ? (d.confidence as Record<string, number>) : {} };
+  return {
+    ...defaults,
+    ...d,
+    confidence: isRecord(d.confidence) ? (d.confidence as Record<string, number>) : {},
+    labEvidence: isRecord(d.labEvidence)
+      ? (d.labEvidence as Data["labEvidence"])
+      : {},
+  };
 }
 const Context = createContext<{
   data: Data;
