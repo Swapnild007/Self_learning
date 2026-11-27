@@ -166,10 +166,6 @@ function CompetitionWorkspace({ challenge }: { challenge: (typeof challenges)[nu
     }
   }
 
-  useEffect(() => {
-    if (isAnalytics) setChartBuilt(false);
-  }, [dimension, metric, isAnalytics]);
-
   const chartData = useMemo(() => {
     if (!isAnalytics || !previewRows.length) return [];
     const totals = new Map<string, number>();
@@ -382,8 +378,14 @@ function CompetitionWorkspace({ challenge }: { challenge: (typeof challenges)[nu
                 chartBuilt={chartBuilt}
                 chartData={chartData}
                 totalMetric={totalMetric}
-                onDimension={setDimension}
-                onMetric={setMetric}
+                onDimension={(value) => {
+                  setDimension(value);
+                  setChartBuilt(false);
+                }}
+                onMetric={(value) => {
+                  setMetric(value);
+                  setChartBuilt(false);
+                }}
                 onBuild={() => setChartBuilt(true)}
               />
             ) : challenge.notebook ? (
