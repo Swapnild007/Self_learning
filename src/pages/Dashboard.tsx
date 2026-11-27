@@ -208,6 +208,13 @@ export default function Dashboard() {
     },
   ];
 
+  const earnedAchievements = achievements.filter((item) => item.earned);
+  const nextAchievement = achievements.find((item) => !item.earned);
+  const visibleAchievements = [
+    ...earnedAchievements,
+    ...(nextAchievement ? [nextAchievement] : []),
+  ];
+
   const greetingHour = new Date().getHours();
   const greeting =
     greetingHour < 12
@@ -491,11 +498,14 @@ export default function Dashboard() {
             <span className="eyebrow">MILESTONES</span>
             <h2>Progress worth noticing.</h2>
           </div>
-          <Medal size={22} />
+          <div className="personal-milestone-count">
+            <strong>{earnedAchievements.length}</strong>
+            <span>of {achievements.length} earned</span>
+          </div>
         </div>
 
         <div className="personal-achievement-row">
-          {achievements.map((item) => {
+          {visibleAchievements.map((item) => {
             const Icon = item.icon;
             return (
               <article className={item.earned ? "earned" : ""} key={item.title}>
