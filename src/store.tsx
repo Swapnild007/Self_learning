@@ -6,6 +6,18 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
+export type ActivityType = "read" | "confidence" | "assessment" | "lab";
+export interface LearningActivity {
+  id: string;
+  type: ActivityType;
+  subject: string;
+  at: number;
+}
+export interface PersonalLearning {
+  displayName: string;
+  activePath: string;
+  weeklyDays: 2 | 3 | 5 | 7;
+}
 export interface Data {
   version: 1;
   theme: "light" | "dark";
@@ -19,6 +31,8 @@ export interface Data {
   scores: Record<string, number>;
   confidence: Record<string, number>;
   labEvidence: Record<string, { attempts: number; best: number; lastRun: number }>;
+  personal: PersonalLearning;
+  activity: LearningActivity[];
   enrolled: string[];
 }
 export const defaults: Data = {
@@ -34,6 +48,12 @@ export const defaults: Data = {
   scores: {},
   confidence: {},
   labEvidence: {},
+  personal: {
+    displayName: "",
+    activePath: "global-cs-core",
+    weeklyDays: 3,
+  },
+  activity: [],
   enrolled: ["python"],
 };
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -83,6 +103,24 @@ export function validate(value: unknown): Data {
             typeof value.lastRun !== "number" ||
             !Number.isFinite(value.lastRun) ||
             value.lastRun < 0,
+        ))) ||
+    (d.personal !== undefined &&
+      (!isRecord(d.personal) ||
+        typeof d.personal.displayName !== "string" ||
+        d.personal.displayName.length > 60 ||
+        typeof d.personal.activePath !== "string" ||
+        ![2, 3, 5, 7].includes(Number(d.personal.weeklyDays)))) ||
+    (d.activity !== undefined &&
+      (!Array.isArray(d.activity) ||
+        d.activity.some(
+          (item) =>
+            !isRecord(item) ||
+            typeof item.id !== "string" ||
+            !["read", "confidence", "assessment", "lab"].includes(String(item.type)) ||
+            typeof item.subject !== "string" ||
+            typeof item.at !== "number" ||
+            !Number.isFinite(item.at) ||
+            item.at < 0,
         )))
   )
     throw Error("This is not a valid Next Gen Learning Hub v1 export.");
@@ -93,6 +131,16 @@ export function validate(value: unknown): Data {
     labEvidence: isRecord(d.labEvidence)
       ? (d.labEvidence as Data["labEvidence"])
       : {},
+    personal:
+      isRecord(d.personal) &&
+      typeof d.personal.displayName === "string" &&
+      typeof d.personal.activePath === "string" &&
+      [2, 3, 5, 7].includes(Number(d.personal.weeklyDays))
+        ? (d.personal as unknown as PersonalLearning)
+        : { ...defaults.personal },
+    activity: Array.isArray(d.activity)
+      ? (d.activity as LearningActivity[]).slice(-500)
+      : [],
   };
 }
 const Context = createContext<{
@@ -134,4 +182,23 @@ export function grade(selected: number[], answer: number[]) {
     selected.length === answer.length &&
     answer.every((x) => selected.includes(x))
   );
+}
+
+
+export function addActivity(
+  data: Data,
+  type: ActivityType,
+  subject: string,
+  at = Date.now(),
+): Data {
+  const next: LearningActivity = {
+    id: `${at}-${type}-${subject}`,
+    type,
+    subject,
+    at,
+  };
+  return {
+    ...data,
+    activity: [...data.activity, next].slice(-500),
+  };
 }
