@@ -10,6 +10,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { chapterRegistry, courses } from "../content/catalog";
+import { learningPaths, resolvePath } from "../content/learningPaths";
 import { useStore } from "../store";
 import { Progress } from "../components/ui";
 
@@ -26,9 +27,27 @@ export default function Learning() {
   const [tab, setTab] = useState<LearningTab>("progress");
   const mastered = Object.values(data.scores).filter((score) => score === 100).length;
   const noteCount = Object.values(data.notes).filter((note) => note.trim()).length;
-  const enrolledCourses = courses.filter((course) => data.enrolled.includes(course.id));
-  const enrolledChapters = chapterRegistry.filter((entry) =>
-    data.enrolled.includes(entry.course.id),
+  const activePath =
+    learningPaths.find((path) => path.id === data.personal.activePath) ||
+    learningPaths[0];
+  const pathCourses = resolvePath(activePath);
+  const studiedCourseIds = new Set(
+    data.visited
+      .map((id) => chapterRegistry.find((entry) => entry.chapter.id === id)?.course.id)
+      .filter((id): id is string => Boolean(id)),
+  );
+  const activeCourseIds = new Set([
+    ...pathCourses.map((course) => course.id),
+    ...studiedCourseIds,
+  ]);
+  const activeCourses = courses.filter((course) => activeCourseIds.has(course.id));
+  const activeChapters = chapterRegistry.filter(
+    (entry) =>
+      activeCourseIds.has(entry.course.id) &&
+      (
+        data.visited.includes(entry.chapter.id) ||
+        pathCourses.some((course) => course.id === entry.course.id)
+      ),
   );
 
   return (
@@ -90,7 +109,7 @@ export default function Learning() {
             </div>
 
             <div className="sorted-evidence-table">
-              {enrolledChapters.map(({ chapter, course }) => {
+              {activeChapters.map(({ chapter, course }) => {
                 const sectionCount = chapter.sections.length;
                 const readCount = data.read[chapter.id]?.length || 0;
                 const readPct = Math.round((readCount / Math.max(1, sectionCount)) * 100);
@@ -139,7 +158,7 @@ export default function Learning() {
                 );
               })}
 
-              {!enrolledChapters.length && (
+              {!activeChapters.length && (
                 <div className="sorted-empty-state">
                   <BookOpen size={28} />
                   <strong>No learning activity yet.</strong>
@@ -149,11 +168,11 @@ export default function Learning() {
               )}
             </div>
 
-            {enrolledCourses.length > 0 && (
+            {activeCourses.length > 0 && (
               <div className="sorted-active-courses">
-                <span className="eyebrow">ACTIVE COURSES</span>
+                <span className="eyebrow">ACTIVE PATH · {activePath.title.toUpperCase()}</span>
                 <div>
-                  {enrolledCourses.map((course) => (
+                  {activeCourses.map((course) => (
                     <Link to={`/course/${course.id}`} key={course.id}>
                       <span>{course.symbol}</span>
                       <strong>{course.title}</strong>
