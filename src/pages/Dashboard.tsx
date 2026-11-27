@@ -20,6 +20,7 @@ import { motion } from "motion/react";
 import { courses, chapter, findChapter, chapterRegistry } from "../content/catalog";
 import { learningPaths, resolvePath } from "../content/learningPaths";
 import { useStore } from "../store";
+import { chapterEvidence } from "../learningEngine";
 import { Progress } from "../components/ui";
 
 function startOfDay(value: number | Date) {
@@ -77,6 +78,7 @@ export default function Dashboard() {
   );
   const assessmentKey = `${featured.assessment.id}-v${featured.assessment.version}`;
   const chapterScore = data.scores[assessmentKey];
+  const featuredEvidence = chapterEvidence(featured, data);
 
   const now = Date.now();
   const todayStart = startOfDay(now);
@@ -313,26 +315,30 @@ export default function Dashboard() {
               <span className="eyebrow">CONTINUE LEARNING</span>
               <span className="personal-course-label">{featuredCourse.title}</span>
             </div>
-            <span className="personal-status-chip">
-              {chapterScore === 100
-                ? "Mastered"
-                : chapterScore !== undefined
-                  ? `${chapterScore}% assessment`
-                  : `${chapterProgress}% read`}
+            <span className={`personal-status-chip state-${featuredEvidence.state}`}>
+              {featuredEvidence.label}
             </span>
           </div>
 
           <h2>{featured.title}</h2>
           <p>{featured.introduction}</p>
 
+          <div className="personal-next-reason">
+            <span>NEXT BEST ACTION</span>
+            <strong>{featuredEvidence.action.label}</strong>
+            <p>{featuredEvidence.action.reason}</p>
+          </div>
+
           <div className="personal-continue-actions">
-            <Link className="button primary" to={`/read/${featured.id}`}>
+            <Link className="button primary" to={featuredEvidence.action.to}>
               <Play size={16} fill="currentColor" />
-              {sectionsRead ? "Resume lesson" : "Start lesson"}
+              {featuredEvidence.action.label}
             </Link>
-            <Link className="button" to={`/lab?chapter=${relatedMission}`}>
-              <FlaskConical size={16} /> Open mission
-            </Link>
+            {featuredEvidence.action.to !== `/read/${featured.id}` && (
+              <Link className="button" to={`/read/${featured.id}`}>
+                <BookOpen size={16} /> Open lesson
+              </Link>
+            )}
           </div>
 
           <div className="personal-chapter-progress">
