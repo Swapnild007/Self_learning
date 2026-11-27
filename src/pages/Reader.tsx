@@ -9,12 +9,13 @@ import {
   NotebookPen,
   Minus,
   Plus,
+  Brain,
 } from "lucide-react";
 import { findChapter } from "../content/catalog";
 import type { Block } from "../content/schema";
-import { useStore } from "../store";
+import { addActivity, useStore } from "../store";
 import { Progress, Modal } from "../components/ui";
-function BlockView({ block: b }: { block: Block }) {
+function BlockView({ block: b, chapterId }: { block: Block; chapterId: string }) {
   switch (b.type) {
     case "paragraph":
       return <p>{b.text}</p>;
@@ -49,7 +50,7 @@ function BlockView({ block: b }: { block: Block }) {
             <pre tabIndex={0} aria-label="Expected output">{b.example.expectedOutput}</pre>
           </div>
           <p>{b.example.explanation}</p>
-          <Link className="button" to="/lab">Try this in the Python laboratory <ArrowRight size={15} /></Link>
+          <Link className="button" to={`/lab?chapter=${chapterId}`}>Try this in the Interactive Lab <ArrowRight size={15} /></Link>
         </figure>
       );
     case "table":
@@ -176,6 +177,9 @@ export default function Reader() {
     );
   const read = data.read[chapter.id] || [],
     saved = data.bookmarks.includes(chapter.id);
+  const confidenceKey = (sectionId: string) => `${chapter.id}:${sectionId}`;
+  const confidenceLabel = (value: number | undefined) =>
+    value === 3 ? "I can explain it" : value === 2 ? "Almost there" : value === 1 ? "Needs another pass" : "Not checked";
   const outline = (
     <>
       <span className="eyebrow">{entry.course.title}</span>
@@ -329,32 +333,84 @@ export default function Reader() {
               </ul>
             </details>
           </header>
-          {chapter.sections.map((s) => (
+          {chapter.sections.map((s) => {
+            const confidence = data.confidence[confidenceKey(s.id)];
+            return (
             <section id={s.id} key={s.id}>
               <h2>{s.title}</h2>
               {s.blocks.map((b, i) => (
-                <BlockView block={b} key={i} />
+                <BlockView block={b} chapterId={chapter.id} key={i} />
               ))}
+              <div className="ng-confidence-check">
+                <div className="ng-confidence-copy">
+                  <Brain size={20} />
+                  <div>
+                    <span className="eyebrow">ACTIVE RECALL CHECK</span>
+                    <strong>Could you explain this section without looking?</strong>
+                    <p>Pause for a moment. Say the main idea and one example or limitation in your own words, then record how it felt.</p>
+                  </div>
+                </div>
+                <div className="ng-confidence-options" role="group" aria-label={`Confidence for ${s.title}`}>
+                  {[
+                    [1, "Needs another pass"],
+                    [2, "Almost there"],
+                    [3, "I can explain it"],
+                  ].map(([value, label]) => (
+                    <button
+                      type="button"
+                      key={value}
+                      className={confidence === value ? "selected" : ""}
+                      aria-pressed={confidence === value}
+                      onClick={() =>
+                        update((d) =>
+                          addActivity(
+                            {
+                              ...d,
+                              confidence: {
+                                ...d.confidence,
+                                [confidenceKey(s.id)]: Number(value),
+                              },
+                            },
+                            "confidence",
+                            chapter.id,
+                          ),
+                        )
+                      }
+                    >
+                      <span>{value}</span>
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <small>Self-reported confidence: {confidenceLabel(confidence)}. This does not count as mastery.</small>
+              </div>
               <button
                 className={`section-read ${read.includes(s.id) ? "is-read" : ""}`}
                 disabled={read.includes(s.id)}
                 onClick={() =>
-                  update((d) => ({
-                    ...d,
-                    read: {
-                      ...d.read,
-                      [chapter.id]: Array.from(
-                        new Set([...(d.read[chapter.id] || []), s.id]),
-                      ),
-                    },
-                  }))
+                  update((d) =>
+                    addActivity(
+                      {
+                        ...d,
+                        read: {
+                          ...d.read,
+                          [chapter.id]: Array.from(
+                            new Set([...(d.read[chapter.id] || []), s.id]),
+                          ),
+                        },
+                      },
+                      "read",
+                      chapter.id,
+                    ),
+                  )
                 }
               >
                 <Check size={16} />
                 {read.includes(s.id) ? "Section read" : "Mark section as read"}
               </button>
             </section>
-          ))}
+            );
+          })}
           <section>
             <h2>Chapter summary</h2>
             <ul>
@@ -396,10 +452,7 @@ export default function Reader() {
                 Check your understanding <ArrowRight size={17} />
               </Link>
               <Link className="button" to="/lab">
-                Open coding laboratory
-              </Link>
-              <Link className="button" to="/visuals">
-                Explore interactive visual notes
+                Open Interactive Lab
               </Link>
             </div>
           </section>
@@ -407,7 +460,9 @@ export default function Reader() {
       </div>
       <aside className="reader-aside">
         <span className="eyebrow">IN THIS CHAPTER</span>
-        {chapter.sections.map((s) => (
+        {chapter.sections.map((s) => {
+          const confidence = data.confidence[confidenceKey(s.id)];
+          return (
           <a
             key={s.id}
             href={`#${s.id}`}
@@ -416,15 +471,17 @@ export default function Reader() {
               document.getElementById(s.id)?.scrollIntoView();
             }}
           >
-            {s.title.slice(3)}
+            <span>{s.title.slice(3)}</span>
+            <small>{confidence ? `C${confidence}` : "—"}</small>
           </a>
-        ))}
+          );
+        })}
         <div className="reader-tip">
           <NotebookPen size={22} />
           <h3>Make it yours.</h3>
           <p>
-            Capture the idea in your own words. Use the notes button in the
-            reading toolbar.
+            Read once, then look away and explain it. Confidence is only a self-check;
+            the assessment is what counts toward mastery.
           </p>
         </div>
       </aside>

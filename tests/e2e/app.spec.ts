@@ -20,6 +20,9 @@ async function replaceCode(page: Page, source: string) {
 const routes = [
   ["dashboard", "/"],
   ["catalog", "/catalog"],
+  ["cheatsheet", "/cheatsheet/rag-engineering"],
+  ["arena", "/arena"],
+  ["arena-detail", "/arena/rag-grounding-sprint"],
   ["paths", "/paths"],
   ["visuals", "/visuals"],
   ["path-detail", "/paths/python-ai"],
@@ -66,26 +69,32 @@ test("all screens render accessibly without overflow", async ({
     });
   }
 });
-test("search, filters and navigation", async ({ page }) => {
+test("search, filters and adaptive course navigation", async ({ page }) => {
   await page.goto("/#/");
   await page
     .getByRole("textbox", { name: "Search all courses" })
-    .fill("Python");
+    .fill("Python for Practical Problem Solving");
   await page
     .getByRole("textbox", { name: "Search all courses" })
     .press("Enter");
-  await expect(page.locator(".course-card").filter({ hasText: "Python for practical problem solving" })).toHaveCount(1);
+
+  const pythonRow = page.locator(".sorted-course-row").filter({
+    hasText: "Python for Practical Problem Solving",
+  });
+  await expect(pythonRow).toHaveCount(1);
+
   await page.getByRole("textbox", { name: "Search catalog" }).fill("");
-  await page.getByRole("button", { name: "Analytics", exact: true }).click();
-  await expect(page.locator(".course-card")).toHaveCount(4);
-  await page.getByRole("combobox", { name: "Level" }).selectOption("Intermediate");
-  await expect(
-    page.getByRole("heading", { name: "No matching courses" }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Clear filters" }).click();
-  await expect(page.locator(".course-card")).toHaveCount(36);
-  await page.locator(".course-card").filter({ hasText: "Python for practical problem solving" }).click();
-  await page.getByRole("link", { name: "Start learning" }).click();
+  await page.getByRole("button", { name: "Ready now", exact: true }).click();
+  await expect(page.locator(".sorted-course-row")).not.toHaveCount(0);
+
+  await page.getByRole("button", { name: "All", exact: true }).click();
+  await page.getByRole("combobox").filter({ has: page.locator("option") }).selectOption("az");
+  await expect(page.locator(".sorted-course-row").first()).toBeVisible();
+
+  await page.getByRole("textbox", { name: "Search catalog" }).fill("Python for Practical Problem Solving");
+  await pythonRow.click();
+  await expect(page.getByText("NEXT BEST ACTION", { exact: true })).toBeVisible();
+  await page.getByRole("link", { name: /Start lesson|Continue lesson|Run experiment|Check understanding|Retry with feedback/ }).first().click();
   await expect(page.locator("article h1")).toContainText("Programming and Python foundations");
 });
 test("notes bookmarks reading progress and settings persist", async ({
@@ -112,19 +121,32 @@ test("notes bookmarks reading progress and settings persist", async ({
     page.getByRole("button", { name: "Section read", exact: true }),
   ).toHaveCount(1);
   await page.goto("/#/learning");
+  await page.getByRole("tab", { name: /Notes/ }).click();
   await expect(
-    page.locator("textarea[aria-label='Saved chapter notes']").filter({ hasText: "A weighted mean uses the total denominator." }),
-  ).toHaveCount(1);
+    page.getByRole("textbox", { name: /Notes for/ }).first(),
+  ).toHaveValue("A weighted mean uses the total denominator.");
   await page.goto("/#/settings");
   await page.getByRole("button", { name: "Midnight dark" }).click();
   await page
     .getByRole("combobox", { name: "Reading font size" })
     .selectOption("23");
+  await page
+    .getByRole("textbox", { name: "Learner display name" })
+    .fill("Swapnil");
+  await page
+    .getByRole("combobox", { name: "Primary learning path" })
+    .selectOption("global-cs-core");
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await expect(
     page.getByRole("combobox", { name: "Reading font size" }),
   ).toHaveValue("23");
+  await expect(
+    page.getByRole("textbox", { name: "Learner display name" }),
+  ).toHaveValue("Swapnil");
+  await expect(
+    page.getByRole("combobox", { name: "Primary learning path" }),
+  ).toHaveValue("global-cs-core");
   await page.goto("/#/read/python-functions");
   await expect(page.locator("article")).toHaveCSS("font-size", "23px");
 });
@@ -221,6 +243,24 @@ test("dialog keyboard, export, import and reset guard", async ({ page }) => {
   );
 });
 
+test("personal LMS follows profile, activity, and review evidence", async ({ page }) => {
+  await page.goto("/#/settings");
+  await page.getByRole("textbox", { name: "Learner display name" }).fill("Swapnil");
+  await page.getByRole("combobox", { name: "Primary learning path" }).selectOption("global-cs-core");
+  await page.goto("/#/read/python-functions");
+  await page.getByRole("button", { name: "Needs another pass" }).first().click();
+  await page.getByRole("button", { name: "Mark section as read", exact: true }).first().click();
+  await page.goto("/#/");
+  await expect(page.getByRole("heading", { name: /Swapnil/ })).toBeVisible();
+  await expect(page.getByText("Strengthen a weak spot", { exact: true })).toBeVisible();
+  await expect(page.getByText("Global Computer Science Core", { exact: true })).toBeVisible();
+  await page.goto("/#/learning");
+  await expect(page.getByRole("tab", { name: "Mastery" })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByText(/MASTERY MAP · GLOBAL COMPUTER SCIENCE CORE/)).toBeVisible();
+  await page.getByRole("tab", { name: "Evidence" }).click();
+  await expect(page.getByText(/CURRENT LEARNING · GLOBAL COMPUTER SCIENCE CORE/)).toBeVisible();
+});
+
 test("dark screens remain accessible and reduced motion is honored", async ({
   page,
 }, info) => {
@@ -269,9 +309,10 @@ test("validated import restores data and confirmed reset removes it", async ({
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
   await page.keyboard.press("Escape");
   await page.goto("/#/learning");
+  await page.getByRole("tab", { name: /Notes/ }).click();
   await expect(
-    page.locator("textarea[aria-label='Saved chapter notes']").filter({ hasText: "Imported note" }),
-  ).toHaveCount(1);
+    page.getByRole("textbox", { name: /Notes for/ }).first(),
+  ).toHaveValue("Imported note");
   await page.goto("/#/settings");
   await page
     .getByRole("button", { name: "Reset local data", exact: true })
@@ -282,8 +323,9 @@ test("validated import restores data and confirmed reset removes it", async ({
     .click();
   await page.keyboard.press("Escape");
   await page.goto("/#/learning");
+  await page.getByRole("tab", { name: /Notes/ }).click();
   await expect(
-    page.getByRole("textbox", { name: "Saved chapter notes" }).first(),
+    page.getByRole("textbox", { name: /Notes for/ }).first(),
   ).toHaveValue("");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
@@ -334,43 +376,101 @@ test("account settings navigation closes the account dialog", async ({
   ).toBeVisible();
 });
 
-test("guided paths link to published chapters and expose planned curricula honestly", async ({ page }) => {
+test("guided paths expose complete AI and web capability stacks honestly", async ({ page }) => {
   await page.goto("/#/paths");
-  await expect(page.locator(".path-card")).toHaveCount(8);
-  await page.getByRole("textbox", { name: "Search learning paths" }).fill("agents");
+  await expect(page.locator(".path-card")).toHaveCount(9);
+
+  await page.getByRole("textbox", { name: "Search learning paths" }).fill("AI Agents");
   await expect(page.locator(".path-card")).toHaveCount(1);
   await page.locator(".path-card").first().click();
-  await expect(page.locator(".path-step")).toHaveCount(5);
-  await expect(page.getByRole("heading", { name: "Reliable AI agents." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "AI Agents & Automation." })).toBeVisible();
+  await expect(page.locator(".path-step")).toHaveCount(15);
   await expect(page.getByText("Lessons available", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Curriculum planned", { exact: true }).first()).toBeVisible();
-  await page.getByRole("link", { name: "Explore the curriculum" }).first().click();
-  await expect(page.locator(".planned-module")).toHaveCount(3);
-  await expect(page.getByText("These are curriculum topics, not published or assessed lessons.")).toBeVisible();
+
+  await page.goto("/#/paths/full-stack");
+  await expect(page.getByRole("heading", { name: "Full-Stack Web Engineer · Complete Stack." })).toBeVisible();
+  await expect(page.locator(".path-step")).toHaveCount(34);
 });
 
-test("interactive visual notes update measured values and support keyboard input", async ({ page }) => {
-  await page.goto("/#/visuals");
-  await expect(page.getByRole("heading", { name: /Change a number/ })).toBeVisible();
-  await expect(page.locator(".visual-formula")).toContainText("46.00 seconds");
-  await page.locator("#first-calls").focus();
-  await page.keyboard.press("End");
-  await expect(page.locator(".visual-formula")).toContainText("34.21 seconds");
-  await page.getByRole("button", { name: /Next-token predictions/ }).click();
-  await expect(page.locator(".visual-bar")).toHaveCount(3);
-  await expect(page.locator(".visual-formula")).toContainText("coding");
-  await page.getByRole("button", { name: /Algorithm growth/ }).click();
-  await expect(page.locator(".visual-formula")).toContainText("400");
-  await page.locator("#items-n").focus();
-  await page.keyboard.press("End");
-  await expect(page.locator(".visual-formula")).toContainText("10000");
+test("cheatsheets are pinnable and competitions behave like project workspaces", async ({ page }) => {
+  await page.goto("/#/catalog?view=cheatsheets");
+  await expect(page.getByRole("tab", { name: "Cheatsheets" })).toHaveAttribute("aria-selected", "true");
+  await page.getByRole("textbox", { name: "Search cheatsheets" }).fill("RAG");
+  await expect(page.locator(".cheat-library-card")).toHaveCount(1);
+  await page.locator(".cheat-library-card").click();
+
+  await expect(page.getByRole("heading", { name: "RAG Engineering." })).toBeVisible();
+  await page.getByRole("button", { name: "Pin reference" }).click();
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Unpin" })).toBeVisible();
+
+  await page.goto("/#/arena/rag-grounding-sprint");
+  await expect(page.getByRole("heading", { name: "RAG Grounding Sprint" })).toBeVisible();
+  await expect(page.getByText("documents.csv", { exact: true })).toBeVisible();
+  await expect(page.getByText("queries.csv", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Competition Python source")).toBeVisible();
+  await expect(page.locator(".sorted-sidebar")).toHaveCount(0);
+
+  await page.goto("/#/arena/analytics-decision-room");
+  await expect(page.getByRole("heading", { name: "Executive Decision Room" })).toBeVisible();
+  await expect(page.locator(".competition-preview-scroll table")).toBeVisible();
+  await page.getByRole("button", { name: "Build visual" }).click();
+  await expect(page.locator(".analytics-bar-chart")).toBeVisible();
+  await page.getByRole("textbox", { name: "Decision memo" }).fill(
+    "Revenue is weakening across multiple regions, with the chart showing the strongest contribution by region. I would validate whether volume or discounting is driving the decline before changing pricing or sales targets.",
+  );
+  await expect(page.getByRole("button", { name: "Publish attempt" })).toBeEnabled();
+  await page.getByRole("button", { name: "Publish attempt" }).click();
+
+  await page.goto("/#/arena/web-security-audit");
+  await expect(page.getByRole("textbox", { name: "Competition working document" })).toBeVisible();
+  await page.getByRole("textbox", { name: "Competition working document" }).fill(
+    "PASS — role checks are enforced on the trusted server boundary with authorization tests. FAIL — login throttling is missing and must be added before release. N/A — no file upload path exists in this architecture. The remaining controls need concrete code, CI, or configuration evidence and remediation ownership.",
+  );
+  await expect(page.getByRole("button", { name: "Publish attempt" })).toBeEnabled();
 });
 
-test("new LLM chapters provide real explanations and assessments", async ({ page }) => {
+test("mission labs run real instruments and persist evidence", async ({ page }) => {
+  await page.goto("/#/lab?chapter=llm-foundations");
+  await expect(page.getByRole("heading", { name: /Learn by changing the system/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Token probability engine" })).toBeVisible();
+
+  await page.getByRole("button", { name: /Run inference/ }).click();
+  await expect(page.getByText("Inference result", { exact: true })).toBeVisible();
+  await expect(page.locator(".mission-meter")).toHaveCount(3);
+
+  await expect
+    .poll(async () =>
+      page.evaluate(() => {
+        const data = JSON.parse(localStorage.getItem("self-learning-v1") || "{}");
+        return data.labEvidence?.["llm-foundations"]?.best;
+      }),
+    )
+    .toBe(100);
+
+  await page.getByRole("button", { name: /Semantic geometry/ }).click();
+  await expect(page.getByRole("heading", { name: "Semantic geometry" })).toBeVisible();
+  await page.getByRole("button", { name: "Measure similarity" }).click();
+  await expect(page.getByText("Above threshold", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: /Retrieval evidence arena/ }).click();
+  await page.getByRole("button", { name: /Run retrieval/ }).click();
+  await expect(page.getByText("Top result: Overtime policy", { exact: true })).toBeVisible();
+  await expect(page.getByText("untrusted instruction", { exact: true })).toBeVisible();
+});
+
+test("new LLM chapters expose curriculum, mastery and assessments", async ({ page }) => {
   await page.goto("/#/course/llm-engineering");
-  await expect(page.getByRole("link", { name: /Embeddings: when meaning becomes geometry/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Attention: choosing context with numbers/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Retrieval-augmented generation: answers with evidence/ })).toBeVisible();
+  await page.getByRole("tab", { name: "Curriculum" }).click();
+  await expect(page.getByText(/Embeddings: when meaning becomes geometry/).first()).toBeVisible();
+  await expect(page.getByText(/Attention: choosing context with numbers/).first()).toBeVisible();
+  await expect(page.getByText(/Retrieval-augmented generation: answers with evidence/).first()).toBeVisible();
+
+  await page.getByRole("tab", { name: "Mastery" }).click();
+  await expect(page.getByRole("heading", { name: "What should happen next?" })).toBeVisible();
+  await expect(page.locator(".course-mastery-row")).not.toHaveCount(0);
+
   await page.goto("/#/read/llm-attention");
   await expect(page.getByRole("heading", { name: /Attention: choosing context with numbers/ })).toBeVisible();
   await expect(page.locator("figure.flow-diagram")).toBeVisible();

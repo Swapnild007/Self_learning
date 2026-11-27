@@ -6,6 +6,18 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
+export type ActivityType = "read" | "confidence" | "assessment" | "lab";
+export interface LearningActivity {
+  id: string;
+  type: ActivityType;
+  subject: string;
+  at: number;
+}
+export interface PersonalLearning {
+  displayName: string;
+  activePath: string;
+  weeklyDays: 2 | 3 | 5 | 7;
+}
 export interface Data {
   version: 1;
   theme: "light" | "dark";
@@ -17,6 +29,23 @@ export interface Data {
   visited: string[];
   read: Record<string, string[]>;
   scores: Record<string, number>;
+  confidence: Record<string, number>;
+  labEvidence: Record<string, { attempts: number; best: number; lastRun: number }>;
+  pinnedCheatSheets: string[];
+  challengeScores: Record<string, { best: number; attempts: number; lastRun: number }>;
+  challengeDrafts: Record<string, {
+    source: string;
+    notes: string;
+    checklist: string[];
+    runPassed: boolean;
+    lastEdited: number;
+    dataOpened?: boolean;
+    analysisMetric?: string;
+    analysisDimension?: string;
+    chartBuilt?: boolean;
+  }>;
+  personal: PersonalLearning;
+  activity: LearningActivity[];
   enrolled: string[];
 }
 export const defaults: Data = {
@@ -30,6 +59,17 @@ export const defaults: Data = {
   visited: [],
   read: {},
   scores: {},
+  confidence: {},
+  labEvidence: {},
+  pinnedCheatSheets: [],
+  challengeScores: {},
+  challengeDrafts: {},
+  personal: {
+    displayName: "",
+    activePath: "global-cs-core",
+    weeklyDays: 3,
+  },
+  activity: [],
   enrolled: ["python"],
 };
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -58,10 +98,112 @@ export function validate(value: unknown): Data {
     !isRecord(d.scores) ||
     Object.values(d.scores).some(
       (x) => typeof x !== "number" || !Number.isFinite(x) || x < 0 || x > 100,
-    )
+    ) ||
+    (d.confidence !== undefined &&
+      (!isRecord(d.confidence) ||
+        Object.values(d.confidence).some(
+          (x) => typeof x !== "number" || ![1, 2, 3].includes(x),
+        ))) ||
+    (d.pinnedCheatSheets !== undefined &&
+      (!Array.isArray(d.pinnedCheatSheets) ||
+        d.pinnedCheatSheets.some((x) => typeof x !== "string"))) ||
+    (d.labEvidence !== undefined &&
+      (!isRecord(d.labEvidence) ||
+        Object.values(d.labEvidence).some(
+          (value) =>
+            !isRecord(value) ||
+            typeof value.attempts !== "number" ||
+            !Number.isFinite(value.attempts) ||
+            value.attempts < 0 ||
+            typeof value.best !== "number" ||
+            !Number.isFinite(value.best) ||
+            value.best < 0 ||
+            value.best > 100 ||
+            typeof value.lastRun !== "number" ||
+            !Number.isFinite(value.lastRun) ||
+            value.lastRun < 0,
+        ))) ||
+    (d.challengeScores !== undefined &&
+      (!isRecord(d.challengeScores) ||
+        Object.values(d.challengeScores).some(
+          (value) =>
+            !isRecord(value) ||
+            typeof value.best !== "number" ||
+            !Number.isFinite(value.best) ||
+            value.best < 0 ||
+            value.best > 100 ||
+            typeof value.attempts !== "number" ||
+            !Number.isFinite(value.attempts) ||
+            value.attempts < 0 ||
+            typeof value.lastRun !== "number" ||
+            !Number.isFinite(value.lastRun) ||
+            value.lastRun < 0,
+        ))) ||
+    (d.challengeDrafts !== undefined &&
+      (!isRecord(d.challengeDrafts) ||
+        Object.values(d.challengeDrafts).some(
+          (value) =>
+            !isRecord(value) ||
+            typeof value.source !== "string" ||
+            typeof value.notes !== "string" ||
+            !Array.isArray(value.checklist) ||
+            value.checklist.some((item) => typeof item !== "string") ||
+            typeof value.runPassed !== "boolean" ||
+            (value.dataOpened !== undefined && typeof value.dataOpened !== "boolean") ||
+            (value.analysisMetric !== undefined && typeof value.analysisMetric !== "string") ||
+            (value.analysisDimension !== undefined && typeof value.analysisDimension !== "string") ||
+            (value.chartBuilt !== undefined && typeof value.chartBuilt !== "boolean") ||
+            typeof value.lastEdited !== "number" ||
+            !Number.isFinite(value.lastEdited) ||
+            value.lastEdited < 0,
+        ))) ||
+    (d.personal !== undefined &&
+      (!isRecord(d.personal) ||
+        typeof d.personal.displayName !== "string" ||
+        d.personal.displayName.length > 60 ||
+        typeof d.personal.activePath !== "string" ||
+        ![2, 3, 5, 7].includes(Number(d.personal.weeklyDays)))) ||
+    (d.activity !== undefined &&
+      (!Array.isArray(d.activity) ||
+        d.activity.some(
+          (item) =>
+            !isRecord(item) ||
+            typeof item.id !== "string" ||
+            !["read", "confidence", "assessment", "lab"].includes(String(item.type)) ||
+            typeof item.subject !== "string" ||
+            typeof item.at !== "number" ||
+            !Number.isFinite(item.at) ||
+            item.at < 0,
+        )))
   )
-    throw Error("This is not a valid Self Learning v1 export.");
-  return { ...defaults, ...d };
+    throw Error("This is not a valid Next Gen Learning Hub v1 export.");
+  return {
+    ...defaults,
+    ...d,
+    confidence: isRecord(d.confidence) ? (d.confidence as Record<string, number>) : {},
+    labEvidence: isRecord(d.labEvidence)
+      ? (d.labEvidence as Data["labEvidence"])
+      : {},
+    pinnedCheatSheets: Array.isArray(d.pinnedCheatSheets)
+      ? d.pinnedCheatSheets.filter((x): x is string => typeof x === "string")
+      : [],
+    challengeScores: isRecord(d.challengeScores)
+      ? (d.challengeScores as Data["challengeScores"])
+      : {},
+    challengeDrafts: isRecord(d.challengeDrafts)
+      ? (d.challengeDrafts as Data["challengeDrafts"])
+      : {},
+    personal:
+      isRecord(d.personal) &&
+      typeof d.personal.displayName === "string" &&
+      typeof d.personal.activePath === "string" &&
+      [2, 3, 5, 7].includes(Number(d.personal.weeklyDays))
+        ? (d.personal as unknown as PersonalLearning)
+        : { ...defaults.personal },
+    activity: Array.isArray(d.activity)
+      ? (d.activity as LearningActivity[]).slice(-500)
+      : [],
+  };
 }
 const Context = createContext<{
   data: Data;
@@ -102,4 +244,23 @@ export function grade(selected: number[], answer: number[]) {
     selected.length === answer.length &&
     answer.every((x) => selected.includes(x))
   );
+}
+
+
+export function addActivity(
+  data: Data,
+  type: ActivityType,
+  subject: string,
+  at = Date.now(),
+): Data {
+  const next: LearningActivity = {
+    id: `${at}-${type}-${subject}`,
+    type,
+    subject,
+    at,
+  };
+  return {
+    ...data,
+    activity: [...data.activity, next].slice(-500),
+  };
 }

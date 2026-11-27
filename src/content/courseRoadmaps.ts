@@ -1,6 +1,76 @@
 /** Original course outlines. These are future lesson titles, not published chapters. */
 export interface RoadmapModule { title: string; topics: string[] }
 const outlines: Record<string, string[]> = {
+  "calculus-computing": [
+    "Functions and change|Limits and continuity|Derivatives as rates|Optimization and approximation",
+    "Accumulation|Definite integrals|Numerical integration|Continuous models in computing",
+    "Multivariable ideas|Partial derivatives|Gradients|Optimization landscapes and sensitivity",
+  ],
+  "linear-algebra": [
+    "Vectors and geometry|Vector spaces|Dot products and projections|Linear independence and basis",
+    "Matrices and transformations|Matrix multiplication|Rank and systems of equations|Inverse and conditioning",
+    "Structure and applications|Eigenvalues and eigenvectors|Orthogonality|Least squares and dimensionality",
+  ],
+  "discrete-math": [
+    "Logic and proof|Propositions and predicates|Direct proof and contradiction|Mathematical induction",
+    "Discrete structures|Sets and relations|Functions and equivalence|Counting and combinatorics",
+    "Graphs and reasoning|Trees and graphs|Connectivity and paths|Recurrences and asymptotic arguments",
+  ],
+  "probability-statistics": [
+    "Probability foundations|Sample spaces and events|Conditional probability|Bayes rule and independence",
+    "Random variables|Discrete and continuous distributions|Expectation and variance|Concentration intuition",
+    "Inference for computing|Sampling and estimation|Confidence and uncertainty|Experiments and model evaluation",
+  ],
+  "computer-architecture": [
+    "Representation and logic|Bits, integers and floating point|Boolean logic|Combinational and sequential circuits",
+    "From instructions to execution|ISA concepts|Assembly and calling conventions|Datapaths and control",
+    "Memory and performance|Caches and locality|Virtual memory interface|Pipelining and performance trade-offs",
+  ],
+  "operating-systems": [
+    "Process abstraction|Processes and threads|System calls|Scheduling and context switching",
+    "Concurrency and memory|Synchronization|Deadlock|Virtual memory and address spaces",
+    "Persistent and protected systems|Filesystems|Isolation and permissions|Failure, recovery and observability",
+  ],
+  "computer-networks": [
+    "Network foundations|Layering and encapsulation|Ethernet and IP|Addressing and routing",
+    "Transport and applications|TCP and UDP|Congestion and reliability|DNS and HTTP",
+    "Modern network engineering|TLS and trust|Performance measurement|Distributed failure and debugging",
+  ],
+  "database-systems": [
+    "Data models and relational foundations|Relational algebra|Schemas and constraints|Normalization",
+    "Query execution|SQL semantics|Indexes and access paths|Query planning and optimization",
+    "Transactions and storage|ACID and isolation|Concurrency control|Recovery, replication and scale",
+  ],
+  "programming-languages": [
+    "Meaning and abstraction|Syntax versus semantics|Environments and scope|Functions and closures",
+    "Programming paradigms|Imperative and functional models|Types and polymorphism|Mutation and effects",
+    "Language implementation|Parsing|Interpreters and evaluation|Runtime representation and garbage collection",
+  ],
+  "theory-computation": [
+    "Automata and languages|Finite automata|Regular languages|Context-free grammars and pushdown automata",
+    "Computability|Turing machines|Decidability|Reductions and undecidable problems",
+    "Complexity|Time and space|P, NP and completeness|Limits of efficient computation",
+  ],
+  "software-engineering": [
+    "Construct software deliberately|Specifications and invariants|Testing and coverage|Abstraction and modularity",
+    "Design for change|Interfaces and data types|Concurrency and race conditions|Version control and review",
+    "Build in teams|Architecture and trade-offs|Observability and release discipline|Ethics, maintainability and documentation",
+  ],
+  "distributed-systems": [
+    "Distributed foundations|Time, ordering and partial failure|RPC and messaging|Replication",
+    "Consistency and coordination|Consensus intuition|Leader election|Transactions across services",
+    "Resilient platforms|Partitioning and rebalancing|Fault tolerance|Observability, recovery and chaos testing",
+  ],
+  hci: [
+    "Understand users and tasks|Human capabilities and limitations|Task analysis|Research ethics",
+    "Design and prototype|Interaction models|Information architecture|Accessible prototypes",
+    "Evaluate with evidence|Usability testing|Experimental design|Iteration and design rationale",
+  ],
+  "cs-capstone": [
+    "Frame the problem|Stakeholders and requirements|Literature and prior art|Success metrics and ethics",
+    "Build and investigate|System design|Implementation and experiments|Testing, measurement and iteration",
+    "Defend the work|Results and limitations|Technical report|Demonstration, presentation and retrospective",
+  ],
   "llm-engineering": [
     "Mathematical foundations|Probability distributions and entropy|Vectors, matrices and cosine similarity|Gradients and optimization",
     "Transformers in practice|Embeddings and positions|Attention explained with numbers|Training, inference and decoding",
@@ -87,9 +157,13 @@ const outlines: Record<string, string[]> = {
     "Operational decisions|Transactions and write concerns|Backups and access control|Design a data-backed application",
   ],
   n8n: [
-    "Visual automation|Triggers and webhook inputs|Expressions and data mapping|Execution history",
-    "Connected workflows|HTTP and API credentials|Branching and retries|Human approval steps",
-    "Reliable orchestration|Rate limits and partial failures|Monitoring and audit trails|A documented workflow project",
+    "Workflow foundations|Triggers and webhooks|Expressions and data mapping|Credentials|Execution history|Sub-workflows",
+    "API and automation engineering|HTTP Request|Pagination|Branching|Retries|Idempotency|Error workflows|Human approval",
+    "AI in n8n|Chat models|Basic LLM chains|Tools agents|Memory|Structured outputs|Human-in-the-loop tool calls",
+    "RAG in n8n|Document loaders|Text splitters|Embeddings|Vector stores|Retrievers|Rerankers|Grounded Q&A",
+    "MCP and agent integration|MCP client tools|n8n MCP server|Workflow tools|Tool permissions|Agent-to-workflow boundaries",
+    "Evaluation and operations|Light and metric evaluations|Tracing|Logs|OpenTelemetry|Queue mode|Concurrency|Scaling",
+    "Secure self-hosting|Docker|Secrets|SSRF protection|User management|2FA|Encryption keys|Security audit|Backups",
   ],
   "data-analytics": [
     "Questions before charts|Metric definitions and units|Data quality and missingness|Sampling and bias",
@@ -175,6 +249,207 @@ const outlines: Record<string, string[]> = {
     "Evidence foundations|Sampling and measurement|Probability and inference|Data cleaning and provenance",
     "Model with context|Exploratory visualization|Regression and prediction|Experiment design and uncertainty",
     "Reproducible work|Pipelines and validation|Evaluation and documentation|End-to-end research project",
+  ],
+  "rag-engineering": [
+    "Retrieval foundations|RAG architecture|Document loaders and parsing|Chunking strategies|Metadata design",
+    "Search quality|Embeddings and dense retrieval|Keyword and hybrid retrieval|Filters|Reranking and query rewriting",
+    "Grounded generation|Prompt assembly|Context windows|Citations|Answerability and abstention",
+    "Production RAG|Evaluation datasets|Retrieval metrics|Latency and cost|Freshness, permissions and observability",
+  ],
+  "embeddings-vector-db": [
+    "Embedding foundations|Vector representations|Cosine, dot product and distance|Dimensionality and normalization",
+    "Vector indexing|Approximate nearest neighbors|Index trade-offs|Metadata filtering|Namespaces and multi-tenancy",
+    "Vector stores|PGVector, Qdrant, Pinecone and alternatives|Ingestion|Updates and deletion|Operational trade-offs",
+  ],
+  "transformers-llm-internals": [
+    "Language model foundations|Tokens and vocabularies|Embeddings and positions|Autoregressive prediction",
+    "Transformer mechanics|Queries, keys and values|Multi-head attention|Feed-forward blocks|Residuals and normalization",
+    "Training and inference|Pretraining objectives|Context windows|KV cache|Sampling, temperature and decoding",
+    "Scaling and limits|Compute and memory|Quantization|Hallucination|Model families and architecture trade-offs",
+  ],
+  "prompt-engineering": [
+    "Instruction design|Task framing|Constraints|Examples|System versus user context",
+    "Structured generation|Schemas and JSON|Few-shot patterns|Reasoning scaffolds|Tool-aware prompting",
+    "Context engineering|Document selection|Context ordering|Compression|Prompt injection boundaries",
+    "Prompt evaluation|Test sets|Regression tests|Robustness|Latency and token-cost trade-offs",
+  ],
+  "llm-evaluation": [
+    "Evaluation design|Task definitions|Golden datasets|Human rubrics|Offline versus online evaluation",
+    "Metrics and judges|Exact/task metrics|Semantic scoring|LLM-as-judge|Pairwise comparison|Calibration",
+    "Observability|Traces|Prompt/model versions|Latency|Cost|Failure clustering",
+    "Production quality|Regression gates|A/B tests|Drift|Incident review|Evaluation-driven development",
+  ],
+  "llm-finetuning": [
+    "Adaptation decisions|Prompting versus retrieval versus tuning|Dataset quality|Train/validation splits",
+    "Fine-tuning methods|Supervised fine-tuning|Adapters and LoRA|Preference data|Alignment concepts",
+    "Evaluation and operations|Overfitting|Safety regressions|Model versioning|Serving adapted models",
+  ],
+  mcp: [
+    "Protocol model|Hosts, clients and servers|Capabilities|Lifecycle and transports|Trust boundaries",
+    "MCP primitives|Tools|Resources|Prompts|Discovery and schemas",
+    "Build integrations|Server implementation|Client integration|Authentication|Permissions|Error handling",
+    "Operate safely|Tool confirmation|Least privilege|Untrusted content|Audit logs|Testing and version compatibility",
+  ],
+  "ai-tools-function-calling": [
+    "Tool contracts|Typed schemas|Descriptions and arguments|Structured outputs|Validation",
+    "Execution loops|Model selection|Tool dispatch|Retries|Timeouts|Idempotency",
+    "Safe side effects|Authorization|Confirmation|Rate limits|Audit trail|Failure recovery",
+  ],
+  "ai-memory": [
+    "Memory types|Conversation state|Working memory|Long-term memory|User preferences",
+    "Memory architecture|Storage|Retrieval policies|Summarization|Importance and recency",
+    "Trust and privacy|Consent|Sensitive facts|Deletion|Memory poisoning|Evaluation",
+  ],
+  "ai-multimodal": [
+    "Multimodal foundations|Vision-language models|Audio and speech|Documents and OCR|Input representation",
+    "Application patterns|Image understanding|Document extraction|Voice interfaces|Multimodal RAG",
+    "Evaluation and safety|Grounding|Accessibility|Latency|Privacy|Adversarial inputs",
+  ],
+  "deep-learning": [
+    "Neural foundations|Tensors|Forward pass|Losses|Backpropagation|Optimization",
+    "Training reliable models|Regularization|Normalization|Initialization|Data pipelines|Experiment tracking",
+    "Architectures|CNNs|Sequence models|Attention|Transfer learning|Practical debugging",
+  ],
+  nlp: [
+    "Text foundations|Tokenization|Normalization|Language features|Classical NLP tasks",
+    "Representations|Bag-of-words|Embeddings|Sequence models|Transformers",
+    "Modern NLP systems|Classification|Extraction|Summarization|Evaluation|Responsible language systems",
+  ],
+  "computer-vision": [
+    "Vision foundations|Pixels and tensors|Augmentation|Image classification|Metrics",
+    "Detection and segmentation|CNN backbones|Object detection|Segmentation|Vision transformers",
+    "Production vision|Data quality|Robustness|Latency|Monitoring|Privacy and safety",
+  ],
+  "model-serving": [
+    "Inference services|Model APIs|Request contracts|Batching|Streaming|Timeouts",
+    "Performance|Quantization|Caching|Concurrency|GPU/CPU trade-offs|Autoscaling",
+    "Gateways and reliability|Routing|Fallbacks|Budgets|Observability|Rollouts and rollback",
+  ],
+  mlops: [
+    "Reproducible ML|Experiments|Data/model versions|Feature pipelines|Registries",
+    "Delivery|Training pipelines|CI/CD for ML|Serving|Canary and shadow deployments",
+    "Operations|Drift|Performance monitoring|Data quality|Retraining triggers|Governance",
+  ],
+  "ai-security": [
+    "AI threat model|Prompt injection|Data exfiltration|Jailbreaks|Tool abuse|Model supply chain",
+    "Defensive design|Trust boundaries|Allowlisted tools|Input/output controls|Sandboxing|Secrets",
+    "Testing and operations|Red teaming|Adversarial evals|Audit logs|Incident response|Security gates",
+  ],
+  "local-ai": [
+    "Open-weight ecosystem|Model formats|Licensing|Hardware requirements|Runtime options",
+    "Efficient inference|Quantization|Context limits|CPU/GPU memory|Local serving",
+    "Private applications|Local RAG|Offline agents|Data boundaries|Performance and maintenance",
+  ],
+  fastapi: [
+    "Typed Python APIs|Routes|Pydantic models|Validation|Dependency injection|OpenAPI",
+    "Production services|Async work|Databases|Authentication|Authorization|Background tasks",
+    "Testing and deployment|Pytest|Contract tests|Containers|Observability|Performance",
+  ],
+  "api-design": [
+    "API contracts|Resources|HTTP semantics|Status codes|Validation|Error shapes",
+    "Production API behavior|Pagination|Filtering|Versioning|Idempotency|Rate limits",
+    "Reliability and security|Authentication|Authorization|Webhooks|Retries|Documentation|Testing",
+  ],
+  graphql: [
+    "GraphQL model|Schemas|Queries|Mutations|Resolvers|Type system",
+    "Application patterns|Pagination|Fragments|Data loaders|Caching|Subscriptions",
+    "Operations|Authorization|Complexity limits|N+1 prevention|Monitoring|When REST is better",
+  ],
+  authentication: [
+    "Identity foundations|Passwords|Sessions|Cookies|Tokens|MFA",
+    "Modern identity|OAuth 2.0|OpenID Connect|Social login|Passwordless|Account recovery",
+    "Authorization|RBAC|ABAC|Resource ownership|Server-side enforcement|Audit",
+    "Secure operations|Rate limiting|Session rotation|CSRF|Secrets|Threat modeling",
+  ],
+  postgresql: [
+    "Relational design|Schemas|Constraints|SQL|Joins|Normalization",
+    "Performance|Indexes|Query plans|Transactions|Isolation|Locking",
+    "Advanced PostgreSQL|JSONB|Full-text search|Extensions|Partitioning|Backups and security",
+  ],
+  "redis-caching": [
+    "Redis data model|Strings|Hashes|Sets|Sorted sets|Expiry",
+    "Caching|Cache-aside|Invalidation|TTL design|Stampede prevention|Rate limiting",
+    "Coordination|Sessions|Queues|Pub/Sub|Distributed locks|Operations and persistence",
+  ],
+  "orm-data-access": [
+    "Data access foundations|ORM concepts|Schema mapping|Migrations|Transactions",
+    "Query quality|N+1 problems|Eager/lazy loading|Pagination|Raw SQL boundaries",
+    "Production discipline|Connection pools|Testing|Migrations in CI|Observability|Security",
+  ],
+  "frontend-state": [
+    "State models|Local state|Derived state|URL state|Server state",
+    "Data synchronization|Caching|Invalidation|Optimistic updates|Forms|Error recovery",
+    "Application architecture|State machines|Global stores|Testing|Performance|Offline patterns",
+  ],
+  "web-apis-browser": [
+    "Browser runtime|DOM|Events|Fetch|URL and history|Storage",
+    "Useful Web APIs|Workers|Files|Clipboard|Media|Notifications|Observers",
+    "Trust boundaries|Same-origin policy|CORS|CSP|Permissions|Progressive enhancement",
+  ],
+  "responsive-accessibility": [
+    "Responsive systems|Fluid layout|Breakpoints|Container queries|Touch targets",
+    "Accessibility foundations|Semantics|Keyboard|Focus|Screen readers|Contrast",
+    "Accessible components|Forms|Dialogs|Navigation|Tables|Testing with automated and manual checks",
+  ],
+  "web-performance-seo": [
+    "Performance budgets|Core Web Vitals|Rendering path|Images|Fonts|JavaScript cost",
+    "Delivery|Caching|CDN|Code splitting|Lazy loading|Prefetching",
+    "SEO and discoverability|Metadata|Structured data|Sitemaps|Robots|Rendering and crawlability",
+  ],
+  "web-testing": [
+    "Testing pyramid|Unit tests|Integration tests|Component tests|Mocks and fixtures",
+    "Browser quality|E2E|Visual regression|Accessibility|Cross-browser|Mobile",
+    "Production confidence|Contract tests|Load tests|Security tests|CI gates|Flaky-test control",
+  ],
+  "realtime-web": [
+    "Realtime transport|WebSockets|Server-sent events|Polling|Connection lifecycle",
+    "State synchronization|Ordering|Presence|Reconnection|Conflict handling",
+    "Scale and reliability|Fan-out|Pub/Sub|Backpressure|Authorization|Observability",
+  ],
+  "queues-background-jobs": [
+    "Async architecture|Jobs and workers|Queues|Scheduling|Priorities",
+    "Reliable execution|Retries|Backoff|Idempotency|Dead letters|Timeouts",
+    "Operations|Concurrency|Rate limits|Monitoring|Recovery|Distributed workflows",
+  ],
+  "object-storage-cdn": [
+    "Object storage|Buckets|Keys|Metadata|Lifecycle|Permissions",
+    "Uploads and media|Multipart uploads|Signed URLs|Virus/content checks|Transforms",
+    "CDN delivery|Caching|Invalidation|Origins|Private content|Cost and observability",
+  ],
+  "payments-commerce": [
+    "Payment architecture|Checkout|Payment intents|Webhooks|Server-side pricing",
+    "Reliability|Idempotency|Retries|Refunds|Subscriptions|Reconciliation",
+    "Security|PCI boundaries|Fraud signals|Secrets|Authorization|Audit trails",
+  ],
+  "docker-containers": [
+    "Container foundations|Images|Layers|Dockerfiles|Containers|Registries",
+    "Application stacks|Networking|Volumes|Compose|Environment configuration",
+    "Production containers|Security|Health checks|Build optimization|Deployment|Operations",
+  ],
+  "cloud-fundamentals": [
+    "Cloud model|Regions|Compute|Storage|Networking|Managed databases",
+    "Architecture|IAM|Serverless|Load balancing|Autoscaling|Queues and events",
+    "Operate responsibly|Secrets|Monitoring|Backups|Cost awareness|Resilience",
+  ],
+  observability: [
+    "Signals|Logs|Metrics|Traces|Correlation IDs|Structured events",
+    "Reliability|SLIs and SLOs|Alert design|Dashboards|Error budgets",
+    "Production debugging|Incident response|Root cause analysis|Postmortems|Continuous improvement",
+  ],
+  "git-github": [
+    "Git foundations|Commits|Branches|Merges|Rebase|History",
+    "Collaboration|Pull requests|Code review|Issues|Releases|Tags",
+    "GitHub engineering|Actions|Protected branches|Secrets|Supply-chain security|Automation",
+  ],
+  "web-security": [
+    "Web threat model|OWASP Top 10|Input trust|Authentication|Authorization",
+    "Common attacks|Injection|XSS|CSRF|SSRF|Path traversal|File uploads",
+    "Production defenses|Security headers|Secrets|Dependency supply chain|Logging|Security testing",
+  ],
+  tableau: [
+    "Tableau foundations|Connections|Dimensions and measures|Filters|Calculated fields",
+    "Visual analytics|Charts|Parameters|Table calculations|Level of detail expressions",
+    "Dashboards|Actions|Storytelling|Performance|Publishing and governance",
   ],
 };
 export const courseRoadmaps: Record<string, RoadmapModule[]> =

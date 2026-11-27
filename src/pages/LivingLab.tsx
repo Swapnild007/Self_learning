@@ -39,7 +39,7 @@ export default function LivingLab() {
     setMemory(old=>({attempts:old.attempts+1,correct:old.correct+(passed?1:0),interval,due:now()+(passed?interval:0)*86400000}));
     setFeedback(passed?"Good start: you mentioned the frequency mechanism. This is an automated keyword check, not a semantic AI evaluation. Compare your explanation with the worked reasoning below.":"Try again: explain how the model counts the examples after the same prompt. This keyword check can miss valid explanations.");
   }
-  return <main className="page" style={{maxWidth:950,margin:"0 auto"}}>
+  return <div className="page explain-mode" style={{maxWidth:950,margin:"0 auto"}}>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,flexWrap:"wrap"}}>
       <Link to="/course/llm-engineering">← Course overview</Link><span style={{fontSize:13,opacity:.7}}>Interactive prototype · Concept 01</span>
     </div>
@@ -87,5 +87,5 @@ export default function LivingLab() {
       {storageError&&<p role="alert">Your browser blocked local storage. Practice history may not persist.</p>}
     </section>
     <p style={{margin:"24px 0"}}><Link to="/read/llm-foundations">Read the full chapter →</Link></p>
-  </main>;
+  </div>;
 }

@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, Component, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Store } from "./store";
 import Shell from "./Shell";
 import "./style.css";
@@ -12,9 +12,9 @@ const Lab = lazy(() => import("./pages/Lab"));
 const Practice = lazy(() => import("./pages/Practice"));
 const Learning = lazy(() => import("./pages/Learning"));
 const Settings = lazy(() => import("./pages/Settings"));
-const LivingLab = lazy(() => import("./pages/LivingLab"));
 const LearningPaths = lazy(() => import("./pages/LearningPaths"));
-const VisualStudio = lazy(() => import("./pages/VisualStudio"));
+const CheatSheetPage = lazy(() => import("./pages/CheatSheetPage"));
+const Arena = lazy(() => import("./pages/Arena"));
 class Boundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() {
@@ -48,13 +48,16 @@ createRoot(document.getElementById("root")!).render(
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/catalog" element={<Catalog />} />
+                <Route path="/cheatsheet/:id" element={<CheatSheetPage />} />
+                <Route path="/arena" element={<Arena />} />
+                <Route path="/arena/:id" element={<Arena />} />
                 <Route path="/paths" element={<LearningPaths />} />
                 <Route path="/paths/:id" element={<LearningPaths />} />
-                <Route path="/visuals" element={<VisualStudio />} />
+                <Route path="/visuals" element={<Navigate replace to="/lab?chapter=llm-foundations" />} />
                 <Route path="/course/:id" element={<Overview />} />
                 <Route path="/read/:id" element={<Reader />} />
                 <Route path="/lab" element={<Lab />} />
-                <Route path="/living-lab" element={<LivingLab />} />
+                <Route path="/living-lab" element={<Navigate replace to="/lab?chapter=llm-foundations" />} />
                 <Route path="/practice" element={<Practice />} />
                 <Route path="/learning" element={<Learning />} />
                 <Route path="/settings" element={<Settings />} />

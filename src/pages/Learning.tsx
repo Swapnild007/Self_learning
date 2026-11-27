@@ -1,115 +1,381 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, Bookmark, NotebookPen } from "lucide-react";
+import {
+  BookOpen,
+  Bookmark,
+  NotebookPen,
+  Brain,
+  Target,
+  CheckCircle2,
+  ArrowRight,
+  Gauge,
+  FlaskConical,
+} from "lucide-react";
 import { chapterRegistry, courses } from "../content/catalog";
+import { learningPaths, resolvePath } from "../content/learningPaths";
 import { useStore } from "../store";
-import CourseCard from "../components/CourseCard";
+import { chapterEvidence } from "../learningEngine";
 import { Progress } from "../components/ui";
+
+type LearningTab = "mastery" | "progress" | "saved" | "notes";
+
+function confidenceLabel(value: number) {
+  if (value >= 2.6) return "Can explain";
+  if (value >= 1.6) return "Getting there";
+  return value > 0 ? "Needs review" : "No check-ins";
+}
+
 export default function Learning() {
   const { data, update } = useStore();
+  const [tab, setTab] = useState<LearningTab>("mastery");
+  const mastered = Object.values(data.scores).filter((score) => score === 100).length;
+  const noteCount = Object.values(data.notes).filter((note) => note.trim()).length;
+  const activePath =
+    learningPaths.find((path) => path.id === data.personal.activePath) ||
+    learningPaths[0];
+  const pathCourses = resolvePath(activePath);
+  const studiedCourseIds = new Set(
+    data.visited
+      .map((id) => chapterRegistry.find((entry) => entry.chapter.id === id)?.course.id)
+      .filter((id): id is string => Boolean(id)),
+  );
+  const activeCourseIds = new Set([
+    ...pathCourses.map((course) => course.id),
+    ...studiedCourseIds,
+  ]);
+  const activeCourses = courses.filter(
+    (course) =>
+      activeCourseIds.has(course.id) &&
+      (
+        studiedCourseIds.has(course.id) ||
+        course.modules.some((module) => module.chapters.length > 0)
+      ),
+  );
+  const activeChapters = chapterRegistry.filter(
+    (entry) =>
+      activeCourseIds.has(entry.course.id) &&
+      (
+        data.visited.includes(entry.chapter.id) ||
+        pathCourses.some((course) => course.id === entry.course.id)
+      ),
+  );
+
   return (
-    <div className="page">
-      <div className="eyebrow">YOUR PERSONAL WORKSPACE</div>
-      <h1>A place for everything you learn.</h1>
-      <p className="lead">Your progress, ideas and next steps, together.</p>
-      <div className="section-heading">
-        <h2>Enrolled courses</h2>
-        <Link to="/catalog">Explore courses →</Link>
+    <div className="page sorted-learning">
+      <header className="sorted-learning-header">
+        <div>
+          <span className="eyebrow">MY LEARNING</span>
+          <h1>Your progress, without the clutter<span className="blue-dot">.</span></h1>
+          <p>
+            Reading, confidence, assessment results, saved chapters, and notes stay
+            separate so each signal is easy to understand.
+          </p>
+        </div>
+        <div className="sorted-learning-metrics">
+          <div><BookOpen /><strong>{data.visited.length}</strong><span>explored</span></div>
+          <div><Brain /><strong>{Object.keys(data.confidence).length}</strong><span>check-ins</span></div>
+          <div><CheckCircle2 /><strong>{mastered}</strong><span>mastered</span></div>
+          <div><NotebookPen /><strong>{noteCount}</strong><span>notes</span></div>
+        </div>
+      </header>
+
+      <div className="sorted-course-tabs" role="tablist" aria-label="My learning views">
+        <button
+          role="tab"
+          aria-selected={tab === "mastery"}
+          className={tab === "mastery" ? "selected" : ""}
+          onClick={() => setTab("mastery")}
+        >
+          Mastery
+        </button>
+        <button
+          role="tab"
+          aria-selected={tab === "progress"}
+          className={tab === "progress" ? "selected" : ""}
+          onClick={() => setTab("progress")}
+        >
+          Evidence
+        </button>
+        <button
+          role="tab"
+          aria-selected={tab === "saved"}
+          className={tab === "saved" ? "selected" : ""}
+          onClick={() => setTab("saved")}
+        >
+          Saved {data.bookmarks.length ? `(${data.bookmarks.length})` : ""}
+        </button>
+        <button
+          role="tab"
+          aria-selected={tab === "notes"}
+          className={tab === "notes" ? "selected" : ""}
+          onClick={() => setTab("notes")}
+        >
+          Notes {noteCount ? `(${noteCount})` : ""}
+        </button>
       </div>
-      <div className="course-grid">
-        {courses
-          .filter((c) => data.enrolled.includes(c.id))
-          .map((c) => (
-            <CourseCard key={c.id} course={c} />
-          ))}
-      </div>
-      <div className="bottom-grid">
-        <section className="panel">
-          <BookOpen />
-          <h2>Chapter progress</h2>
-          {chapterRegistry
-            .filter((x) => data.enrolled.includes(x.course.id))
-            .map(({ chapter }) => (
-              <div key={chapter.id} className="learning-chapter">
-                <Link to={`/read/${chapter.id}`}>{chapter.title}</Link>
+
+      <section className="sorted-learning-panel" role="tabpanel">
+        {tab === "mastery" && (
+          <div className="learning-mastery-map">
+            <div className="sorted-panel-heading">
+              <div>
+                <span className="eyebrow">MASTERY MAP · {activePath.title.toUpperCase()}</span>
+                <h2>What is ready, weak, or mastered?</h2>
                 <p>
-                  {data.read[chapter.id]?.length || 0} of{" "}
-                  {chapter.sections.length} sections read
+                  One decision model combines reading, confidence, experiment, and
+                  assessment evidence across your current learning path.
                 </p>
-                <Progress
-                  value={Math.round(
-                    ((data.read[chapter.id]?.length || 0) /
-                      chapter.sections.length) *
-                      100,
-                  )}
-                  label={`${chapter.title} reading progress`}
-                />
-                <p>
-                  Assessment:{" "}
-                  {data.scores[
-                    `${chapter.assessment.id}-v${chapter.assessment.version}`
-                  ] === undefined
-                    ? "not attempted"
-                    : `${data.scores[`${chapter.assessment.id}-v${chapter.assessment.version}`]}%`}
-                </p>
-                <Link to={`/practice?chapter=${chapter.id}`}>
-                  Practice for mastery →
-                </Link>
               </div>
-            ))}
-        </section>
-        <section className="panel">
-          <Bookmark />
-          <h2>Bookmarks</h2>
-          {data.bookmarks.length ? (
-            chapterRegistry
-              .filter((x) => data.bookmarks.includes(x.chapter.id))
-              .map(({ chapter }) => (
-                <p key={chapter.id}>
-                  <Link to={`/read/${chapter.id}`}>{chapter.title} →</Link>
-                </p>
-              ))
-          ) : (
-            <p>Bookmark a chapter from its reading toolbar to find it here.</p>
-          )}
-          <h3>Recently studied</h3>
-          {data.visited.length ? (
-            data.visited.map((id) => {
-              const entry = chapterRegistry.find((x) => x.chapter.id === id);
-              return (
-                entry && (
-                  <p key={id}>
-                    <Link to={`/read/${id}`}>{entry.chapter.title} →</Link>
-                  </p>
-                )
-              );
-            })
-          ) : (
-            <p>No chapters opened yet.</p>
-          )}
-        </section>
-      </div>
-      <section className="panel">
-        <NotebookPen />
-        <h2>Personal notes</h2>
-        {chapterRegistry.map(({ chapter }) => (
-          <label key={chapter.id} className="notes-label">
-            {chapter.title}
-            <textarea
-              aria-label="Saved chapter notes"
-              placeholder="Start an idea here, or add notes while reading…"
-              value={data.notes[chapter.id] || ""}
-              onChange={(e) =>
-                update((d) => ({
-                  ...d,
-                  notes: { ...d.notes, [chapter.id]: e.target.value },
-                }))
-              }
-            />
-          </label>
-        ))}
-        <p role="status" className="muted">
-          Saved automatically on this device.
-        </p>
+              <Gauge size={22} />
+            </div>
+
+            <div className="learning-mastery-columns">
+              {(["review", "learning", "experiment", "practice", "mastered"] as const).map((state) => {
+                const items = activeChapters
+                  .map((entry) => ({ ...entry, evidence: chapterEvidence(entry.chapter, data) }))
+                  .filter((entry) =>
+                    state === "learning"
+                      ? ["not-started", "learning"].includes(entry.evidence.state)
+                      : entry.evidence.state === state,
+                  );
+                const title =
+                  state === "review"
+                    ? "Needs attention"
+                    : state === "learning"
+                      ? "Learning"
+                      : state === "experiment"
+                        ? "Experiment"
+                        : state === "practice"
+                          ? "Ready to practice"
+                          : "Mastered";
+                return (
+                  <section className={`learning-mastery-column state-${state}`} key={state}>
+                    <header>
+                      <span>{title}</span>
+                      <strong>{items.length}</strong>
+                    </header>
+                    <div>
+                      {items.length ? items.map(({ chapter, course, evidence }) => (
+                        <Link
+                          className="learning-mastery-item"
+                          to={evidence.action.to}
+                          key={chapter.id}
+                        >
+                          <div>
+                            <small>{course.title}</small>
+                            <strong>{chapter.title}</strong>
+                            <span>{evidence.action.reason}</span>
+                          </div>
+                          <div className="learning-mastery-item-foot">
+                            <span>{evidence.readPct}% read</span>
+                            {evidence.hasLab && (
+                              <span><FlaskConical size={12} /> {evidence.labBest ?? 0}% lab</span>
+                            )}
+                            <span>{evidence.score === undefined ? "No score" : `${evidence.score}% score`}</span>
+                          </div>
+                        </Link>
+                      )) : (
+                        <p className="muted">Nothing here right now.</p>
+                      )}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {tab === "progress" && (
+          <>
+            <div className="sorted-panel-heading">
+              <div>
+                <span className="eyebrow">LEARNING EVIDENCE</span>
+                <h2>Chapter-by-chapter progress</h2>
+                <p>Reading, confidence, and assessment evidence remain independent.</p>
+              </div>
+              <Target size={22} />
+            </div>
+
+            <div className="sorted-evidence-table">
+              {activeChapters.map(({ chapter, course }) => {
+                const sectionCount = chapter.sections.length;
+                const readCount = data.read[chapter.id]?.length || 0;
+                const readPct = Math.round((readCount / Math.max(1, sectionCount)) * 100);
+                const confidenceValues = chapter.sections
+                  .map((section) => data.confidence[`${chapter.id}:${section.id}`])
+                  .filter((value): value is number => typeof value === "number");
+                const confidenceAverage = confidenceValues.length
+                  ? confidenceValues.reduce((sum, value) => sum + value, 0) /
+                    confidenceValues.length
+                  : 0;
+                const score =
+                  data.scores[
+                    `${chapter.assessment.id}-v${chapter.assessment.version}`
+                  ];
+
+                return (
+                  <article key={chapter.id} className="sorted-evidence-row">
+                    <div>
+                      <span>{course.title}</span>
+                      <Link to={`/read/${chapter.id}`}>{chapter.title}</Link>
+                    </div>
+                    <div>
+                      <small>Reading</small>
+                      <strong>{readPct}%</strong>
+                      <Progress value={readPct} label={`${chapter.title} reading progress`} />
+                    </div>
+                    <div>
+                      <small>Confidence</small>
+                      <strong>{confidenceLabel(confidenceAverage)}</strong>
+                      <span>{confidenceValues.length}/{sectionCount} sections checked</span>
+                    </div>
+                    <div>
+                      <small>Assessment</small>
+                      <strong>
+                        {score === undefined
+                          ? "Not attempted"
+                          : score === 100
+                            ? "Mastered"
+                            : `${score}%`}
+                      </strong>
+                      <Link to={`/practice?chapter=${chapter.id}`}>
+                        {score === 100 ? "Retake" : "Practice"} <ArrowRight size={14} />
+                      </Link>
+                    </div>
+                  </article>
+                );
+              })}
+
+              {!activeChapters.length && (
+                <div className="sorted-empty-state">
+                  <BookOpen size={28} />
+                  <strong>No learning activity yet.</strong>
+                  <p>Start a published chapter and your evidence will appear here.</p>
+                  <Link to="/catalog">Explore the library →</Link>
+                </div>
+              )}
+            </div>
+
+            {activeCourses.length > 0 && (
+              <div className="sorted-active-courses">
+                <span className="eyebrow">CURRENT LEARNING · {activePath.title.toUpperCase()}</span>
+                <div>
+                  {activeCourses.map((course) => (
+                    <Link to={`/course/${course.id}`} key={course.id}>
+                      <span>{course.symbol}</span>
+                      <strong>{course.title}</strong>
+                      <ArrowRight size={15} />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {tab === "saved" && (
+          <div className="sorted-saved-view">
+            <div className="sorted-panel-heading">
+              <div>
+                <span className="eyebrow">SAVED FOR RETURN</span>
+                <h2>Bookmarks and recent learning</h2>
+                <p>Use this view only when you want to pick something back up.</p>
+              </div>
+              <Bookmark size={22} />
+            </div>
+
+            <div className="sorted-saved-grid">
+              <section>
+                <h3>Bookmarks</h3>
+                {data.bookmarks.length ? (
+                  chapterRegistry
+                    .filter((entry) => data.bookmarks.includes(entry.chapter.id))
+                    .map(({ chapter, course }) => (
+                      <Link className="sorted-saved-row" to={`/read/${chapter.id}`} key={chapter.id}>
+                        <div>
+                          <span>{course.title}</span>
+                          <strong>{chapter.title}</strong>
+                        </div>
+                        <ArrowRight size={16} />
+                      </Link>
+                    ))
+                ) : (
+                  <p className="muted">No bookmarks yet.</p>
+                )}
+              </section>
+
+              <section>
+                <h3>Recently studied</h3>
+                {data.visited.length ? (
+                  data.visited.map((id) => {
+                    const entry = chapterRegistry.find((item) => item.chapter.id === id);
+                    return (
+                      entry && (
+                        <Link className="sorted-saved-row" to={`/read/${id}`} key={id}>
+                          <div>
+                            <span>{entry.course.title}</span>
+                            <strong>{entry.chapter.title}</strong>
+                          </div>
+                          <ArrowRight size={16} />
+                        </Link>
+                      )
+                    );
+                  })
+                ) : (
+                  <p className="muted">No recent chapters yet.</p>
+                )}
+              </section>
+            </div>
+          </div>
+        )}
+
+        {tab === "notes" && (
+          <div className="sorted-notes-view">
+            <div className="sorted-panel-heading">
+              <div>
+                <span className="eyebrow">PERSONAL NOTES</span>
+                <h2>Explain it in your own words</h2>
+                <p>Notes save automatically on this device.</p>
+              </div>
+              <NotebookPen size={22} />
+            </div>
+
+            <div className="sorted-notes-list">
+              {chapterRegistry.map(({ chapter, course }) => (
+                <details
+                  className="sorted-note-item"
+                  key={chapter.id}
+                  open={Boolean(data.notes[chapter.id]?.trim())}
+                >
+                  <summary>
+                    <div>
+                      <span>{course.title}</span>
+                      <strong>{chapter.title}</strong>
+                    </div>
+                    <small>{data.notes[chapter.id]?.trim() ? "Has notes" : "Empty"}</small>
+                  </summary>
+                  <label className="notes-label">
+                    <span className="sr-only">Notes for {chapter.title}</span>
+                    <textarea
+                      aria-label={`Notes for ${chapter.title}`}
+                      placeholder="Explain the idea, capture a question, or connect it to something you already know…"
+                      value={data.notes[chapter.id] || ""}
+                      onChange={(event) =>
+                        update((current) => ({
+                          ...current,
+                          notes: {
+                            ...current.notes,
+                            [chapter.id]: event.target.value,
+                          },
+                        }))
+                      }
+                    />
+                  </label>
+                </details>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );
