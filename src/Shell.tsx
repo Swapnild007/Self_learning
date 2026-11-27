@@ -45,6 +45,7 @@ export default function Shell({ children }: { children: ReactNode }) {
     document.getElementById("main")?.focus();
   }, [location.pathname]);
 
+  const learnerInitial = data.personal.displayName.trim().charAt(0).toUpperCase() || "L";
   const pageName =
     (location.pathname.startsWith("/paths/")
       ? "Learning path"
@@ -134,13 +135,14 @@ export default function Shell({ children }: { children: ReactNode }) {
               title="Your learning workspace"
               trigger={
                 <button className="avatar nextgen-avatar" aria-label="Open account menu">
-                  S
+                  {learnerInitial}
                 </button>
               }
             >
               <p>
-                Progress, notes, bookmarks, confidence check-ins, and assessment
-                results stay on this device unless you export them.
+                {data.personal.displayName.trim()
+                  ? `${data.personal.displayName.trim()}'s learning workspace keeps progress, notes, review evidence, and preferences on this device.`
+                  : "Your learning workspace keeps progress, notes, review evidence, and preferences on this device."}
               </p>
               <Dialog.Close asChild>
                 <Link className="button primary" to="/settings">
