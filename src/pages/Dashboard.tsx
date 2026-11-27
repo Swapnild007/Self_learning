@@ -142,7 +142,7 @@ export default function Dashboard() {
         <div className="sorted-tab-panel" role="tabpanel">
           {tab === "today" && (
             <div className="sorted-today-grid">
-              <Link to="/lab" className="sorted-action-card">
+              <Link to={`/lab?chapter=${featured.id}`} className="sorted-action-card">
                 <FlaskConical />
                 <div>
                   <strong>Open Lab</strong>
