@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Check, Circle, Code2, ListChecks, RotateCcw } from "lucide-react";
 import { findChapter } from "../content/catalog";
-import { grade, useStore } from "../store";
+import { addActivity, grade, useStore } from "../store";
 import CodeEditor from "../components/CodeEditor";
 import { usePython } from "../usePython";
 import { Progress } from "../components/ui";
@@ -71,10 +71,16 @@ function AssessmentView({
         assessment.questions.length) *
         100,
     );
-    update((current) => ({
-      ...current,
-      scores: { ...current.scores, [scoreKey]: nextScore },
-    }));
+    update((current) =>
+      addActivity(
+        {
+          ...current,
+          scores: { ...current.scores, [scoreKey]: nextScore },
+        },
+        "assessment",
+        chapterId,
+      ),
+    );
   }
 
   const score = results
