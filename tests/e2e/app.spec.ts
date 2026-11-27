@@ -349,21 +349,33 @@ test("guided paths link to published chapters and expose planned curricula hones
   await expect(page.getByText("These are curriculum topics, not published or assessed lessons.")).toBeVisible();
 });
 
-test("interactive visual notes update measured values and support keyboard input", async ({ page }) => {
-  await page.goto("/#/visuals");
-  await expect(page.getByRole("heading", { name: /Change a number/ })).toBeVisible();
-  await expect(page.locator(".visual-formula")).toContainText("46.00 seconds");
-  await page.locator("#first-calls").focus();
-  await page.keyboard.press("End");
-  await expect(page.locator(".visual-formula")).toContainText("34.21 seconds");
-  await page.getByRole("button", { name: /Next-token predictions/ }).click();
-  await expect(page.locator(".visual-bar")).toHaveCount(3);
-  await expect(page.locator(".visual-formula")).toContainText("coding");
-  await page.getByRole("button", { name: /Algorithm growth/ }).click();
-  await expect(page.locator(".visual-formula")).toContainText("400");
-  await page.locator("#items-n").focus();
-  await page.keyboard.press("End");
-  await expect(page.locator(".visual-formula")).toContainText("10000");
+test("mission labs run real instruments and persist evidence", async ({ page }) => {
+  await page.goto("/#/lab?chapter=llm-foundations");
+  await expect(page.getByRole("heading", { name: /Learn by changing the system/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Token probability engine" })).toBeVisible();
+
+  await page.getByRole("button", { name: /Run inference/ }).click();
+  await expect(page.getByText("Inference result", { exact: true })).toBeVisible();
+  await expect(page.locator(".mission-meter")).toHaveCount(3);
+
+  await expect
+    .poll(async () =>
+      page.evaluate(() => {
+        const data = JSON.parse(localStorage.getItem("self-learning-v1") || "{}");
+        return data.labEvidence?.["llm-foundations"]?.best;
+      }),
+    )
+    .toBe(100);
+
+  await page.getByRole("button", { name: /Semantic geometry/ }).click();
+  await expect(page.getByRole("heading", { name: "Semantic geometry" })).toBeVisible();
+  await page.getByRole("button", { name: "Measure similarity" }).click();
+  await expect(page.getByText("Above threshold", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: /Retrieval evidence arena/ }).click();
+  await page.getByRole("button", { name: /Run retrieval/ }).click();
+  await expect(page.getByText("Top result: Overtime policy", { exact: true })).toBeVisible();
+  await expect(page.getByText("untrusted instruction", { exact: true })).toBeVisible();
 });
 
 test("new LLM chapters provide real explanations and assessments", async ({ page }) => {
