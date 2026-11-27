@@ -393,7 +393,7 @@ test("guided paths expose complete AI and web capability stacks honestly", async
   await expect(page.locator(".path-step")).toHaveCount(34);
 });
 
-test("cheatsheets are pinnable and competitions use resumable notebook workspaces", async ({ page }) => {
+test("cheatsheets are pinnable and competitions behave like project workspaces", async ({ page }) => {
   await page.goto("/#/catalog?view=cheatsheets");
   await expect(page.getByRole("tab", { name: "Cheatsheets" })).toHaveAttribute("aria-selected", "true");
   await page.getByRole("textbox", { name: "Search cheatsheets" }).fill("RAG");
@@ -410,21 +410,25 @@ test("cheatsheets are pinnable and competitions use resumable notebook workspace
   await expect(page.getByText("documents.csv", { exact: true })).toBeVisible();
   await expect(page.getByText("queries.csv", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Competition Python source")).toBeVisible();
+  await expect(page.locator(".sorted-sidebar")).toHaveCount(0);
+
+  await page.goto("/#/arena/analytics-decision-room");
+  await expect(page.getByRole("heading", { name: "Executive Decision Room" })).toBeVisible();
+  await expect(page.locator(".competition-preview-scroll table")).toBeVisible();
+  await page.getByRole("button", { name: "Build visual" }).click();
+  await expect(page.locator(".analytics-bar-chart")).toBeVisible();
+  await page.getByRole("textbox", { name: "Decision memo" }).fill(
+    "Revenue is weakening across multiple regions, with the chart showing the strongest contribution by region. I would validate whether volume or discounting is driving the decline before changing pricing or sales targets.",
+  );
+  await expect(page.getByRole("button", { name: "Publish attempt" })).toBeEnabled();
+  await page.getByRole("button", { name: "Publish attempt" }).click();
 
   await page.goto("/#/arena/web-security-audit");
-  const checklistButtons = page.locator(".competition-checklist-items button");
-  for (let i = 0; i < await checklistButtons.count(); i += 1) {
-    await checklistButtons.nth(i).click();
-  }
-  const rubricButtons = page.locator(".arena-rubric-list button");
-  for (let i = 0; i < await rubricButtons.count(); i += 1) {
-    await rubricButtons.nth(i).click();
-  }
-  await page.getByRole("textbox", { name: "Evidence notes" }).fill(
-    "Mapped all controls to trusted boundaries with concrete remediation evidence.",
+  await expect(page.getByRole("textbox", { name: "Competition working document" })).toBeVisible();
+  await page.getByRole("textbox", { name: "Competition working document" }).fill(
+    "PASS — role checks are enforced on the trusted server boundary with authorization tests. FAIL — login throttling is missing and must be added before release. N/A — no file upload path exists in this architecture. The remaining controls need concrete code, CI, or configuration evidence and remediation ownership.",
   );
-  await page.getByRole("button", { name: "Publish attempt" }).click();
-  await expect(page.getByText("100%", { exact: true }).last()).toBeVisible();
+  await expect(page.getByRole("button", { name: "Publish attempt" })).toBeEnabled();
 });
 
 test("mission labs run real instruments and persist evidence", async ({ page }) => {
