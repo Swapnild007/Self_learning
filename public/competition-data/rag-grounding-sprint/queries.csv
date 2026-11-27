@@ -1,0 +1,5 @@
+query_id,query,expected_doc
+Q-001,"How far in advance should I request annual leave?",POL-003
+Q-002,"How many remote days are allowed each week?",POL-002
+Q-003,"When should expense claims be submitted?",POL-005
+Q-004,"Who must approve international travel before booking?",POL-006
