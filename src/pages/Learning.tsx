@@ -8,13 +8,16 @@ import {
   Target,
   CheckCircle2,
   ArrowRight,
+  Gauge,
+  FlaskConical,
 } from "lucide-react";
 import { chapterRegistry, courses } from "../content/catalog";
 import { learningPaths, resolvePath } from "../content/learningPaths";
 import { useStore } from "../store";
+import { chapterEvidence } from "../learningEngine";
 import { Progress } from "../components/ui";
 
-type LearningTab = "progress" | "saved" | "notes";
+type LearningTab = "mastery" | "progress" | "saved" | "notes";
 
 function confidenceLabel(value: number) {
   if (value >= 2.6) return "Can explain";
@@ -24,7 +27,7 @@ function confidenceLabel(value: number) {
 
 export default function Learning() {
   const { data, update } = useStore();
-  const [tab, setTab] = useState<LearningTab>("progress");
+  const [tab, setTab] = useState<LearningTab>("mastery");
   const mastered = Object.values(data.scores).filter((score) => score === 100).length;
   const noteCount = Object.values(data.notes).filter((note) => note.trim()).length;
   const activePath =
@@ -79,11 +82,19 @@ export default function Learning() {
       <div className="sorted-course-tabs" role="tablist" aria-label="My learning views">
         <button
           role="tab"
+          aria-selected={tab === "mastery"}
+          className={tab === "mastery" ? "selected" : ""}
+          onClick={() => setTab("mastery")}
+        >
+          Mastery
+        </button>
+        <button
+          role="tab"
           aria-selected={tab === "progress"}
           className={tab === "progress" ? "selected" : ""}
           onClick={() => setTab("progress")}
         >
-          Progress
+          Evidence
         </button>
         <button
           role="tab"
@@ -104,6 +115,76 @@ export default function Learning() {
       </div>
 
       <section className="sorted-learning-panel" role="tabpanel">
+        {tab === "mastery" && (
+          <div className="learning-mastery-map">
+            <div className="sorted-panel-heading">
+              <div>
+                <span className="eyebrow">MASTERY MAP · {activePath.title.toUpperCase()}</span>
+                <h2>What is ready, weak, or mastered?</h2>
+                <p>
+                  One decision model combines reading, confidence, experiment, and
+                  assessment evidence across your current learning path.
+                </p>
+              </div>
+              <Gauge size={22} />
+            </div>
+
+            <div className="learning-mastery-columns">
+              {(["review", "learning", "experiment", "practice", "mastered"] as const).map((state) => {
+                const items = activeChapters
+                  .map((entry) => ({ ...entry, evidence: chapterEvidence(entry.chapter, data) }))
+                  .filter((entry) =>
+                    state === "learning"
+                      ? ["not-started", "learning"].includes(entry.evidence.state)
+                      : entry.evidence.state === state,
+                  );
+                const title =
+                  state === "review"
+                    ? "Needs attention"
+                    : state === "learning"
+                      ? "Learning"
+                      : state === "experiment"
+                        ? "Experiment"
+                        : state === "practice"
+                          ? "Ready to practice"
+                          : "Mastered";
+                return (
+                  <section className={`learning-mastery-column state-${state}`} key={state}>
+                    <header>
+                      <span>{title}</span>
+                      <strong>{items.length}</strong>
+                    </header>
+                    <div>
+                      {items.length ? items.map(({ chapter, course, evidence }) => (
+                        <Link
+                          className="learning-mastery-item"
+                          to={evidence.action.to}
+                          key={chapter.id}
+                        >
+                          <div>
+                            <small>{course.title}</small>
+                            <strong>{chapter.title}</strong>
+                            <span>{evidence.action.reason}</span>
+                          </div>
+                          <div className="learning-mastery-item-foot">
+                            <span>{evidence.readPct}% read</span>
+                            {evidence.hasLab && (
+                              <span><FlaskConical size={12} /> {evidence.labBest ?? 0}% lab</span>
+                            )}
+                            <span>{evidence.score === undefined ? "No score" : `${evidence.score}% score`}</span>
+                          </div>
+                        </Link>
+                      )) : (
+                        <p className="muted">Nothing here right now.</p>
+                      )}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {tab === "progress" && (
           <>
             <div className="sorted-panel-heading">
