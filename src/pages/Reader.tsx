@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { findChapter } from "../content/catalog";
 import type { Block } from "../content/schema";
-import { useStore } from "../store";
+import { addActivity, useStore } from "../store";
 import { Progress, Modal } from "../components/ui";
 function BlockView({ block: b, chapterId }: { block: Block; chapterId: string }) {
   switch (b.type) {
@@ -362,13 +362,19 @@ export default function Reader() {
                       className={confidence === value ? "selected" : ""}
                       aria-pressed={confidence === value}
                       onClick={() =>
-                        update((d) => ({
-                          ...d,
-                          confidence: {
-                            ...d.confidence,
-                            [confidenceKey(s.id)]: Number(value),
-                          },
-                        }))
+                        update((d) =>
+                          addActivity(
+                            {
+                              ...d,
+                              confidence: {
+                                ...d.confidence,
+                                [confidenceKey(s.id)]: Number(value),
+                              },
+                            },
+                            "confidence",
+                            chapter.id,
+                          ),
+                        )
                       }
                     >
                       <span>{value}</span>
@@ -382,15 +388,21 @@ export default function Reader() {
                 className={`section-read ${read.includes(s.id) ? "is-read" : ""}`}
                 disabled={read.includes(s.id)}
                 onClick={() =>
-                  update((d) => ({
-                    ...d,
-                    read: {
-                      ...d.read,
-                      [chapter.id]: Array.from(
-                        new Set([...(d.read[chapter.id] || []), s.id]),
-                      ),
-                    },
-                  }))
+                  update((d) =>
+                    addActivity(
+                      {
+                        ...d,
+                        read: {
+                          ...d.read,
+                          [chapter.id]: Array.from(
+                            new Set([...(d.read[chapter.id] || []), s.id]),
+                          ),
+                        },
+                      },
+                      "read",
+                      chapter.id,
+                    ),
+                  )
                 }
               >
                 <Check size={16} />
