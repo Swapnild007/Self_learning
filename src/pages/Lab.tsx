@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import CodeEditor from "../components/CodeEditor";
 import { usePython } from "../usePython";
-import { useStore } from "../store";
+import { addActivity, useStore } from "../store";
 
 type MissionId =
   | "python-functions"
@@ -692,17 +692,21 @@ export default function Lab() {
         best: 0,
         lastRun: 0,
       };
-      return {
-        ...current,
-        labEvidence: {
-          ...current.labEvidence,
-          [selected.id]: {
-            attempts: previous.attempts + 1,
-            best: Math.max(previous.best, score),
-            lastRun: Date.now(),
+      return addActivity(
+        {
+          ...current,
+          labEvidence: {
+            ...current.labEvidence,
+            [selected.id]: {
+              attempts: previous.attempts + 1,
+              best: Math.max(previous.best, score),
+              lastRun: Date.now(),
+            },
           },
         },
-      };
+        "lab",
+        selected.id,
+      );
     });
   }
 
